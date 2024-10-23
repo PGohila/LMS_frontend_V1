@@ -558,3 +558,18 @@ class LoancalculatorsForm(forms.Form):
 	loan_calculation_method = forms.ChoiceField(choices=CALCULATION_METHOD, label="Calculation Method", widget=forms.Select(attrs={'class': 'form-control'}))
 	repayment_start_date = forms.DateField(required=True, label="Repayment StartDate",widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
 
+
+
+#============
+class FolderForm(forms.Form):
+	folder_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
+
+class DocumentUploadForm(forms.Form):
+    document_title = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    document_category = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    document_type = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
+    document_upload = forms.FileField(required=True, widget=forms.FileInput(attrs={"class": "form-control"}))
+    start_date = forms.DateField(label='Start', widget=forms.DateInput(attrs={'type': 'date',"class": "form-control"}),required=False)
+    end_date = forms.DateField(label='Start', widget=forms.DateInput(attrs={'type': 'date',"class": "form-control"}),required=False)
