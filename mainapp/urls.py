@@ -104,7 +104,23 @@ urlpatterns = [
     path('folder/<entity_id>/<folder_id>/', folder, name='folder'),
 
 
+    path('create_folder/<entity_id>/', create_folder,name='create_folder'),
+    path('create_sub_folder/<entity_id>/<folder_id>/', create_sub_folder,name='create_sub_folder'),
+
+    path('upload_document/<entity_id>/<folder_id>/', upload_document,name='upload_document'),
+    path('document_category/', document_category,name='document_category'),
+    path('department/', department,name='department'),
+    path('document_type/', document_type,name='document_type'),
+    path('document_entity/', document_entity,name='document_entity'),
+
+    path('document_view/<entity_id>/<folder_id>/<document_id>/', document_view,name='document_view'),
+    path('document_version/<document_id>/', document_version,name='document_version'),
 
 
+    #============Ac
+    path('customer_folder_delete/<entity_id>/<folder_id>/',customer_folder_delete,name="customer_folder_delete"),
+
+
+    path('document_delete/<entity_id>/<folder_id>/<document_id>/', document_delete,name='document_delete'),
 
 ]

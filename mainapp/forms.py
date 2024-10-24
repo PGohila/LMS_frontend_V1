@@ -573,3 +573,28 @@ class DocumentUploadForm(forms.Form):
     document_upload = forms.FileField(required=True, widget=forms.FileInput(attrs={"class": "form-control"}))
     start_date = forms.DateField(label='Start', widget=forms.DateInput(attrs={'type': 'date',"class": "form-control"}),required=False)
     end_date = forms.DateField(label='Start', widget=forms.DateInput(attrs={'type': 'date',"class": "form-control"}),required=False)
+
+
+class DocumentCategoryForm(forms.Form):
+	category_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	department_id = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
+
+class DepartmentForm(forms.Form):
+	department_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
+
+
+class DocumentTypeForm(forms.Form):
+	document_type_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	short_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
+
+class DocumentEntityForm(forms.Form):
+    entity_name = forms.CharField(label='Entity Name', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    ENTITY_TYPE_CHOICES = [
+        ('static', 'Static'),
+        ('process', 'Process'),
+    ]
+    entity_type = forms.ChoiceField(label='Entity Type', choices=ENTITY_TYPE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}), required=False)
