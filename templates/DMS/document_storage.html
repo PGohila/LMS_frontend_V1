@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+<style>
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* smooth scrolling for mobile */
+}
+.table th, .table td {
+    white-space: nowrap;
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Company List</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Company List</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"></h5>
+        
+                <!-- Add a wrapper with overflow control -->
+                <div class="table-responsive">
+                    <table class="table datatable">
+                        <thead>
+                            <tr style="white-space: nowrap;"> 
+                                <th>Name</th>
+                                <th>Date modified</th>
+                                <th>Types</th>                 
+                                <th>Start Date</th>                 
+                                <th>End Date</th>
+                                <th>Remaing Date</th> 
+                                <th>Size</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                          <tbody>  
+                                {% for folder1 in folder_list %}
+                                {% if forloop.counter == 1 %}
+                                <tr>
+                                    <td>
+                                      <a onclick="history.go(-1)">
+                                          <i class="fas fa-reply" style="color:rgb(0, 132, 255); margin-right: 5px;"></i><i class="mdi mdi-folder" style="color:rgb(0, 132, 255);">...</i>
+                                          
+                                      </a>
+                                  </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                  </tr>
+                                {% endif %}
+                                <tr>
+                                  <td><a href="/folder/{{entity_id}}/{{folder1.folder_id}}/"><i class="fa fa-folder"></i>{{folder1.folder_name}}</a></td>
+                                  {% comment %} <td><i class="mdi mdi-folder"></i> {{folder1.folder_name}}</a></td> {% endcomment %}
+                                  <td>{{folder1.update_at}}</td>
+                                  <td>Folder</td>               
+                
+                                  <td>-</td>   
+                                  <td>-</td>   
+                                  <td>-</td>   
+                                  <td>-</td>   
+                                  <td>
+                                    {% comment %} <div class="container">
+                                      <div class="custom-dropdown">
+                                          <!-- <button class="custom-toggle" id="customDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                              <i class="mdi mdi-dots-vertical"></i>
+                                          </button> -->
+                                          <button class="btn custom-toggle" type="button" id="customDropdownButton"
+                                          data-toggle="dropdown" aria-expanded="false">
+                                          <i class="mdi mdi-dots-vertical"></i>
+                                        </button>
+                                          <div class="dropdown-menu custom-menu" aria-labelledby="customDropdownButton">
+                                            {% if 'folder_delete' in permission_user %}
+                                              <a href="{% url 'client_folder_delete' entity_id folder.folder_id %}">  <button class="dropdown-item" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Delete"><i class="mdi mdi-delete-forever"></i> Delete</button></a>
+                                            {% endif %}
+                                          </div>
+                                          
+                                      </div>
+                                  </div> {% endcomment %}
+                                  </td>
+                                </tr>
+                                {% endfor %}
+                                {% for doc in document_list %}
+                                 
+                                {% if 'view' in doc.permission %}
+                               
+                                <tr>
+                                  <td><a href="{% url 'document_view' entity_id=entity_id folder_id=folder_id document_id=doc.document_id %}" target="_blank"><i class="mdi mdi-file"></i> {{doc.document_title}}</a></td>
+                                  <td>{{doc.update_at}}</td>
+                                 
+                                  <td>Document</td>
+                                  <td>
+                                  {% if doc.start_date %}
+                                  {{doc.start_date}}
+                                  {% else %}
+                                  -
+                                  {% endif  %}
+                                </td>
+                                <td>
+                                  {% if doc.end_date %}
+                                  {{doc.end_date}}
+                                  {% else %}
+                                  -
+                                  {% endif  %}
+                                </td>
+                                
+                                
+                              
+                                <td>
+                                  {% if doc.remaining_days %}
+                                      <b style="color: {% if doc.remaining_days <= 7 %}red{% elif doc.remaining_days <= 30 %}orange{% else %}black{% endif %};">
+                                          {{ doc.remaining_days }}-days
+                                      </b>
+                                  {% else %}
+                                      -
+                                  {% endif %}
+                                </td>
+                                  
+                                  <td>{% if doc.document_size %}{{doc.document_size}} KB{% endif %}</td>
+                                  <td>
+                                    <div class="container">
+                                      <div class="dropdown">
+                                        <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                                          <i class="mdi mdi-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                          <!-- {% if 'edit' in doc.permission %} -->
+                                           
+                                          <li><button class="dropdown-item" data-toggle="modal" data-target="#documentEdit" onclick="getValueEdit('{{doc.document_title}}','{{doc.document_id}}')" data-toggle="tooltip" data-placement="top" title="Add Hearing"><i class="mdi mdi-table-edit"></i> Edit</button></li>
+                                          <!-- {% endif %} -->
+                                          <!-- {% if 'delete' in doc.permission %} -->
+                                          <!-- {% endif %} -->
+                                          <!-- {% if 'download' in doc.permission %} -->
+                                          <li>
+                                            <a href="http://127.0.0.1:8000/{{doc.document_upload}}" 
+                                               download 
+                                               class="dropdown-item download-link" 
+                                               data-id="{{doc.id}}" 
+                                               data-reason="Reason for download">
+                                              <i class="mdi mdi-download"></i> Download
+                                            </a>
+                                          </li>   
+                                        
+                                        <!-- ==============mmm==================== -->
+                                          <!-- {% endif %} -->
+                                          <!-- {% if 'share' in doc.permission %} -->
+                                          <li><a href="{% url 'document_access' doc.document_id %}" class="dropdown-item"><i class="mdi mdi-content-copy"></i> Share</a></li>
+                                          <!-- {% endif %} -->
+                                          <li><a href="{% url 'document_version' doc.document_id %}" class="dropdown-item">
+                                            <i class="mdi mdi-source-branch"></i> Version
+                                        </a></li>
+                                        <li>
+                                          {% if 'folder_delete' in permission_user %}
+                                          <a href="{% url 'document_delete' entity_id=entity_id folder_id=folder_id document_id=doc.document_id %}" class="dropdown-item"><i class="mdi mdi-delete-forever"></i> Delete</a></li>
+                                          {% endif %}
+                
+                
+                                        </ul>
+                                      </div>
+                                    </div>
+                
+                                  </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                              </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}
+
+ 

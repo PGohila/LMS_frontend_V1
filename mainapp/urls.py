@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from .EDMS_views import *
 
 urlpatterns = [
     path("",login, name="login"),
@@ -94,6 +95,15 @@ urlpatterns = [
     path('loantype-view/', loantype_view, name='loantype_view'),
     path('loantype-edit/<pk>/', loantype_edit, name='loantype_edit'),
     path('loantype-delete/<pk>/', loantype_delete, name='loantype_delete'),
+
+
+    #==================DMS=====================
+    path('matter_workspace/', customer_workspace,name='matter_workspace'),
+    path('document_storage/<entity_id>/', document_storage, name='document_storage'),
+    path('folder/<entity_id>/<folder_id>/', folder, name='folder'),
+
+
+
 
 
 ]
