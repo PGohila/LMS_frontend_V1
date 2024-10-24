@@ -62,10 +62,12 @@
                           <td>{{ data.loantype.loantype }}</td>
                           <td>{{ data.loan_amount}}</td>
                           <td>{% if data.document_verified == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1">Verified</i></span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1">Not</i></span>{% endif %}</td>
-                          <td>{{data.is_eligible}}</td>
+               
+                          <td>{% if data.is_eligible == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1">Eligible</i></span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1">Not</i></span>{% endif %}</td>
+
                           <td>
-                            <a href="{% url 'loanapproval' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class="fa fa-eye"></i></a>
-                             
+                              <a href="{% url 'loanapproval' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
+                              </button></a>
       
                           </td>
                         </tr>
@@ -104,12 +106,12 @@
                           <td>{{ data.customer_id.customer_id }}</td>
                           <td>{{ data.loantype.loantype }}</td>
                           <td>{{ data.loan_amount}}</td>
-                          <td>Verified</td>
+                          <td>{% if data.document_verified == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1">Verified</i></span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1">Not</i></span>{% endif %}</td>
                           
-                          <td>{{data.is_eligible}}</td>
+                          <td>{% if data.is_eligible == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1">Eligible</i></span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1">Not</i></span>{% endif %}</td>
                           <td>
-                            <a href="{% url 'loanapproval' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class="fa fa-eye"></i></a>
-                             
+                              <a href="{% url 'loanapproval' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
+                              </button></a>
       
                           </td>
                         </tr>
@@ -148,11 +150,11 @@
                           <td>{{ data.customer_id.customer_id }}</td>
                           <td>{{ data.loantype.loantype }}</td>
                           <td>{{ data.loan_amount}}</td>
-                          <td>Verified</td>
-                          <td>{{data.is_eligible}}</td>
+                          <td>{% if data.document_verified == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1">Verified</i></span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1">Not</i></span>{% endif %}</td>
+                          <td>{% if data.is_eligible == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1">Eligible</i></span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1">Not</i></span>{% endif %}</td>
                           <td>
-                            <a href="{% url 'loanapproval' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class="fa fa-eye"></i></a>
-                             
+                            <a href="{% url 'loanapproval' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
+                            </button></a> 
       
                           </td>
                         </tr>

@@ -122,12 +122,13 @@
     </div>
 </div>          <form method="post">
                     {% csrf_token %}
-                    <div class="button-row">
-                    <button type="submit" name="Confirmed" value="Confirmed" class="confirm-button btn-sm" onclick="confirmAgreement()">Confirm</button>
-                    <button type="submit" name="Reject" value="terminated" class="confirm-button btn-sm" >Terminate</button>
-                    <button type="button" name="PDF" class="confirm-button btn-sm" onclick="generatePDF()">PDF Generate</button>
-
+                   
+                    <div class="btn-group" role="group" aria-label="Basic outlined example">
+                      <button type="submit" class="btn btn-outline-success" name="Confirmed" value="Confirmed">Approve</button>
+                      <button type="submit" name="Reject" value="terminated"  class="btn btn-outline-danger" >Terminate</button>
+                      <a href="button" type="button" class="btn btn-outline-primary" onclick="generatePDF()">PDF Generate</a>
                     </div>
+
                 </form>
                 </div>
                 <script>

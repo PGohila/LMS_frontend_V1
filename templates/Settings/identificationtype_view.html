@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block body_block %}
 <body>
 
@@ -43,7 +42,7 @@
                     <td>{% if data.is_active == True %} <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i></span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1"></i> </span>{% endif %}</td>
            
                     <td>
-                      <a href="#"><span data-toggle="tooltip" title="edit" style="color: black;"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
+                      <a href="#"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
                       </button></a>
                       <a href="{% url 'identificationtype_edit' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"> <button class="btn btn-secondary btn-sm" type="button"><i class='fa fa-edit'></i>
                       </button></a>

@@ -47,7 +47,8 @@
                         <td>{{ item.loan_amount }}</td>
                         <td>{% if item.application_status == 'Submitted' %}<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> {{item.application_status}} </span>{% else %}<span class="badge bg-info text-dark"><i class="bi bi-info-circle me-1"></i> {{item.application_status}}</span>{% endif %}</td>
                         <td>{{ item.risk_score|floatformat:2 }}%</td>
-                        <td><a href="{% url 'loan_risk_assessment_detail' item.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class="fa fa-eye"></i></a></td>
+                        <td><a href="{% url 'loan_risk_assessment_detail' item.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
+                          </button></a></td>
                     </tr>
                     {% endfor %}
                

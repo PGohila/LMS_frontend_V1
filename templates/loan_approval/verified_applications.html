@@ -62,7 +62,8 @@
                         <td>{% if data.document_verified == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Verified</span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1"></i> Not</span>{% endif %}</td>
                         <td>{% if data.is_eligible == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Eligible</span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1"></i> Ineligible</span>{% endif %}</td>
                         <td>
-                            <a href="{% url 'eligibility_status' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
+                           
+                            <a href="{% url 'eligibility_status' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
                             </button></a>
     
                         </td>
@@ -106,8 +107,8 @@
 
                         <td>{% if data.is_eligible == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Eligible</span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1"></i> Ineligible</span>{% endif %}</td>
                         <td>
-                            <a href="{% url 'eligibility_status' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
-                            </button></a> 
+                          <a href="{% url 'eligibility_status' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
+                          </button></a>
     
                         </td>
                       </tr>
@@ -148,8 +149,8 @@
                         <td>{% if data.document_verified == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Verified</span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1"></i> Not</span>{% endif %}</td>
                         <td>{% if data.is_eligible == True %}<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Eligible</span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1"></i> Ineligible</span>{% endif %}</td>
                         <td>
-                            <a href="{% url 'eligibility_status' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
-                            </button></a>
+                          <a href="{% url 'eligibility_status' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
+                          </button></a>
     
                         </td>
                       </tr>
