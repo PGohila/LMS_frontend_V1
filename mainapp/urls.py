@@ -47,7 +47,6 @@ urlpatterns = [
 
     path('disbursement_request/', disbursement_request, name='disbursementrequest'),
     path('disply_agreed_agreement/<pk>', disply_agreed_agreement, name='displyagreedagreement'),
-
     path('disply_loans/', disply_loans, name='disply_loans'),
     path('disbursement/<loanid>/', disbursement_create, name='disbursement'),
     path('disbursement_details/', disbursement_details, name='disbursement_details'),

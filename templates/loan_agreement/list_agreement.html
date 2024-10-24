@@ -44,11 +44,14 @@
                             <td>{{ data.loanapp_id.application_id }}</td>
                             <td>{{ data.customer_id.customer_id}}</td>
                             <td>{{data.agreement_date}}</td>
+                    
                             <td>
-                            <a href="{% url 'agreementconfirmation' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class="fa fa-eye"></i></a>
-                             <a href="{% url 'editagreement' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class='fa fa-edit'></i></a>
-                                <a href="{% url 'loanapplication_delete' data.id %}"><span data-toggle="tooltip" title="Delete" style="color: black;"><i class='fa fa-remove' onclick="alert('You want to Delete this Item..?')"></i></a> 
-
+                              <a href="{% url 'agreementconfirmation' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
+                              </button></a> 
+                              <a href="{% url 'editagreement' data.id %}"><span data-toggle="tooltip" title="Edit" style="color: black;"> <button class="btn btn-secondary btn-sm" type="button"><i class='fa fa-edit'></i>
+                              </button></a> 
+                              <a href="#"><span data-toggle="tooltip" title="Delete" style="color: black;"> <button class="btn btn-danger btn-sm" type="button"><i class='fa fa-remove' onclick="alert('You want to Delete this Item..?')"></i>
+                              </button></a> 
                             </td>
                         </tr>
                   {% endfor %}

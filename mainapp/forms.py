@@ -180,8 +180,8 @@ class LoanAgreementForm(forms.Form):
 	loan_id = forms.CharField(max_length=20, widget=forms.TextInput(attrs={"class": "form-control"}), required=True)
 	loanapp_id = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 	agreement_terms = forms.CharField(required=True,widget=forms.Textarea(attrs={"class": "form-control"}))
-	attachment = forms.FileField(required=False, label='Borroewr Signature')
-	attachment1 = forms.FileField(required=False,label='Lander Signature')
+	attachment = forms.FileField(required=False, label='Borrower Signature')
+	attachment1 = forms.FileField(required=False, label='Lender Signature')
 	maturity_date = forms.DateField(required=False, widget=forms.DateTimeInput(attrs={"class": "form-control","type": "date"}))
 	is_active = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
 
