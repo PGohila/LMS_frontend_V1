@@ -1,4 +1,7 @@
+import base64
 import datetime
+import random
+import string
 from django.contrib import messages
 from django.shortcuts import render,redirect,HttpResponseRedirect
 from requests import Response
@@ -11,6 +14,10 @@ from django.conf import settings
 from django.http import HttpResponse
 ENDPOINT = 'api/'
 
+def generate_random_id(pre):
+    suffix = ''.join(random.choices(string.digits, k=5))  # Generate a 6-digit random suffix
+    return pre + suffix
+
 def format_data(MSID,data):
     response = {
         'ms_id':MSID,
@@ -22,6 +29,7 @@ def format_data(MSID,data):
 def call_post_method_with_token(URL,endpoint,data,access_token, files=None):
     api_url = URL + endpoint
     headers = { "Authorization":f'Bearer {access_token}'}
+   
     if files:
         print("inide_the_files")
         response = requests.post(api_url,data=data, files=files, headers=headers)
@@ -200,3 +208,413 @@ def folder(request,entity_id,folder_id):
         return render(request, 'DMS/document_storage.html',context)
 #     except Exception as error:
 #                 return render(request, "error.html", {"error": error})
+
+
+@custom_login_required
+def create_folder(request,entity_id):
+     try:     
+        if request.method == 'POST':
+                token = request.session['user_token']
+                form = FolderForm(request.POST)
+                if form.is_valid():
+                        MSID = get_service_plan('folder master create')
+                        cleaned_data = form.cleaned_data
+                        cleaned_data['entity_id']=entity_id
+                        cleaned_data['default_folder']=True   #changes made
+                        document_create_name=cleaned_data['folder_name']
+                        print("document_create_name",document_create_name)
+                        data = format_data(MSID,cleaned_data)
+                        folder_list_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+#========================================================
+                        # matter_create = response['data']
+                        # data1 = matter_create[0]
+                        # print('data---', data1)
+#============================================================                        
+                        if folder_list_response.status_code != 200:
+                                print('folder_list_response error',folder_list_response)
+                        else:
+                                print(folder_list_response.json())
+                        return redirect(f'/document_storage/{entity_id}/')
+                else:
+                        print(form.errors)
+        else:
+                messages.info(request, "Oops..! Application Failed to Submitted..")
+     except Exception as error:
+                return render(request, "error.html", {"error": error})
+                
+
+
+
+
+@custom_login_required
+def create_sub_folder(request,entity_id,folder_id):
+     try:
+        if request.method == 'POST':
+                token = request.session['user_token']
+                form = FolderForm(request.POST)
+                if form.is_valid():
+                        MSID = get_service_plan('folder master create')
+                        cleaned_data = form.cleaned_data
+                        cleaned_data['parent_folder_id']=folder_id
+                        cleaned_data['entity_id']=entity_id
+                        data = format_data(MSID,cleaned_data)
+                        print('data',data)
+                        folder_list_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+                        if folder_list_response.status_code != 200:
+                                print('folder_list_response error',folder_list_response)
+                        else:
+                                print(folder_list_response.json())
+                                return HttpResponseRedirect(f'/folder/{entity_id}/{folder_id}/')
+                
+                else:
+                        print('f==',form.errors)
+        else:
+                messages.info(request, "Oops..! Application Failed to Submitted..")
+     except Exception as error:
+                return render(request, "error.html", {"error": error})
+
+
+@custom_login_required
+def upload_document(request,entity_id,folder_id):
+        try:
+                print('entity_1234567id===',entity_id)
+                print('folder_id',folder_id)
+                if request.method == 'POST':
+                        token = request.session['user_token']
+                        print('request123',request)
+                        print('request.POST',request.POST)
+                        print('request.POST',request.FILES)
+                        form = DocumentUploadForm(request.POST,request.FILES)
+                        if form.is_valid():
+                                # document upload
+                                MSID = get_service_plan('document upload')
+                                cleaned_data = form.cleaned_data
+                                print(",,,,,,,,,,,,,",cleaned_data)
+                                cleaned_data['folder_id']=folder_id
+                                cleaned_data['entity_type']=[entity_id]
+                                if cleaned_data['start_date'] is not None:
+                                        cleaned_data['start_date'] = cleaned_data['start_date'].strftime('%Y-%m-%d')
+                                else:
+                                        cleaned_data['start_date'] = None
+
+                                if cleaned_data['end_date'] is not None:
+                                        cleaned_data['end_date'] = cleaned_data['end_date'].strftime('%Y-%m-%d')
+                                else:
+                                        cleaned_data['end_date'] = None  
+                                document_upload_name=cleaned_data['document_title']
+                                print("document_upload_name",document_upload_name)
+
+                                document_upload = request.FILES['document_upload']
+                                print("document_upload7890",document_upload)
+                                document_upload_filename = document_upload.name
+                                # cleaned_data['document_upload'] = document_upload_filename
+                                del cleaned_data['document_upload']
+                                files = {'files': (document_upload.name, document_upload.read())}
+                                
+                                data = format_data(MSID,cleaned_data)
+                                print('data///',data)
+                                response = {
+                                        'ms_id':MSID,
+                                        'ms_payload':json.dumps(cleaned_data)
+                                }
+                                data= json.dumps(response)
+                                print("data00",data)
+                                # upload_document_name=data['ms_payload']['document_title']
+                                # print('upload_document_name',upload_document_name)
+                                response = call_post_method_with_token(BASEURL,ENDPOINT,response, token,files)
+                                print('response======reee',response)
+#========================================================
+#============================================================
+                                if response.status_code != 200:
+                                        print('response error',response)
+                                else:
+                                        print(response.json())
+                                        messages.info(request, "Upload Successfully")
+                                        return redirect(f'/folder/{entity_id}/{folder_id}/')
+                        else:
+                                print(form.errors)
+                else:
+                        messages.info(request, "Oops..! Application Failed to Submitted..")
+        except Exception as error:
+                return render(request, "error.html", {"error": error})
+
+
+
+@custom_login_required
+def document_category(request):
+        try:
+                token=request.session['user_token']
+                # document category view
+                document_cat_MSID = get_service_plan('document category view')
+                document_cat_data = format_data(document_cat_MSID,{})
+                document_cat_response = call_post_method_with_token(BASEURL,ENDPOINT,document_cat_data,token)
+                if document_cat_response.status_code != 200:
+                        print('document_cat_response error',document_cat_response)
+                document_cat_records = document_cat_response.json()
+                # department view
+                department_MSID = get_service_plan('department view')
+                department_data = format_data(department_MSID,{})
+                department_response = call_post_method_with_token(BASEURL,ENDPOINT,department_data,token)
+                if department_response.status_code != 200:
+                        print('department_response error',department_response)
+                department_records = department_response.json()
+                print('department_records',department_records)
+
+                form = DocumentCategoryForm()
+                if request.method=='POST':
+                        form=DocumentCategoryForm(request.POST)
+                        if form.is_valid():
+                                # document category create
+                                MSID = get_service_plan('document category create')
+                                cleaned_data = form.cleaned_data
+                                data = format_data(MSID,cleaned_data)
+                                folder_list_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+                                if folder_list_response.status_code != 200:
+                                        print('folder_list_response error',folder_list_response)
+                                else:
+                                        print(folder_list_response.json())
+                                        return HttpResponseRedirect(f'/document_category/')
+                        else:
+                                print(form.errors)
+                
+                context={
+                                'form':form,'document_cat_records':document_cat_records,'department_records':department_records
+                }
+                return render (request,'DMS/document_category.html',context)
+        
+        except Exception as error:
+                return render(request, "error.html", {"error": error})
+
+
+@custom_login_required
+def department(request):
+        try:
+                token=request.session['user_token']
+                # department view
+                department_MSID = get_service_plan('department view')
+                print('department_MSID',department_MSID)
+                department_data = format_data(department_MSID,{})
+                department_response = call_post_method_with_token(BASEURL,ENDPOINT,department_data,token)
+                if department_response.status_code != 200:
+                        print('department_response error',department_response)
+                department_records = department_response.json()
+
+                form = DepartmentForm()
+                if request.method=='POST':
+                        form=DepartmentForm(request.POST)
+                        if form.is_valid():
+                                # department create
+                                MSID = get_service_plan('department create')
+                                cleaned_data = form.cleaned_data
+                                data = format_data(MSID,cleaned_data)
+                                folder_list_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+                                if folder_list_response.status_code != 200:
+                                        print('folder_list_response error',folder_list_response)
+                                else:
+                                        print(folder_list_response.json())
+                                        return HttpResponseRedirect(f'/department/')
+                        else:
+                                print(form.errors)
+                                
+                context={
+                        'form':form,'department_records':department_records
+                }
+                return render (request,'DMS/department.html',context)
+        except Exception as error:
+                return render(request, "error.html", {"error": error})
+
+
+@custom_login_required
+def document_type(request):
+        try:
+                token=request.session['user_token']
+                # document type view
+                document_type_MSID = get_service_plan('document type view')
+                document_type_data = format_data(document_type_MSID,{})
+                document_type_response = call_post_method_with_token(BASEURL,ENDPOINT,document_type_data,token)
+                if document_type_response.status_code != 200:
+                        print('document_type_response error',document_type_response)
+                document_type_records = document_type_response.json()
+
+                form = DocumentTypeForm()
+                if request.method=='POST':
+                        form=DocumentTypeForm(request.POST)
+                        if form.is_valid():
+                                # document type create
+                                MSID = get_service_plan('document type create')
+                                cleaned_data = form.cleaned_data
+                                data = format_data(MSID,cleaned_data)
+                                print("data56789098765",data)
+                                response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+                                if response.status_code != 200:
+                                        print('response error',response)
+                                else:
+                                        print("document_type98765432345678",response.json())
+                                        messages.info(request, "Created Successfully")
+                                        return HttpResponseRedirect(f'/document_type/')
+                        else:
+                                print(form.errors)
+                # else:
+                #        messages.info(request, "Oops..! Application Failed to Submitted..")
+                    
+                context={
+                        'form':form,'document_type_records':document_type_records
+                }
+                return render (request,'DMS/document_type.html',context)
+        
+        except Exception as error:
+                return render(request, "error.html", {"error": error})
+
+
+
+@custom_login_required
+def document_entity(request):
+
+        token=request.session['user_token']
+        user_name = request.session['username']
+        user_role=request.session['user_role']
+        user_profile=request.session['user_profile']
+        notification =request.session['notification']
+        # entity master view
+        document_entity_MSID = get_service_plan('entity master view')
+        print('document_entity_MSID',document_entity_MSID)
+        document_entity_data = format_data(document_entity_MSID,{})
+        document_entity_response = call_post_method_with_token(BASEURL,ENDPOINT,document_entity_data,token)
+        if document_entity_response.status_code != 200:
+                print('document_entity_response error',document_entity_response)
+        document_entity_records = document_entity_response.json()
+
+        form = DocumentEntityForm()
+        if request.method=='POST':
+                form=DocumentEntityForm(request.POST)
+                print("formss",form)
+                if form.is_valid():
+                    # entity master create
+                        MSID = get_service_plan('entity master create')
+                        cleaned_data = form.cleaned_data
+                        cleaned_data['entity_id']=generate_random_id('EID')
+                        document_entity_name=cleaned_data['entity_name']
+                        print("document_entity_name",document_entity_name)
+                        data = format_data(MSID,cleaned_data)
+
+                        response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+#========================================================
+#============================================================
+                        
+                        if response.status_code != 200:
+                                #     if "document_entity_add" in notification:
+                                messages.info(request,"Successfully Created")
+                                print('response error',response)
+                        else:
+                                print(response.json())
+                                messages.info(request, "Successfully Created")
+                                return HttpResponseRedirect(f'/document_entity/')
+                else:
+                      print(form.errors)
+                    
+        context={
+                    'form':form,'document_entity_records':document_entity_records,"user_name":user_name,
+                    "user_role":user_role,"user_profile":user_profile
+            }
+        return render (request,'DMS/document_entity.html',context)
+
+
+@custom_login_required
+def document_view(request,entity_id,folder_id,document_id):
+        try :
+                token = request.session['user_token']
+                MSID = get_service_plan('document content view')
+                data = format_data(MSID,{'document_id':document_id})
+                print('data',data)
+                response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+                if response.status_code != 200:
+                        print('response error',response)
+                # data = response.json()
+                content_base64 = response.json()['content']
+                url = response.json()['url']
+                content= base64.b64depytcode(content_base64)
+                # print('content',content)
+                # return redirect(url)
+                
+
+                context={
+                'content':content,'url':url
+                }
+                return render(request,'DMS/document_view.html',context)
+        
+        except Exception as error:
+                return render(request, "error.html", {"error": error})    
+
+
+
+@custom_login_required
+def document_version(request,document_id):
+        try:
+                token=request.session['user_token']
+                # user list
+           
+                # document access list
+                doc_access_MSID = get_service_plan('document version')
+                doc_access_data = format_data(doc_access_MSID,{'document_id':document_id})
+                doc_access_response = call_post_method_with_token(BASEURL,ENDPOINT,doc_access_data,token)
+                if doc_access_response.status_code != 200:
+                        print('doc_access_response error',doc_access_response)
+                doc_access_records = doc_access_response.json()
+                print('doc_access_records---',doc_access_records)
+                # doc_access = []
+                # for data in doc_access_records:
+                 
+
+                #         doc_access.append(data)
+                # print('doc_access_records',doc_access_records)
+
+              
+                context={
+                       'doc_access_records':doc_access_records,'document_id':document_id,
+                       "BASEURL":BASEURL
+                }
+                return render (request,'DMS/document_version.html',context)
+
+        except Exception as error:
+                return render(request, "error.html", {"error": error})
+
+@custom_login_required
+def customer_folder_delete(request,folder_id,entity_id):
+        try:
+                token = request.session['user_token']
+                #document delete
+                MSID = get_service_plan('folder delete')
+                data = format_data(MSID,{'folder_id':folder_id})
+                print('data',data)
+                folder_list_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+                if folder_list_response.status_code != 200:
+                        print('folder_list_response error',folder_list_response)
+                else:
+                        print(folder_list_response.json())
+                return redirect(f'/document_storage/{entity_id}/')
+        
+        except Exception as error:
+                return render(request, "error.html", {"error": error})
+
+
+#==============
+@custom_login_required
+def document_delete(request,entity_id,folder_id,document_id):
+        try:
+                token = request.session['user_token']
+                #document delete
+                MSID = get_service_plan('document delete')
+                data = format_data(MSID,{'document_id':document_id})
+                print('data',data)
+                folder_list_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+                if folder_list_response.status_code != 200:
+                        messages.error(request,"Sucessfully deleted")
+                        print('folder_list_response error',folder_list_response)
+                else:
+                        print(folder_list_response.json())
+                return redirect(f'/folder/{entity_id}/{folder_id}/')
+        
+        except Exception as error:
+                return render(request, "error.html", {"error": error})
+
+
