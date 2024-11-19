@@ -43,7 +43,9 @@
                             <td>{{ data.customer_id.customer_id }}</td>
                             <td>{{ data.loantype.loantype }}</td>
                             <td>{{ data.loan_amount}}</td>
-                            <td>{{data.application_status}}</td>
+                       
+                            <td>{% if data.application_status == 'Approved' %}<span class="badge bg-success"><i class="bi bi-check-circle me-1">Approved</i></span>{% else %}<span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1">Not</i></span>{% endif %}</td>
+
                             <td>
                             <!-- <a href="{% url 'loanapplication_edit' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class='fa fa-edit'></i></a>
                                 <a href="{% url 'loanapplication_delete' data.id %}"><span data-toggle="tooltip" title="Delete" style="color: black;"><i class='fa fa-remove' onclick="alert('You want to Delete this Item..?')"></i></a> -->

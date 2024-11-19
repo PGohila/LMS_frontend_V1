@@ -25,24 +25,7 @@
               <!-- Vertical Form -->
               <form method="post" class="row g-3">
                 {% csrf_token %}
-                {% if messages %}
-           
-                  <div class="alert-container">
-                      {% for message in messages %}
-                          <div class="alert alert-dismissible fade show {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
-                              {% if "error" in message.tags %}
-                                  <i class="bi bi-exclamation-octagon me-1"></i>
-                                  {{ message }}
-                              {% elif "success" in message.tags %}
-                                  <i class="bi bi-check-circle me-1"></i>
-                                  {{ message }}
-                              {% endif %}
-                              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                          </div>
-                      {% endfor %}
-                  </div>
-              {% endif %}
-
+                
                 {% for data in form %}
                 <div class="col-12">
                     {{data.label_tag}}

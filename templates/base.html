@@ -68,7 +68,7 @@
     <div class="d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo d-flex align-items-center">
         <img src="{% static 'assets/img/logo.jpg' %}" alt="">
-        <span class="d-none d-lg-block"><img src="{% static 'assets/img/pesa_nile_logohd.jpeg'%}" style="height: 100px; width: 200px" ></span>
+        <span class="d-none d-lg-block"><img src="{% static 'assets/img/pesa_nile_logohd.jpeg'%}" style="height: 100px; width: 150px" ></span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -556,16 +556,16 @@
   </a>
   <ul id="calculator-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
     <li>
-      <a href="">
+      <a href="{% url 'loancalculators' %}">
         <i class="bi bi-circle"></i><span>Instantaneous Loan Calculator </span>
       </a>
      
     </li>
-    <li>
+    <!-- <li>
       <a href="">
         <i class="bi bi-circle"></i><span>Calculate Loan Repayment Schedule</span>
       </a>
-    </li>
+    </li> -->
   </ul>
 </li>
     <li class="nav-item">
@@ -603,9 +603,9 @@
             <i class="bi bi-circle"></i><span>Collateral Type</span>
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a href="">
-             <i class="bi bi-circle"></i><span>Tax</span> <!-- (Set tax rates for loans, interest) -->
+             <i class="bi bi-circle"></i><span>Tax</span> 
           </a>
         </li>
         
@@ -617,39 +617,39 @@
         </li>
         <li>
           <a href="">
-            <i class="bi bi-circle"></i><span>Rate Type</span> <!-- (fixed, variable, reducing balance) -->
+            <i class="bi bi-circle"></i><span>Rate Type</span> 
           </a>
         </li>
         <li>
           <a href="">
-            <i class="bi bi-circle"></i><span>Set Default Interest Rate</span> <!-- (fixed, variable, reducing balance) -->
+            <i class="bi bi-circle"></i><span>Set Default Interest Rate</span> 
+          </a>
+        </li> -->
+        <!-- <li>
+          <a href="">
+            <i class="bi bi-circle"></i><span>Repayment Mode</span> 
           </a>
         </li>
         <li>
           <a href="">
-            <i class="bi bi-circle"></i><span>Repayment Mode</span> <!-- (fixed, variable, reducing balance) -->
+            <i class="bi bi-circle"></i><span>Penalty</span> 
           </a>
         </li>
         <li>
           <a href="">
-            <i class="bi bi-circle"></i><span>Penalty</span> <!-- (fixed, variable, reducing balance) -->
+            <i class="bi bi-circle"></i><span>Notification</span> 
           </a>
         </li>
         <li>
           <a href="">
-            <i class="bi bi-circle"></i><span>Notification</span> <!-- (fixed, variable, reducing balance) -->
+            <i class="bi bi-circle"></i><span>Audit Log</span> 
           </a>
         </li>
         <li>
           <a href="">
-            <i class="bi bi-circle"></i><span>Audit Log</span> <!-- (fixed, variable, reducing balance) -->
+            <i class="bi bi-circle"></i><span>System Backup & Restore</span> 
           </a>
-        </li>
-        <li>
-          <a href="">
-            <i class="bi bi-circle"></i><span>System Backup & Restore</span> <!-- (fixed, variable, reducing balance) -->
-          </a>
-        </li>
+        </li> -->
 
     </ul>
     </li>
@@ -695,7 +695,8 @@
  
   </aside><!-- End Sidebar-->
   
-
+  {% block script_block %}
+  {% endblock %}
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
 
@@ -717,7 +718,7 @@
   <script src="{% static 'assets/js/main.js' %}"></script>
   <script>
     $(document).ready(function() {
-        $('.form-control').select2(); // Apply Select2 to all fields with the 'form-control' class
+        $('.select').select2(); // Apply Select2 to all fields with the 'form-control' class
     });
     </script>
     
