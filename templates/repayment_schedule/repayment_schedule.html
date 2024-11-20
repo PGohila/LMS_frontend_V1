@@ -90,6 +90,7 @@
                 <table class="table datatable">
                     <thead>
                     <tr>
+                        <th>SI.No</th>
                         <th>Schedule ID</th>
                         <th>Payment Date</th>
                         <th>Amount Due</th>
@@ -104,6 +105,7 @@
                 <tbody>
                     {% for data in schedules %}
                     <tr>
+                        <td>{{forloop.counter}}</td>
                         <td><a href="#">{{data.schedule_id}}</a></td>
                         <td>{{data.repayment_date}}</td>
                         <td>${{data.instalment_amount}}</td>
