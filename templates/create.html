@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block body_block %}
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>{{ screen_name }}</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Settings</li>
+          <li class="breadcrumb-item active">{{ screen_name }}</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
+
+          <div class="card">
+            <div class="card-body">
+              <form method="post" enctype="multipart/form-data" id="myForm">
+                {% csrf_token %}
+                
+                {% if not view %}
+                <div class="d-flex justify-content-between mb-3">
+                  <button type="submit" class="btn btn-success">Save</button>
+                  <a href="javascript:window.history.back()" class="btn btn-danger">Cancel</a>
+                </div>
+                {% endif %}
+
+                {% for form_field in form %}
+                <div class="form-group">
+                  <label>{{ form_field.label }}</label>
+                  {{ form_field }}
+                  <span class="text-danger">{{ form_field.errors }}</span>
+                </div>
+                {% endfor %}
+                
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+</body>
+
+{% if view %}
+<script>
+    // Select the form by ID
+    var form = document.getElementById('myForm');
+    
+    // Loop through all form elements
+    for (var i = 0; i < form.elements.length; i++) {
+        form.elements[i].disabled = true;
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $("#id_role").select2({
+      placeholder: "Select Vendor Name",
+      allowClear: true
+    });
+  });
+</script>
+{% endif %}
+
+{% endblock %}

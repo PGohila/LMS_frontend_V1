@@ -3,7 +3,7 @@ from .views import *
 from .EDMS_views import *
 
 urlpatterns = [
-    path("",login, name="login"),
+    
     path("company_selecting/",company_selecting, name="company_selecting"),
     path("dashboard/",dashboard, name="dashboard"),
 
