@@ -107,6 +107,7 @@ def company_selecting(request):
 
         
 def dashboard(request):
+
     return render(request, 'dashboard.html')
 
 # ================== create company =========================
@@ -750,7 +751,7 @@ def application_status_tracking(request,pk): # pk = application id
 # loan eligibilities check
 # disply active and document verified applications list
 def show_active_applications(request): 
-    try:
+    # try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
         # ================== check over all submited applications eligibility ==============================
@@ -790,8 +791,8 @@ def show_active_applications(request):
 
         context =  {'submitted_data':active_data,'eligible_data':eligible_data,'ineligible_data':ineligible_data}
         return render(request,"loan_approval/verified_applications.html",context)
-    except Exception as error:
-        return render(request, "error.html", {"error": error}) 
+    # except Exception as error:
+    #     return render(request, "error.html", {"error": error}) 
 
 def eligibility_status(request,pk): # pk = application_id
     try:
@@ -930,6 +931,22 @@ def verify_documents(request,pk): #pk = application id
         if response['status_code'] == 1:
             return render(request,'error.html',{'error':str(response['data'])})
         
+        customer_doc = response['data']
+        
+        # getting collateral document using application Id
+        MSID = get_service_plan('view collateraldocument') # view_collateraldocument
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {"loan_application_id":pk}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+
+        collateraldoc_data = response['data']
+
+        
         if request.method == "POST":
 
             MSID = get_service_plan('customerdoc verification') # customerdoc_verification
@@ -943,7 +960,7 @@ def verify_documents(request,pk): #pk = application id
                 return render(request,'error.html',{'error':str(response['data'])})
             return redirect("document_varification")
 
-        context = {'customer_data':customer_data,'documents':response['data'],'BASEURL':BASEURL}
+        context = {'customer_data':customer_data,'documents':customer_doc,'BASEURL':BASEURL,'collateraldoc_data':collateraldoc_data}
         return render(request,"loan_approval/document_verify.html",context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
@@ -1395,6 +1412,7 @@ def disbursement_create(request,loanid):
         json_data = json.dumps(data)
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
         master_view = response['data']
+        print("==================")
         if request.method == "POST":
             form = DisbursementForm(request.POST,bank_choice=all_banks,currency_choice=currency_records)
             if form.is_valid():
@@ -1410,6 +1428,7 @@ def disbursement_create(request,loanid):
                 data = {'ms_id':MSID,'ms_payload':cleaned_data} 
                 json_data = json.dumps(data)
                 response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+                print('response4564========',response)
                 if response['status_code'] ==  0:                  
                     messages.info(request, "Well Done..! Application Submitted..")
                     return redirect('disply_loans')
@@ -2033,6 +2052,43 @@ def schedule_overview(request,pk):  # pk = loan id
         return render(request,'repayment_schedule/schedule_overview.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
+
+
+
+#=============== Loan Calculater ====================
+
+# ==================== Loan Calculater ===================================
+def loancalculators_create(request):
+    try:
+        token = request.session['user_token']
+        form = LoancalculatorsForm()
+        response = {"data":None}
+        if request.method == "POST":
+            form = LoancalculatorsForm(request.POST)
+            if form.is_valid():
+                MSID = get_service_plan('calculate repayment schedule')
+                if MSID is None:
+                    print('MISID not found')      
+                cleaned_data = form.cleaned_data
+          
+                cleaned_data['repayment_start_date'] = cleaned_data['repayment_start_date'].strftime('%Y-%m-%d')  
+                data = {'ms_id':MSID,'ms_payload':cleaned_data} 
+                json_data = json.dumps(data)
+                response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+                if response['status_code'] == 1:
+                    return render(request,'error.html',{'error':str(response['data'])})
+                
+                total_payments = sum(item['Installment'] for item in response['data'])
+                total_interest = sum(item['Interest'] for item in response['data'])
+          
+                context = {'form':form,"save":True,'records':response['data'],'total_payments':total_payments,'total_interest':total_interest}
+                return render(request, 'loan_calculator/loancalculators.html',context)
+            else:
+                print('errorss',form.errors) 
+        context = {'form':form,"save":True,'records':response['data']}
+        return render(request, 'loan_calculator/loancalculators.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error})  
 
 
 

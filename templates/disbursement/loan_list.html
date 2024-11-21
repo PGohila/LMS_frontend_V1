@@ -31,7 +31,7 @@
                         <th scope="col">Loan Application ID</th>
                         <th scope="col">Loan Amount</th>
                         <th scope="col">Approved Amount</th>
-                        <th scope="col">Created Date</th>
+                        <th scope="col">Tenure</th>
                         <th scope="col" >Action</th>
                       </tr>
                 </thead>
@@ -39,16 +39,15 @@
                     {% for data in records %}
                         <tr>
                             <th scope="row">{{ forloop.counter}}</th>
-                            <td>{{ data.loan_id }}</td>
-                            <td>{{ data.loanapp_id.application_id }}</td>
+                            <td><a href="#">{{ data.loan_id }}</a></td>
+                            <td><a href="#">{{ data.loanapp_id.application_id }}</a></td>
                             <td>{{ data.loan_amount }}</td>
                             <td>{{ data.approved_amount}}</td>
-                            <td>{{data.created_at}}</td>
+                            <td>{{data.tenure}} {{data.tenure_type}}</td>
                             <td>
-                            <a href="{% url 'disbursement' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class="fa fa-eye"></i></a>
-                             <!-- <a href="{% url 'editagreement' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class='fa fa-edit'></i></a>
-                                <a href="{% url 'loanapplication_delete' data.id %}"><span data-toggle="tooltip" title="Delete" style="color: black;"><i class='fa fa-remove' onclick="alert('You want to Delete this Item..?')"></i></a>  -->
-
+                            <!-- <a href="{% url 'disbursement' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class="fa fa-eye"></i></a> -->
+                              <a href="{% url 'disbursement' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
+                              </button></a>
                             </td>
                         </tr>
                   {% endfor %}

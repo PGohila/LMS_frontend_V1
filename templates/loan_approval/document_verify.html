@@ -95,7 +95,7 @@
 
               
                     <div style="border: 2;">
-
+                      <h5 class="card-title">Customer Documents</h5>
                     {% for data in documents %}
                     <div class="col-md-12 px-3 py-3">
                       <i class="bi bi-star me-1 text-success"></i>
@@ -103,7 +103,15 @@
                         
                     {% endfor %}
                   </div>
-                    
+                  <div style="border: 2;">
+                    <h5 class="card-title">Collateral Documents</h5>
+                  {% for data in collateraldoc_data %}
+                  <div class="col-md-12 px-3 py-3">
+                    <i class="bi bi-star me-1 text-success"></i>
+                      <a href="{{BASEURL}}{{ data.additional_documents }}" target="_blank">{{ data.additional_documents }}</a></div>
+                      
+                  {% endfor %}
+                </div>
                 
             </form>
 

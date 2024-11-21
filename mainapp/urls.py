@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from .EDMS_views import *
 
 urlpatterns = [
     path("",login, name="login"),
@@ -64,6 +65,9 @@ urlpatterns = [
     path('repayment_schedule/<pk>/', repayment_schedule, name='repayment_schedule'),
     path('disbursedloans_foroverview/', disbursedloans_foroverview, name='disbursedloans_foroverview'),
     path('schedule_overview/<pk>/', schedule_overview, name='schedule_overview'),
+
+    path('loancalculators/', loancalculators_create, name='loancalculators'),
+    
     #================== Setting urls ================
     path('identificationtype/', identificationtype_create, name='identificationtype'),
     path('identificationtype-view/', identificationtype_view, name='identificationtype_view'),
@@ -95,5 +99,30 @@ urlpatterns = [
     path('loantype-edit/<pk>/', loantype_edit, name='loantype_edit'),
     path('loantype-delete/<pk>/', loantype_delete, name='loantype_delete'),
 
+
+    #==================DMS=====================
+    path('matter_workspace/', customer_workspace,name='matter_workspace'),
+    path('document_storage/<entity_id>/', document_storage, name='document_storage'),
+    path('folder/<entity_id>/<folder_id>/', folder, name='folder'),
+
+
+    path('create_folder/<entity_id>/', create_folder,name='create_folder'),
+    path('create_sub_folder/<entity_id>/<folder_id>/', create_sub_folder,name='create_sub_folder'),
+
+    path('upload_document/<entity_id>/<folder_id>/', upload_document,name='upload_document'),
+    path('document_category/', document_category,name='document_category'),
+    path('department/', department,name='department'),
+    path('document_type/', document_type,name='document_type'),
+    path('document_entity/', document_entity,name='document_entity'),
+
+    path('document_view/<entity_id>/<folder_id>/<document_id>/', document_view,name='document_view'),
+    path('document_version/<document_id>/', document_version,name='document_version'),
+
+
+    #============Ac
+    path('customer_folder_delete/<entity_id>/<folder_id>/',customer_folder_delete,name="customer_folder_delete"),
+
+
+    path('document_delete/<entity_id>/<folder_id>/<document_id>/', document_delete,name='document_delete'),
 
 ]

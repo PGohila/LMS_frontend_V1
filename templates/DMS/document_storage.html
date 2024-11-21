@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+<style>
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* smooth scrolling for mobile */
+}
+.table th, .table td {
+    white-space: nowrap;
+}
+</style>
+<link href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Company List</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Company List</li>
+        </ol>
+      </nav>
+      <div class="d-flex justify-content-end">
+        <!-- Button trigger modal -->
+        {% if not main_folder %}
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadDocument"
+          data-bs-toggle="tooltip" data-bs-placement="top" title="Add Hearing">Upload File</button>
+        {% endif %}
+        
+        &nbsp;
+        &nbsp;
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#folder"
+          data-bs-toggle="tooltip" data-bs-placement="top" title="Add Hearing">Create Folder</button>
+      </div>
+      
+    </div><!-- End Page Title -->
+    
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"></h5>
+        
+                <!-- Add a wrapper with overflow control -->
+                <div class="table-responsive">
+                    <table class="table datatable">
+                        <thead>
+                            <tr style="white-space: nowrap;"> 
+                                <th>Name</th>
+                                <th>Date modified</th>
+                                <th>Types</th>                 
+                                <th>Start Date</th>                 
+                                <th>End Date</th>
+                                <th>Remaing Date</th> 
+                                <th>Size</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                          <tbody>  
+                                {% for folder1 in folder_list %}
+                                {% if forloop.counter == 1 %}
+                                <tr>
+                                    <td>
+                                      <a onclick="history.go(-1)">
+                                          <i class="fas fa-reply" style="color:rgb(0, 132, 255); margin-right: 5px;"></i><i class="mdi mdi-folder" style="color:rgb(0, 132, 255);">...</i>
+                                          
+                                      </a>
+                                  </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                  </tr>
+                                {% endif %}
+                                <tr>
+                                  <td><a href="/folder/{{entity_id}}/{{folder1.folder_id}}/"><i class="fa fa-folder"></i>{{folder1.folder_name}}</a></td>
+                                  {% comment %} <td><i class="mdi mdi-folder"></i> {{folder1.folder_name}}</a></td> {% endcomment %}
+                                  <td>{{folder1.update_at}}</td>
+                                  <td>Folder</td>               
+                
+                                  <td>-</td>   
+                                  <td>-</td>   
+                                  <td>-</td>   
+                                  <td>-</td>   
+                                  <td>
+                                    <div class="container">
+                                      <div class="custom-dropdown">
+                                        <button class="btn custom-toggle" type="button" id="customDropdownButton" data-toggle="dropdown" aria-expanded="false">
+                                          <i class="mdi mdi-dots-vertical"></i> <!-- Removed '0' -->
+                                      </button>
+                                      
+                                        <ul class="dropdown-menu custom-menu" aria-labelledby="customDropdownButton">
+                                            <li>
+                                              {% comment %} <a href="{% url 'customer_folder_delete' entity_id folder.folder_id %}">
+                                                <button class="dropdown-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                                  <i class="mdi mdi-delete-forever"></i> Delete
+                                                </button>
+                                              </a> {% endcomment %}
+                                            </li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  
+                                </tr>
+                                {% endfor %}
+                                {% for doc in document_list %}
+                                <tr>
+                                  <td><a href="{% url 'document_view' entity_id=entity_id folder_id=folder_id document_id=doc.document_id %}" target="_blank"><i class="mdi mdi-file"></i> {{doc.document_title}}</a></td>
+                                  <td>{{doc.update_at}}</td>
+                                  <td>Document</td>
+                                  <td>
+                                    {% if doc.start_date %}
+                                    {{doc.start_date}}
+                                    {% else %}
+                                    -
+                                    {% endif  %}
+                                  </td>
+                                  <td>
+                                    {% if doc.end_date %}
+                                    {{doc.end_date}}
+                                    {% else %}
+                                    -
+                                    {% endif  %}
+                                  </td>
+                                  <td>
+                                    {% if doc.remaining_days %}
+                                        <b style="color: {% if doc.remaining_days <= 7 %}red{% elif doc.remaining_days <= 30 %}orange{% else %}black{% endif %};">
+                                            {{ doc.remaining_days }}-days
+                                        </b>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                  </td>
+                                  <td>{% if doc.document_size %}{{doc.document_size}} KB{% endif %}</td>
+                                  <td>
+                                    <div class="container">
+                                      <div class="dropdown">
+                                        <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                                          <i class="mdi mdi-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                          <li>
+                                            <button class="dropdown-item" data-toggle="modal" data-target="#documentEdit" onclick="getValueEdit('{{doc.document_title}}','{{doc.document_id}}')" title="Add Hearing">
+                                              <i class="mdi mdi-table-edit"></i> Edit
+                                            </button>
+                                          </li>
+                                          <li>
+                                            <a href="{{BASEURL}}/{{doc.document_upload}}" download class="dropdown-item download-link" data-id="{{doc.id}}" data-reason="Reason for download">
+                                              <i class="mdi mdi-download"></i> Download
+                                            </a>
+                                          </li>   
+                                          <li>
+                                            <a href="{% url 'document_version' doc.document_id %}" class="dropdown-item">
+                                              <i class="mdi mdi-source-branch"></i> Version
+                                            </a>
+                                          </li>
+                                          <li>
+                                            <a href="{% url 'document_delete' entity_id=entity_id folder_id=folder_id document_id=doc.document_id %}" class="dropdown-item">
+                                              <i class="mdi mdi-delete-forever"></i> Delete
+                                            </a>
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                    
+                
+                                  </td>
+                                </tr>
+                                {% endfor %}
+                              </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+<!-- Add Bootstrap CSS and JS (optional if already included) -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+  <div class="modal fade " id="folder" tabindex="-1" role="dialog" aria-labelledby="uploadDocumentTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <form method="post" {% if main_folder %} action="{% url 'create_folder' entity_id=entity_id %}"{% else %}action="{% url 'create_sub_folder' entity_id=entity_id folder_id=folder_id %}"{% endif %}>
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Create Folder</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group col-lg-12">
+              <label for="">Folder name</label>
+              <input type="text" class="form-control" name="folder_name" id="id_folder_name">
+              <label for="">Description</label>
+              <textarea name="description" id="id_description" class="form-control"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success" name="folder_btn" value="folder_btn">Create</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!--flie Modal -->  
+{% if not main_folder %}
+<div class="modal fade " id="uploadDocument" tabindex="-1" role="dialog" aria-labelledby="uploadDocumentTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <form method="post" action="{% url 'upload_document' entity_id=entity_id folder_id=folder_id %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Upload Documents</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+          <div class="col-md-12">
+            <label for="">Document name</label>
+            {{document_form.document_title}}
+          </div>
+          <div class="col-md-11">
+            <label for="">Document category</label>
+            <select name="document_category" id="id_document_category" class="form-control">
+              <option value="">Select</option>
+              {% for data in document_cat_list %}
+              <option value="{{data.id}}">{{data.category_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-1" style="padding-top: 30px;">
+            <a onclick="openDocumentCategory()">
+              <button type="button" class="btn btn-primary ml-auto">+</button>
+            </a>
+          </div>
+
+          <div class="col-md-11">
+            <label for="">Document Type</label>
+            <select name="document_type" id="id_document_type" class="form-control">
+              <option value="">Select</option>
+              {% for data in document_type_list %}
+              <option value="{{data.id}}">{{data.type_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-1" style="padding-top: 30px;">
+            <a onclick="openDocumentType()">
+              <button type="button" class="btn btn-primary ml-auto">+</button>
+            </a>
+          </div>
+          <div class="col-md-12">
+            <label for="show-fields">Contract </label>
+            <input type="checkbox" id="show-fields" name="show-fields">
+        </div>
+
+        <div class="time-fields">
+          <div class="col-md-12">
+              <label for="start-time">Start Date</label>
+              {{document_form.start_date}}
+          </div>
+          <div class="col-md-12">
+              <label for="end-time">End Date</label>
+              {{document_form.end_date}}
+          </div>
+      </div>
+        
+          <div class="col-md-12">
+            <label for="">Description</label>
+            {{document_form.description}}
+          </div>
+          <div class="col-md-12">
+            <label for="">Document upload</label>
+            <input type="file" name="document_upload" id="id_document_upload" class="form-control">
+          </div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success">Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+
+<script>
+  function getValueEdit(documentName,documentId){
+    // alert(documentName);
+    $('#edit_document_name').val(documentName);
+    $('#edit_document_id').val(documentId);
+  }
+</script>
+
+<script>
+  $(document).ready(function(){
+    $('.dropdown-submenu a.dropdown-toggle').on("click", function(e){
+      $(this).next('.dropdown-menu').toggle();
+      e.stopPropagation();
+      e.preventDefault();
+    });
+  });
+        function openDocumentCategory() {
+            window.open('{% url 'document_category' %}', '_blank', 'height=600,width=1000,top=100,left=100');
+        }
+        function openDocumentType() {
+            window.open('{% url 'document_type' %}', '_blank', 'height=600,width=1000,top=100,left=100');
+        }
+        function openDocumententity() {
+            window.open('{% url 'document_entity' %}', '_blank', 'height=600,width=1000,top=100,left=100');
+        }
+  </script>
+
+
+<script>
+    // JavaScript to show/hide fields based on checkbox state
+    document.getElementById('show-fields').addEventListener('change', function() {
+        var timeFields = document.querySelector('.time-fields');
+        if (this.checked) {
+            timeFields.style.display = 'block';
+        } else {
+            timeFields.style.display = 'none';
+        }
+    });
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+
+  {% endblock %}
+
+ 

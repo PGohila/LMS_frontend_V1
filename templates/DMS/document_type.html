@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+<style>
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* smooth scrolling for mobile */
+}
+.table th, .table td {
+    white-space: nowrap;
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Company List</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Company List</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <div class="main-header">
+        <h4>
+            Document Type
+            {% if view %}
+            view
+            {% elif edit %}
+            Edit
+            {% endif %}
+        </h4>
+    </div>
+    <hr>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+                <div class="col-md-12 mb-3">
+                        {{form.document_type_name.label_tag}}
+                        {{ form.document_type_name }}
+                </div>
+                <div class="col-md-12 mb-3">
+                        {{form.short_name.label_tag}}
+                        {{ form.short_name }}
+                </div>
+                
+                
+                <div class="col-md-12 mb-3">
+                        {{form.description.label_tag}}
+                        {{ form.description }}
+                </div>
+        </div>
+        {% if not view %}
+        <br>
+        <button type="submit" class="btn btn-primary text-white" style="float: right;">Save</button>
+        {% endif %}
+    </form>
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"></h5>
+        
+                <!-- Add a wrapper with overflow control -->
+                <div class="table-responsive">
+                    <table class="table datatable">
+                        <thead>
+                            <tr style="white-space: nowrap;"> 
+                                <th>S.no</th>
+                                <th>Document type name</th>
+                                <th>Short name</th>
+                                <th>Description</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in document_type_records %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>                            
+                                <td>{{data.type_name}}</td>
+                                <td>{{data.short_name}}</td>
+                                <td>{{data.description}}</td>
+                                <td>
+                                    <div class="container">
+                                      <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                          data-bs-toggle="dropdown" aria-expanded="false">
+                                          <i class="mdi mdi-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                          <li><button class="dropdown-item" data-bs-toggle="tooltip" data-bs-placement="top"
+                                              title="Edit"><i class="mdi mdi-table-edit"></i> Edit</button></li>
+                                          <li><button class="dropdown-item" data-bs-toggle="tooltip" data-bs-placement="top"
+                                              title="Delete"><i class="mdi mdi-delete-forever"></i> Delete</button></li>
+                                          <li><button class="dropdown-item" data-bs-toggle="tooltip" data-bs-placement="top"
+                                              title="Delete"><i class="mdi mdi-arrow-collapse-vertical"></i> view</button></li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                
+                                  </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}
+
+ 

@@ -78,11 +78,10 @@ class CustomerForm(forms.Form):
 
 class CustomerdocumentsForm(forms.Form):
 	is_active = forms.BooleanField(label='Active')
-	customer_id = forms.ChoiceField(choices=[],required=True,label="Customer ID", widget=forms.Select(attrs={"class": "form-control"}))
-	document_type_id = forms.ChoiceField(choices=[],required=True,label="Document Type", widget=forms.Select(attrs={"class": "form-control"}))
+	customer_id = forms.ChoiceField(choices=[],required=True,label="Customer ID", widget=forms.Select(attrs={"class": "form-control select"}))
+	document_type_id = forms.ChoiceField(choices=[],required=True,label="Document Type", widget=forms.Select(attrs={"class": "form-control select"}))
 	documentfile = forms.FileField(label='Upload Document')
-	description = forms.CharField( required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
-
+	description = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
 
 	def __init__(self, *args, **kwargs):
 		
@@ -101,15 +100,15 @@ class LoantypeForm(forms.Form):
     ]
 	is_active = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
 	loantype = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	description = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
-	interest_rate = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
-	loan_teams = forms.IntegerField(required=True,widget=forms.NumberInput(attrs={"class": "form-control"}))
 	disbursement_beneficiary = forms.ChoiceField(choices=DISBURSEMENT_BENEFICIARY_CHOICES, label="Disbursement Beneficiary", widget=forms.Select(attrs={'class': 'form-control'}))
+	interest_rate = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
+	loan_teams = forms.IntegerField(required=True,label="Loan Type(Months)",widget=forms.NumberInput(attrs={"class": "form-control"}))
 	min_loan_amt = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	max_loan_amt = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	eligibility = forms.CharField( required=True, widget=forms.Textarea(attrs={"class": "form-control"}))
 	collateral_required = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
 	charges = forms.CharField( required=True, widget=forms.Textarea(attrs={"class": "form-control"}))
+	description = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
 	
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -153,11 +152,11 @@ class LoanapplicationForm(forms.Form):
     ]
 	DISBURSEMENT_TYPE = [('one_off', 'One-Off'), ('trenches', 'Trenches')]
 	is_active = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
-	customer_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
-	loantype_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	customer_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
+	loantype_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	loan_amount = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	disbursement_type = forms.ChoiceField(choices=DISBURSEMENT_TYPE, label="Disbursement Type", widget=forms.Select(attrs={'class': 'form-control'}))
-	interest_rate = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
+	interest_rate = forms.FloatField(required=True,label="Interest(Percentage %)", widget=forms.NumberInput(attrs={"class": "form-control"}))
 	tenure = forms.IntegerField(required=True,widget=forms.NumberInput(attrs={"class": "form-control"}))
 	tenure_type = forms.ChoiceField(choices=TENURE_CHOICES, label="Tenure Type", widget=forms.Select(attrs={'class': 'form-control'}))
 	repayment_date = forms.DateField(required=True, widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
@@ -213,8 +212,8 @@ class DisbursementForm(forms.Form):
 	disbursement_type = forms.ChoiceField(choices=DISBURSEMENT_TYPE, label="Disbursement Type*", widget=forms.Select(attrs={'class': 'form-control'}))
 	disbursement_status = forms.ChoiceField(choices=DISBURSEMENT_STATUS, label="Disbursement Status*", widget=forms.Select(attrs={'class': 'form-control'}))
 	disbursement_method = forms.ChoiceField(choices=DISBURSEMENT_METHOD, label="Disbursement Method*", widget=forms.Select(attrs={'class': 'form-control'}))
-	currency_id = forms.ChoiceField(choices=[], required=True, label="Currency*", widget=forms.Select(attrs={"class": "form-control"}))
-	bank = forms.ChoiceField(choices=[], required=True, label="Bank (Optional)", widget=forms.Select(attrs={"class": "form-control"}))
+	currency_id = forms.ChoiceField(choices=[], required=True, label="Currency*", widget=forms.Select(attrs={"class": "form-control select"}))
+	bank = forms.ChoiceField(choices=[], required=False, label="Bank (Optional)", widget=forms.Select(attrs={"class": "form-control select"}))
 	notes = forms.CharField(required=False, label="Notes (Optional)", widget=forms.Textarea(attrs={"class": "form-control"}))
 
 	def __init__(self, *args, **kwargs):
@@ -268,7 +267,7 @@ class CollateralsForm(forms.Form):
         ('Insured', 'Insured'),
         ('Not insured', 'Not insured'),
     ]
-	collateral_type_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	collateral_type_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	collateral_value = forms.FloatField( required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	valuation_date = forms.DateField(required=True, widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
 	collateral_status = forms.ChoiceField(choices=COLLATERAL_STATUS, label="Collateral status", widget=forms.Select(attrs={'class': 'form-control'}))
@@ -307,8 +306,8 @@ class CurrencyForm(forms.Form):
 	
 
 class CreditscoresForm(forms.Form):
-	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
-	customer_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
+	customer_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	credit_score = forms.IntegerField(required=False,widget=forms.NumberInput(attrs={"class": "form-control"}))
 	retrieved_at = forms.DateField(required=False, widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
 	def __init__(self, *args, **kwargs):
@@ -333,7 +332,7 @@ class BankaccountForm(forms.Form):
 		
 class CustomerfeedbackForm(forms.Form):
 	feedback_id = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	customer_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	customer_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	feedback_date = forms.DateField(required=False, widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
 	feedback_type = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 	subject = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -347,13 +346,13 @@ class CustomerfeedbackForm(forms.Form):
 
 
 class DisbursementmethodForm(forms.Form):
-	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
-	disbursement_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"})) 
-	payment_method = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
-	bank_account = forms.ChoiceField(required=False, widget=forms.Select(attrs={"class": "form-control"}))
+	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
+	disbursement_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"})) 
+	payment_method = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
+	bank_account = forms.ChoiceField(required=False, widget=forms.Select(attrs={"class": "form-control select"}))
 	transaction_reference = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
 	amount_disbursed = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
-	currency = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	currency = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	def __init__(self, *args, **kwargs):
 		company_list = kwargs.pop('company_choice', [])
 		disbursement_id_list = kwargs.pop('disbursement_id_choice', [])
@@ -369,9 +368,9 @@ class DisbursementmethodForm(forms.Form):
 
 
 class LoanForm(forms.Form):
-	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	loanid = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	customer_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	customer_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	loan_amount = forms.FloatField( required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	loan_date = forms.DateField(required=True, widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
 	loan_term = forms.IntegerField(required=True,widget=forms.NumberInput(attrs={"class": "form-control"}))
@@ -387,9 +386,9 @@ class LoanForm(forms.Form):
 
 
 class NotificationsForm(forms.Form):
-	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	notification_id = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	customer_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	customer_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	message = forms.CharField( required=True, widget=forms.Textarea(attrs={"class": "form-control"}))
 	status = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 	priority = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -401,9 +400,9 @@ class NotificationsForm(forms.Form):
 		self.fields['customer_id_id'].choices = [(item['id'], item['name']) for item in customer_id_list]
 
 class SupportticketsForm(forms.Form):
-	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	ticket_id = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	customer_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	customer_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	subject = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
 	description = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
 	status = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -425,9 +424,9 @@ class SupportticketsForm(forms.Form):
 
 
 class LoanclosureForm(forms.Form):
-	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	closure_id = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	loanapp_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	loanapp_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	closure_date = forms.DateField(required=True, widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
 	closure_amount = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	remaining_balance = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
@@ -447,8 +446,8 @@ class LoanofferForm(forms.Form):
         ('Accepted', 'Accepted'),
         ('Rejected', 'Rejected'),
     ]
-	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
-	application_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
+	application_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	loanamount = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	interest_rate = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	tenure = forms.IntegerField(required=True,widget=forms.NumberInput(attrs={"class": "form-control"}))
@@ -465,9 +464,9 @@ class LoanofferForm(forms.Form):
 
 class PaymentsForm(forms.Form):
 	
-	loanid = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	loanid = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	amount = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
-	payment_method_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	payment_method_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	transaction_reference = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
 	def __init__(self, *args, **kwargs):
 		
@@ -479,15 +478,15 @@ class PaymentsForm(forms.Form):
 		self.fields['payment_method_id'].choices = [(item['id'], item['method_name']) for item in payment_method_list]
 
 class RepaymentscheduleForm(forms.Form):
-	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
-	loan_application_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	company_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
+	loan_application_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	repayment_date = forms.DateField(required=True, widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
 	instalment_amount = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	principal_amount = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	interest_amount = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	remaining_balance = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	repayment_status = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	payment_method_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	payment_method_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	transaction_id = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
 	notes = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
 	def __init__(self, *args, **kwargs):
@@ -500,8 +499,8 @@ class RepaymentscheduleForm(forms.Form):
 		self.fields['payment_method_id'].choices = [(item['id'], item['name']) for item in payment_method_list]
 
 class PenaltiesForm(forms.Form):
-	loan_application_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
-	repaymentschedule_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control"}))
+	loan_application_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
+	repaymentschedule_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	panalty_date = forms.DateField(required=True, widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
 	penalty_amount = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	penalty_reason = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -558,3 +557,43 @@ class LoancalculatorsForm(forms.Form):
 	loan_calculation_method = forms.ChoiceField(choices=CALCULATION_METHOD, label="Calculation Method", widget=forms.Select(attrs={'class': 'form-control'}))
 	repayment_start_date = forms.DateField(required=True, label="Repayment StartDate",widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
 
+
+
+#============
+class FolderForm(forms.Form):
+	folder_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
+
+class DocumentUploadForm(forms.Form):
+    document_title = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    document_category = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    document_type = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
+    document_upload = forms.FileField(required=True, widget=forms.FileInput(attrs={"class": "form-control"}))
+    start_date = forms.DateField(label='Start', widget=forms.DateInput(attrs={'type': 'date',"class": "form-control"}),required=False)
+    end_date = forms.DateField(label='Start', widget=forms.DateInput(attrs={'type': 'date',"class": "form-control"}),required=False)
+
+
+class DocumentCategoryForm(forms.Form):
+	category_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	department_id = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
+
+class DepartmentForm(forms.Form):
+	department_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
+
+
+class DocumentTypeForm(forms.Form):
+	document_type_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	short_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
+
+class DocumentEntityForm(forms.Form):
+    entity_name = forms.CharField(label='Entity Name', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    ENTITY_TYPE_CHOICES = [
+        ('static', 'Static'),
+        ('process', 'Process'),
+    ]
+    entity_type = forms.ChoiceField(label='Entity Type', choices=ENTITY_TYPE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}), required=False)

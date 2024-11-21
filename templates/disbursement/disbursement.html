@@ -29,7 +29,7 @@
               <form method="post" class="row g-3">
                 {% csrf_token %}
                 {% for data in form %}
-                <div class="col-12">
+                <div class="col-6">
                     {{data.label_tag}}
                     {{ data }}
                   
