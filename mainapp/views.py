@@ -35,7 +35,7 @@ def call_post_method_with_token_v2(URL, endpoint, data, access_token, files=None
     headers = {"Authorization": f'Bearer {access_token}'}
 
     if files:
-        print("=============files",files)
+      
         response = requests.post(api_url, data=data, files=files, headers=headers)
     else:
         headers["Content-Type"] = "application/json"
@@ -1224,7 +1224,7 @@ def edit_agreement(request,pk):
     except Exception as error:
         return render(request, "error.html", {"error": error})
 
-
+#============================= Loan Accounts OverView =========================
 
 # =================================== loan disbursement ==================================
 # this function for display all completed agreements 
