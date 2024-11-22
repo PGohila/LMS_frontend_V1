@@ -16,6 +16,7 @@ urlpatterns = [
     path('roles_delete/<pk>/', roles_delete, name='roles_delete'),
     path('permission/<pk>/', permission, name='permission'),
     path('function_setup/', function_setup, name='function_setup'),
+    path('multi_factor_authentication/', multi_factor_authentication, name='multi_factor_authentication'),
 
     path('userprofile_list/', userprofile_list, name='userprofile_list'),
     path('userprofile_create/', userprofile_create, name='userprofile_create'),

@@ -93,6 +93,7 @@ def user_registration(request):
                 if MSID is None:
                     print('MISID not found')      
                 cleaned_data = form.cleaned_data
+                print('---cleaned_data---',cleaned_data)
                 
                 data={
                     'ms_id':MSID,
@@ -174,7 +175,7 @@ def user_list(request):
 def user_edit(request,pk):
     try:
         token = request.session['user_token']
-        MSID= get_service_plan('role list')
+        MSID= get_service_plan('userprofile list')
         if MSID is None:
             print('MISID not found') 
         payload_form={
@@ -190,7 +191,8 @@ def user_edit(request,pk):
         if response['status_code'] ==  0:                  
             messages.info(request, "Well Done..! Application Submitted..")
             print('error',response['data'])
-        role=response['data']
+        user_profile=response['data']
+        
 
         MSID= get_service_plan('get user')
         if MSID is None:
@@ -209,6 +211,8 @@ def user_edit(request,pk):
             messages.info(request, "Well Done..! Application Submitted..")
             print('error',response['data'])
         record=response['data'][0]
+        print('record',record)
+        print('user_profile',user_profile)
         
         if request.method == 'POST':
             form = UserRegistrationForm(request.POST,initial=record)
@@ -237,7 +241,7 @@ def user_edit(request,pk):
             form = UserRegistrationForm(initial=record)
 
         context = {
-            'form': form, 'user_edit': 'active', 'user_edit_show': 'show','role':role,'record':record
+            'form': form, 'user_edit': 'active', 'user_edit_show': 'show','userprofile':user_profile,'record':record
         }
         return render(request, 'UserManagement/user_edit.html', context)
     except Exception as error:
@@ -246,6 +250,25 @@ def user_edit(request,pk):
 def user_view(request,pk):
     try:
         token = request.session['user_token']
+
+        MSID= get_service_plan('userprofile list')
+        if MSID is None:
+            print('MISID not found') 
+        payload_form={
+
+        }     
+        data={
+            'ms_id':MSID,
+            'ms_payload':payload_form
+        } 
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+    
+        if response['status_code'] ==  1:                  
+            messages.info(request, "Well Done..! Application Submitted..")
+            print('error',response['data'])
+        userprofile=response['data']
+
         print('data is comming',pk)
         MSID= get_service_plan('get user')
         if MSID is None:
@@ -267,7 +290,7 @@ def user_view(request,pk):
             
         #records = User.objects.all()
             context = {
-                'user_list': 'active', 'user_list_show': 'show', 'form': form,'screen_name':'User'
+                'user_list': 'active', 'user_list_show': 'show', 'form': form,'screen_name':'User','userprofile':userprofile,'records':records
             }
             return render(request, 'UserManagement/user_view.html', context)
     except Exception as error:
@@ -556,11 +579,52 @@ def function_setup(request):
     except Exception as error:
         return render(request, "error.html", {"error": error})   
     
+def multi_factor_authentication(request):
+    try:
+        token = request.session['user_token']
+
+        otp = request.POST.get('otp')
+        if request.method == "POST":
+            MSID= get_service_plan('multi factor authentication')
+            if MSID is None:
+                print('MISID not found') 
+            payload_form={
+                'otp':otp
+            }     
+            data={
+                'ms_id':MSID,
+                'ms_payload':payload_form
+            } 
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] ==  1:    
+                otp_error = 'Invailed OTP'              
+                return render(request, 'UserManagement/otp_verification.html',{'otp_error':otp_error})
+        
+            return redirect('company_selecting')
+        else:
+            MSID= get_service_plan('generate and send otp')
+            if MSID is None:
+                print('MISID not found') 
+            payload_form={
+                
+            }     
+            data={
+                'ms_id':MSID,
+                'ms_payload':payload_form
+            } 
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        
+            return render(request, 'UserManagement/otp_verification.html')
+    except Exception as error:
+        return render(request, "error.html", {"error": error})  
 
 
 def login(request):
     try:
         # Check if the request method is POST
+        
         if request.method == "POST":
             email = request.POST.get('email')
             password = request.POST.get('password')
@@ -574,13 +638,37 @@ def login(request):
             ENDPOINT = 'api/token/'
             login_response = call_post_method_without_token(BASEURL+ENDPOINT,json_payload)
             print('login_response',login_response)
+            
             if login_response.status_code == 200:
                 login_tokes = login_response.json()
+                print('login_tokes',login_tokes)
                 request.session['user_token']=login_tokes['access_token']
+                token = request.session['user_token']
                 user_data=login_tokes['user_data']
                 print('user_data',user_data)
                 request.session['user_data']=login_tokes['user_data']
-                return redirect('dashboard')
+                #===============getting User Permission==============
+                
+                MSID= get_service_plan('get user permission')
+                if MSID is None:
+                    print('MISID not found') 
+                print('MSID--',MSID)
+                payload_form={
+                    'user_profile_id':user_data['user_profile']
+                }     
+                data={
+                    'ms_id':MSID,
+                    'ms_payload':payload_form
+                } 
+                json_data = json.dumps(data)
+                response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+                print('response_permission',response)
+
+                
+                if user_data['multi_factor_auth']:
+                    return redirect('company_selecting')
+                elif not user_data['multi_factor_auth']:
+                    return redirect('multi_factor_authentication')
             else:
                 login_tokes = login_response.json()
                 login_error='Invalid Username and Password'
