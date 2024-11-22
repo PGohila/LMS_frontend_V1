@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Customer Documents Attachment</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Attachments</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Borrower Details</h5>
+                <table style="font-size: 12px; line-height: 20px;">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <table style="background-color: #FFF; padding: 30px; border: 1px solid #D7DAE0;width: 100%;font-size: 15px; line-height: 20px; table-layout: fixed;">
+                          <tbody>
+                            <tr>
+                              <td style="vertical-align: top;padding-bottom: 20px;">
+                                <table style="table-layout: fixed;width:-webkit-fill-available;">
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Borrower ID:</th>
+                                    <td >{{customer_records.customer_id}}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;E-mail:</th>
+                                    <td >{{customer_records.email}}</td>
+                                  </tr>
+                                  
+                              
+                                </table>
+                              </td>
+                              <td style="vertical-align: top;padding-bottom: 20px;">
+                                <table style="table-layout: fixed;width:-webkit-fill-available;">
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">Borrower Name: </th>
+                                    <td >{{customer_records.firstname}} {{customer_records.lastname}}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">Phone:</th>
+                                    <td >{{customer_records.phone_number}}</td>
+                                  </tr>
+                             
+                                
+                                </table>
+                              </td>
+                            </tr>
+         
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                  
+                </table>
+       
+              <div class="col-md-12">
+                     
+                        <h5 class="card-title">Attach customer documents </h5>
+                        <form method="post" enctype="multipart/form-data">
+                          {% csrf_token %}
+                   
+                          <button type="submit" class="btn btn-success btn-sm">Submit</button><button type="reset" class="btn btn-outline-info btn-sm">Reset</button>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="table_Collaterals">
+                                <thead class="thead-light">
+                                    <tr>
+                                  
+                                        <th class="text-center p-3">Is Active</th> <!-- Field Labels -->
+                                        <th class="text-center p-3">Document Type</th> <!-- Field Labels -->
+                                        <th class="text-center p-3">Document File</th>
+                                        <th class="text-center p-3">Description</th> <!-- Field Labels -->
+                                        <th class="text-center p-3">Action</th> <!-- Action column -->
+                                    </tr>
+                                </thead>
+
+                                <tbody id = "attachment_tbody">
+                         
+                                    <tr id="row_{{ forloop.counter }}">
+                                        <td class="align-middle p-3">
+                                            <div class="form-group">
+                                                <input type="checkbox" name="is_active">
+                                            </div>
+                                        </td>
+                                        <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
+                                            <div class="form-group">
+                                              <select name="document_type" id="document_type" class="form-control">
+                                                {% for type in document_type %}
+                                                  <option value="{{type.id}}">{{type.type_name}}</option>
+                                                  {% endfor %}
+                                              </select>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
+                                          <div class="form-group">
+                                            <input type="file" name="documentfile" class="form-control" >
+                                          </div>
+                                      </td>
+
+                                  <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
+                                    <div class="form-group">
+                                      <textarea name="description" id="description" class="form-control" style="height: 70px;  width: 400px;"></textarea>
+                                    </div>
+                                </td>
+                                        
+                                        <td class="align-middle text-center"> <!-- Center align action buttons -->
+                                            <button class="btn btn-success" type="button" onclick="cloneRow('table_Collaterals', 'attachment_tbody')">+</button>
+                                            <button class="btn btn-danger" type="button" onclick="removeRow(this)">-</button>
+                                    </tr>
+                                 
+                                </tbody>
+                            </table>
+                     
+                        </div>
+                      </form>
+              </div>
+      </div>
+                
+              
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+    
+  
+  </main><!-- End #main -->
+  <!-- add row for collateral -->
+  <script>
+    let rowCount = 1; // Initialize row count based on the current loop counter
+    function cloneRow(currentRow) {
+        rowCount++; // Increment the row count for unique IDs
+        const tableBody = document.getElementById('attachment_tbody'); // Get the table body
+
+        // Create a new row
+        const newRow = document.createElement('tr');
+        newRow.id = `row_${rowCount}`;
+        
+        newRow.innerHTML = `
+            <td class="align-middle p-3">
+                <div class="form-group">
+                   
+                    <input type="checkbox" name="is_active" id = "is_active_${rowCount}" >
+                </div>
+            </td>
+           
+            <td class="align-middle p-3">
+                <div class="form-group">
+                    <select name="document_type" id="document_type_${rowCount}" class="form-control">
+                        {% for type in document_type %}
+                            <option value="{{type.id}}">{{type.type_name}}</option>
+                            {% endfor %}
+                        </select>
+                </div>
+            </td>
+            <td class="align-middle p-3">
+                <div class="form-group">
+                     <input type="file" name="documentfile" id = "documentfile_${rowCount}" class="form-control" >
+                </div>
+            </td>
+            <td class="align-middle p-3">
+                <div class="form-group">
+                    <textarea name="description" id="description_${rowCount}" class="form-control" style="height: 70px; width: 400px;"></textarea>
+                </div>
+            </td>
+            <td class="align-middle text-center">
+                <button class="btn btn-success" type="button" onclick="cloneRow('${rowCount}')">+</button>
+                <button class="btn btn-danger" type="button" onclick="removeRow(this)">-</button>
+            </td>
+        `;
+        
+        // Append the new row to the table body
+        tableBody.appendChild(newRow);
+        rowCount+=1;
+    }
+
+    function removeRow(button) {
+        const row = button.closest('tr'); // Get the row of the button clicked
+        const tableBody = document.getElementById('attachment_tbody'); // Get the table body
+
+        // Check if the row is the first row (index 0)
+        if (row === tableBody.firstElementChild) {
+            alert("You cannot remove the first row."); // Show alert
+        } else {
+            row.remove(); // Remove the row if it's not the first one
+        }
+    }
+  </script>
+
+  {% endblock %}
+
+ 

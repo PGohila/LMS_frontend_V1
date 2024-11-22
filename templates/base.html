@@ -306,12 +306,12 @@
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Company</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-building"></i><span>Company</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
             <a href="{% url 'company' %}">
-              <i class="bi bi-circle"></i><span>Company</span>
+              <i class="bi bi-building"></i><span>Company</span>
             </a>
           </li>
           
@@ -319,7 +319,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#customer-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Customer Management</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-person-lines-fill"></i><span>Customer Management</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="customer-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -333,7 +333,7 @@
             </a>
           </li>
           <li>
-            <a href="{% url 'customerdocuments' %}">
+            <a href="{% url 'customerlist' %}">
               <i class="bi bi-circle"></i><span>Customer Document Upload</span>
             </a>
           </li>
@@ -344,7 +344,7 @@
       
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#application-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Loan Application</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-file-earmark-text"></i><span>Loan Application</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="application-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -368,7 +368,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav1" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>DMS</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-folder"></i><span>DMS</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="forms-nav1" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -382,7 +382,7 @@
       <!-- collateral Management -->
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#collateral-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Collateral Management</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-shield-lock"></i><span>Collateral Management</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="collateral-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -405,7 +405,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#approval-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Loan Approval</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-check-circle"></i><span>Loan Approval</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="approval-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
        
@@ -440,7 +440,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#agreement-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Loan Agreement</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-file-earmark-check"></i><span>Loan Agreement</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="agreement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -459,8 +459,49 @@
         </ul>
       </li>
       <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#valuechain-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-diagram-3"></i><span>Value Chain Set-Ups</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="valuechain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'valuechain_setups' %}">
+              <i class="bi bi-circle"></i><span>Valuechain Set-ups</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'list_agreement' %}">
+              <i class="bi bi-circle"></i><span>Agreement Review</span>
+            </a>
+          </li>
+       
+ 
+          
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#milestone-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-flag"></i><span>MileStone Set-ups</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="milestone-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'listapprovedapplications' %}">
+              <i class="bi bi-circle"></i><span>Generate Agreement</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'list_agreement' %}">
+              <i class="bi bi-circle"></i><span>Agreement Review</span>
+            </a>
+          </li>
+       
+ 
+          
+        </ul>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#disbursement-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Disbursement</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-cash"></i><span>Disbursement</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="disbursement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <!-- <li>
@@ -484,7 +525,7 @@
      
           <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#Repayment-nav" data-bs-toggle="collapse" href="#">
-              <i class="bi bi-journal-text"></i><span>Repayment Schedule</span><i class="bi bi-chevron-down ms-auto"></i>
+              <i class="bi bi-calendar-check"></i><span>Repayment Schedule</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="Repayment-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
               <li>
@@ -504,7 +545,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#Payment-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Payment</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-wallet"></i><span>Payment</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="Payment-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -528,7 +569,7 @@
   </li>
   <li class="nav-item">
     <a class="nav-link collapsed" data-bs-target="#Penalty-nav" data-bs-toggle="collapse" href="#">
-      <i class="bi bi-journal-text"></i><span>Penalties</span><i class="bi bi-chevron-down ms-auto"></i>
+      <i class="bi bi-exclamation-circle"></i><span>Penalties</span><i class="bi bi-chevron-down ms-auto"></i>
     </a>
     <ul id="Penalty-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
@@ -552,7 +593,7 @@
 </li>
 <li class="nav-item">
   <a class="nav-link collapsed" data-bs-target="#calculator-nav" data-bs-toggle="collapse" href="#">
-    <i class="bi bi-journal-text"></i><span>Loan Calculator</span><i class="bi bi-chevron-down ms-auto"></i>
+    <i class="bi bi-calculator"></i><span>Loan Calculator</span><i class="bi bi-chevron-down ms-auto"></i>
   </a>
   <ul id="calculator-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
     <li>
@@ -570,7 +611,7 @@
 </li>
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#settings-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-journal-text"></i><span>Settings</span><i class="bi bi-chevron-down ms-auto"></i>
+        <i class="bi bi-gear"></i><span>Settings</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="settings-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
@@ -655,7 +696,7 @@
     </li>
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#Reports-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-journal-text"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
+        <i class="bi bi-bar-chart"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="Reports-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
