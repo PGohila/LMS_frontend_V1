@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Value Chain Set-up</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Value Chain Set-up</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <!-- Vertical Form -->
+              <form method="post" class="row g-3">
+                {% csrf_token %}
+              
+                <div class="col-12">
+                    <!-- Label for Loan Type -->
+                    <label for="id_loantype" class="form-label">Loan Type</label>
+                    
+                    <!-- Dropdown and Plus Button Row -->
+                    <div class="d-flex">
+                        <!-- Loan Type Dropdown -->
+                        <select name="loantype" id="id_loantype" class="form-control me-2">
+                            <option value="">--Select Loan Type -- </option>
+                            {% for data in loantype %}
+                            <option value="{{ data.id }}">{{ data.loantype }}</option>
+                            {% endfor %}
+                        </select>
+                
+                        <!-- Plus Icon Button -->
+                        <button type="button" class="btn btn-primary" style="font-size: 16px;">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="reset" class="btn btn-secondary">Reset</button>
+                  <a href="{% url 'bankaccount_view' %}" type="reset" class="btn btn-primary">View</a>
+                </div> -->
+              </form><!-- Vertical Form -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}
+
+ 
