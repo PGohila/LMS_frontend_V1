@@ -78,19 +78,16 @@ class CustomerForm(forms.Form):
 
 class CustomerdocumentsForm(forms.Form):
 	is_active = forms.BooleanField(label='Active')
-	customer_id = forms.ChoiceField(choices=[],required=True,label="Customer ID", widget=forms.Select(attrs={"class": "form-control select"}))
+	
 	document_type_id = forms.ChoiceField(choices=[],required=True,label="Document Type", widget=forms.Select(attrs={"class": "form-control select"}))
-	documentfile = forms.FileField(label='Upload Document')
+	documentfile = forms.FileField(label='Upload Document', widget=forms.Select(attrs={"class": "form-control select"}))
 	description = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
 
 	def __init__(self, *args, **kwargs):
 		
-		customer_list = kwargs.pop('customer_choice', [])
 		document_type_list = kwargs.pop('document_type_choice', [])
 		super().__init__(*args, **kwargs)
 
-	
-		self.fields['customer_id'].choices = [(item['id'], item['customer_id']) for item in customer_list]
 		self.fields['document_type_id'].choices = [(item['id'], item['type_name']) for item in document_type_list]
 
 class LoantypeForm(forms.Form):

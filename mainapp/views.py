@@ -372,6 +372,90 @@ def customer_delete(request,pk):
 
 # =========== customer document =====================
       
+
+def customer_list(request):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        # getting all customer data 
+        MSID = get_service_plan('view customer') # view_customer
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        # Check if the response contains data
+        if 'data' in response:
+            customer_records = response['data']
+        else:
+            print('Data not found in response')
+
+        return render(request,'customer_management/customer_list.html',{'records':customer_records})
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+def uploadmultidocument_customer(request,pk): #pk = customer id
+    # try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        # getting all customer data 
+        MSID = get_service_plan('view customer') # view_customer
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'customer_id':pk}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        
+        customer_records = response['data'][0]
+
+        # getting identification Type
+        MSID = get_service_plan('view identificationtype') # view_identificationtype
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+
+        document_type = response['data']
+        if request.method == "POST":
+            is_active = request.POST.getlist('is_active')
+            documenttype = request.POST.getlist('document_type')
+            documentfile = request.FILES.getlist('documentfile')
+            description = request.POST.getlist('description')
+
+            for index,data1 in enumerate(documentfile):
+                MSID = get_service_plan('create customerdocuments') # create_customerdocuments
+                if MSID is None:
+                    print('MISID not found')     
+                print("1111111111111111",documenttype[index]) 
+                print("1111111111111111",documenttype[index]) 
+                payload = {'company_id':company_id,'customer_id':pk, 'document_type_id':documenttype[index],'is_active': True,'description':description[index]}
+                files = {}
+                documentfile1 = documentfile[index]
+                if documentfile1:
+                    files['attachment'] = (documentfile1.name, documentfile1, documentfile1.content_type)
+                data = {'ms_id': MSID, 'ms_payload': json.dumps(payload)}
+                response = call_post_method_with_token_v2(BASEURL, ENDPOINT, data, token, files)   
+            
+                if response['status_code'] ==  1:                  
+                    return render(request,'error.html',{'error':str(response['data'])})
+                print("=======================",response['data'])
+            return redirect('customerlist')
+
+        context = {'customer_records':customer_records,'document_type':document_type}
+        return render(request,'customer_management/Upload_multidocments.html',context)
+    # except Exception as error:
+    #     return render(request, "error.html", {"error": error}) 
+
+
 def customerdocuments_create(request):
     try:
         token = request.session['user_token']
@@ -386,7 +470,8 @@ def customerdocuments_create(request):
         response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
         if response['status_code'] == 1:
             return render(request,'error.html',{'error':str(response['data'])})
-
+        
+        
         # Check if the response contains data
         if 'data' in response:
             document_type_records = response['data']
