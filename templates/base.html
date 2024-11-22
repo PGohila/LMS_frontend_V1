@@ -277,7 +277,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="#">
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'logout' %}">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
@@ -722,15 +722,32 @@
 
     </ul>
     </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#ui-basic" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-journal-text"></i><span>User Management</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="ui-basic" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'roles' %}">
+            <i class="bi bi-circle"></i><span>User roles</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'user_list' %}">
+            <i class="bi bi-circle"></i><span>User</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'userprofile_list' %}">
+            <i class="bi bi-circle"></i><span>User Profile</span>
+          </a>
+        </li>
+    </ul>
+    </li>
  
 
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-login.html">
-          <i class="bi bi-box-arrow-in-right"></i>
-          <span>Login</span>
-        </a>
-      </li><!-- End Login Page Nav -->
 
     </ul>
  

@@ -22,6 +22,7 @@ from django.conf import settings
 from django.urls import include
 
 urlpatterns = [
+    path('', include('user_management.urls')),
     path('', include('mainapp.urls')),
     path('', include('valuechain_milestone.urls')),
     path('register-serviceplan/', RegisterServiceplan.as_view(), name='register-serviceplan' ),
