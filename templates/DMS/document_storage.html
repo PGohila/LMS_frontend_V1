@@ -251,7 +251,7 @@
             <label for="">Document name</label>
             {{document_form.document_title}}
           </div>
-          <div class="col-md-11">
+          {% comment %} <div class="col-md-11">
             <label for="">Document category</label>
             <select name="document_category" id="id_document_category" class="form-control">
               <option value="">Select</option>
@@ -264,7 +264,7 @@
             <a onclick="openDocumentCategory()">
               <button type="button" class="btn btn-primary ml-auto">+</button>
             </a>
-          </div>
+          </div> {% endcomment %}
 
           <div class="col-md-11">
             <label for="">Document Type</label>
@@ -276,8 +276,8 @@
             </select>
           </div>
           <div class="col-md-1" style="padding-top: 30px;">
-            <a onclick="openDocumentType()">
-              <button type="button" class="btn btn-primary ml-auto">+</button>
+            <a href="{% url 'identificationtype' %}">
+              <button type="button" class="btn btn-primary ml-auto" data-toggle="modal" data-target="">+</button>
             </a>
           </div>
           <div class="col-md-12">

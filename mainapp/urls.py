@@ -127,4 +127,7 @@ urlpatterns = [
 
     path('document_delete/<entity_id>/<folder_id>/<document_id>/', document_delete,name='document_delete'),
 
+
+    path('audit_view', audit_view, name='audit_view'),
+
 ]

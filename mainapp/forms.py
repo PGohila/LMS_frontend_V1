@@ -563,7 +563,6 @@ class FolderForm(forms.Form):
 
 class DocumentUploadForm(forms.Form):
     document_title = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    document_category = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     document_type = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
     document_upload = forms.FileField(required=True, widget=forms.FileInput(attrs={"class": "form-control"}))
@@ -573,7 +572,6 @@ class DocumentUploadForm(forms.Form):
 
 class DocumentCategoryForm(forms.Form):
 	category_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	department_id = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 	description = forms.CharField(max_length=250, required=False, widget=forms.Textarea(attrs={"class": "form-control", 'rows': 3}))
 
 class DepartmentForm(forms.Form):
