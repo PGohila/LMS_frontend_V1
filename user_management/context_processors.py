@@ -4,7 +4,7 @@ from django.shortcuts import render,redirect
 
 def users_permission(request):
     try:
-        permission = request.session.get('permission')
+        permission = request.session.get('user_permissions')
         # print('permission',permission)
         if permission:
             # print('permission_context_processors', permission)
