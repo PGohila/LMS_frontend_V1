@@ -2986,22 +2986,39 @@ def loantype_delete(request,pk):
 def audit_view(request):
     try:
         token = request.session['user_token']
-        MSID = get_service_plan('view audit')
+
+        MSID = get_service_plan('user check')
         if MSID is None:
             print('MISID not found')
         payload_form = {}
         data = {'ms_id':MSID,'ms_payload':payload_form}
         json_data = json.dumps(data)
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
-        print("response",response)
-        if response['status_code'] == 1:
-            return render(request,'error.html',{'error':str(response['data'])})
-        master_view = response['data']
+        user_check=response['data'][0]
+        print("responseuser_checkty7u8i",)
+
+
+        if user_check == True:
+            MSID = get_service_plan('view audit')
+            if MSID is None:
+                print('MISID not found')
+            payload_form = {}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            print("response",response)
+            if response['status_code'] == 1:
+                return render(request,'error.html',{'error':str(response['data'])})
+            master_view = response['data']
+        else:
+            master_view=None
+            pass            
         context = {   
             "customer_view_active":"active",
             "records":master_view,
             "View":True
         }
         return render(request, 'audit_log.html',context)
+
     except Exception as error:
         return render(request, "error.html", {"error": error})    
