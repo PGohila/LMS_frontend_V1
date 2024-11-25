@@ -68,6 +68,11 @@ urlpatterns = [
     path('schedule_overview/<pk>/', schedule_overview, name='schedule_overview'),
 
     path('loancalculators/', loancalculators_create, name='loancalculators'),
+
+    path('loan_list/', loan_list, name='loan_list'),
+    path('account_list/<id>', account_list, name='account_list'),
+    
+
     
     #================== Setting urls ================
     path('identificationtype/', identificationtype_create, name='identificationtype'),
