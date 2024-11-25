@@ -638,6 +638,7 @@ def login(request):
                 request.session['user_token']=login_tokes['access_token']
                 request.session['user_data']=login_tokes['user_data']
 
+
                 request.session['user_permissions'] = login_tokes['user_permission']['permission']
                 user_data=login_tokes['user_data']
                 print('user_data',request.session['user_permissions'])

@@ -2962,3 +2962,94 @@ def loantype_delete(request,pk):
         return render(request, "error.html", {"error": error}) 
 
 
+
+def audit_view(request):
+    try:
+        token = request.session['user_token']
+
+        MSID = get_service_plan('user check')
+        if MSID is None:
+            print('MISID not found')
+        payload_form = {}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        user_check=response['data'][0]
+        print("responseuser_checkty7u8i",)
+
+
+        if user_check == True:
+            MSID = get_service_plan('view audit')
+            if MSID is None:
+                print('MISID not found')
+            payload_form = {}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            print("response",response)
+            if response['status_code'] == 1:
+                return render(request,'error.html',{'error':str(response['data'])})
+            master_view = response['data']
+            print("master_view4567890",master_view)
+        else:
+            master_view=None
+            pass            
+        context = {   
+            "customer_view_active":"active",
+            "records":master_view,
+            "View":True
+        }
+        return render(request, 'audit_log.html',context)
+
+    except Exception as error:
+        return render(request, "error.html", {"error": error})    
+
+
+
+def document_list(request):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        # getting all customer data 
+        MSID = get_service_plan('view customer') # view_customer
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        # Check if the response contains data
+        if 'data' in response:
+            customer_records = response['data']
+        else:
+            print('Data not found in response')
+
+        return render(request,'customer_management/document_list.html',{'records':customer_records})
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+
+
+def customer_document_view(request,pk): #pk = customer id
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        MSID = get_service_plan('getting verified ducuments') 
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {"company_id":company_id,'customer_id':pk}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        
+        customer_doc = response['data']
+        context = {'documents':customer_doc,'BASEURL':BASEURL}
+
+        return render(request,'customer_management/customer_document_view.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 

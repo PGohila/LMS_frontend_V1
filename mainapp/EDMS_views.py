@@ -119,7 +119,7 @@ def document_storage(request,entity_id):
 def folder(request,entity_id,folder_id):
 #     try:     
         token = request.session['user_token']
-
+        company_id = request.session.get('company_id')
         # folder gettiing
         MSID = get_service_plan('folder master view')
         print('MSID--',MSID)
@@ -154,14 +154,14 @@ def folder(request,entity_id,folder_id):
         document_list = document_response.json()
         print('document_list',document_list)
         for item in document_list:
-                        item['update_at'] = datetime.datetime.strptime(item['update_at'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime('%Y-%m-%d') 
-                        # start_date = datetime.strptime(item['start_date'], '%Y-%m-%d')
-                        # end_date = datetime.strptime(item['end_date'], '%Y-%m-%d')
-                        # # Calculate the remaining days
-                        # remaining_days = (end_date - start_date).days
-                        # # Assign the remaining days to the item
-                        # item['remaining_days'] = remaining_days
-                        # print('item_date',item)
+                item['update_at'] = datetime.datetime.strptime(item['update_at'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime('%Y-%m-%d') 
+                # start_date = datetime.strptime(item['start_date'], '%Y-%m-%d')
+                # end_date = datetime.strptime(item['end_date'], '%Y-%m-%d')
+                # # Calculate the remaining days
+                # remaining_days = (end_date - start_date).days
+                # # Assign the remaining days to the item
+                # item['remaining_days'] = remaining_days
+                # print('item_date',item)
          
         #  document_category
         document_cat_MSID = get_service_plan('document category view')
@@ -172,12 +172,23 @@ def folder(request,entity_id,folder_id):
         document_cat_list = document_cat_response.json()
 
         #  document type
-        document_type_MSID = get_service_plan('document type view')
-        data = format_data(document_type_MSID,{})
-        document_type_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
-        if document_type_response.status_code != 200:
-                print('document_type_response error',document_type_response)
-        document_type_list = document_type_response.json()
+        # document_type_MSID = get_service_plan('document type view')
+        # data = format_data(document_type_MSID,{})
+        # document_type_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+        # if document_type_response.status_code != 200:
+        #         print('document_type_response error',document_type_response)
+        # document_type_list = document_type_response.json()
+
+        MSID = get_service_plan('view identificationtype') # view_identificationtype
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        document_type_list= response['data']
+        print("document_type_list4567890",document_type_list)
 
         # document entity
         document_entity_MSID = get_service_plan('entity master view')
@@ -212,7 +223,8 @@ def folder(request,entity_id,folder_id):
 
 @custom_login_required
 def create_folder(request,entity_id):
-     try:     
+     try: 
+        company_id = request.session.get('company_id')    
         if request.method == 'POST':
                 token = request.session['user_token']
                 form = FolderForm(request.POST)
@@ -277,6 +289,7 @@ def create_sub_folder(request,entity_id,folder_id):
 @custom_login_required
 def upload_document(request,entity_id,folder_id):
         try:
+                company_id = request.session.get('company_id')
                 print('entity_1234567id===',entity_id)
                 print('folder_id',folder_id)
                 if request.method == 'POST':
@@ -291,6 +304,7 @@ def upload_document(request,entity_id,folder_id):
                                 cleaned_data = form.cleaned_data
                                 print(",,,,,,,,,,,,,",cleaned_data)
                                 cleaned_data['folder_id']=folder_id
+                                cleaned_data['company_id']=company_id
                                 cleaned_data['entity_type']=[entity_id]
                                 if cleaned_data['start_date'] is not None:
                                         cleaned_data['start_date'] = cleaned_data['start_date'].strftime('%Y-%m-%d')
@@ -618,3 +632,49 @@ def document_delete(request,entity_id,folder_id,document_id):
                 return render(request, "error.html", {"error": error})
 
 
+@custom_login_required
+def client_folder_delete(request,folder_id,entity_id):
+        try:
+                token = request.session['user_token']
+                #document delete
+                MSID = get_service_plan('folder delete')
+                data = format_data(MSID,{'folder_id':folder_id})
+                print('data',data)
+                folder_list_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+                if folder_list_response.status_code != 200:
+                        print('folder_list_response error',folder_list_response)
+                else:
+                        print(folder_list_response.json())
+                return redirect(f'/document_storage/{entity_id}/')
+        
+        except Exception as error:
+                return render(request, "error.html", {"error": error})
+
+
+@custom_login_required
+def document_edit(request,entity_id,folder_id):
+        try:
+                token = request.session['user_token']
+                #document edit
+                MSID = get_service_plan('document edit')
+                document_name = request.POST.get('document_name')
+                document_id = request.POST.get('document_id')
+                print("document_id---",document_id)
+                doc_upload = request.FILES['file']
+                print("attachment---",doc_upload)
+                files = {'files': (doc_upload.name, doc_upload.read())}
+                data = {
+                        'ms_id':MSID,
+                        'ms_payload':json.dumps({'document_id':document_id,'document_name':document_name})
+                }                
+                print(f'data (type: {type(data)}):', data)
+                folder_list_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token,files)
+                print("folder_list_response===",folder_list_response)
+                if folder_list_response.status_code != 200:
+                        print('folder_list_response error',folder_list_response)
+                else:
+                        print(folder_list_response.json())
+                return redirect(f'/folder/{entity_id}/{folder_id}/')
+        
+        except Exception as error:
+                return render(request, "error.html", {"error": error})
