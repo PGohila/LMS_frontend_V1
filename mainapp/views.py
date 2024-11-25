@@ -1088,6 +1088,57 @@ def list_approved_applications(request):
     except Exception as error:
         return render(request, "error.html", {"error": error})
 
+def loan_list(request):
+    try:
+
+        token = request.session['user_token']
+        MSID = get_service_plan('view loan')
+        if MSID is None:
+                print('MISID not found') 
+        payload_form = {
+        }
+        data = {
+            'ms_id':MSID,
+            'ms_payload':payload_form
+            }
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        print('response',response)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        context = {'records':response['data']}
+        return render(request,"loan_approval/loan_list.html",context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error})
+
+def account_list(request,id):
+    try:
+        token = request.session['user_token']
+        MSID = get_service_plan('account list')
+        if MSID is None:
+                print('MISID not found') 
+        payload_form = {
+            "loan_id":id
+        }
+        data = {
+            'ms_id':MSID,
+            'ms_payload':payload_form
+            }
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        print('response',response)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        print('response["data"]',response['data'])
+        context = {
+            'records':response['data']
+            }
+        print("response['data']",response['data'])
+        return render(request,"loan_approval/loans.html",context)    
+    except Exception as error:
+        return render(request, "error.html", {"error": error})
+
+
 def create_agreement(request,pk):
     try:
         token = request.session['user_token']

@@ -80,7 +80,7 @@ class UserProfileForm(forms.Form):
         role = kwargs.pop('role', [])
         super().__init__(*args, **kwargs)
         if isinstance(role, list):
-            self.fields['role'].choices = [('', '---select---')] + [
+            self.fields['role'].choices = [
                 (str(record.get('id', '')), record.get('name', ''))
                 for record in role
             ]

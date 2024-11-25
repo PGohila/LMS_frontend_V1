@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+
+  <main id="main" class="main">
+
+    <!-- Page Title and Breadcrumbs -->
+    <div class="pagetitle">
+      <h1>Loan Account Details</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active">Loan Account Details</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Loan Account Information</h5>
+                <!-- Accessing data from the first item in the records list -->
+                <p><strong>Loan ID:</strong> {{ records.0.interestaccount_record.loan.loan_id }}</p>
+                <p><strong>Principal Amount:</strong> {{ records.0.LoanAccount_record.principal_amount }}</p>
+                <p><strong>Interest Amount:</strong> {{ records.0.LoanAccount_record.interest_amount }}</p>
+                <p><strong>Penalty Amount:</strong> {{ records.0.LoanAccount_record.penalty_amount }}</p>
+                <p><strong>Outstanding Balance:</strong> {{ records.0.LoanAccount_record.outstanding_balance }}</p>
+                <!-- <a href="{% url 'account_list' records.0.LoanAccount_record.loan %}"> -->
+                  <button class="btn btn-primary btn-sm" type="button">
+                    <i class="fa fa-eye"></i> View Details
+                  </button>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        <!-- Loan Disbursement Account Card -->
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Loan Disbursement Account</h5>
+              <p><strong>Loan ID:</strong> {{ records.0.interestaccount_record.loan.loan_id }}</p>
+                <p><strong>Amount:</strong> {{ records.0.loandisbursement_record.amount }}</p>
+                <p><strong>Disbursement Date:</strong> {{ records.0.loandisbursement_record.disbursement_date }}</p>
+                <p><strong>Penalty Amount:</strong> {{ records.0.loandisbursement_record.penalty_amount }}</p>
+                <p><strong>Status:</strong> {{ records.0.loandisbursement_record.status }}</p>
+              
+                <button class="btn btn-primary btn-sm" type="button">
+                  <i class="fa fa-eye"></i> View Details
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loan Repayment Account Card -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Loan Repayment Account</h5>
+        
+                    <!-- Loan ID -->
+                    <p><strong>Loan ID:</strong> {{ records.0.loanrepaymentaccount_record.loan.loan_id }}</p>
+                    <p><strong>Repayment Amount:</strong> {{ records.0.loanrepaymentaccount_record.amount }}</p>
+                    <p><strong>Repayment Date:</strong> {{ records.0.loanrepaymentaccount_record.repayment_date }}</p>
+                    <p><strong>Payment Method:</strong> {{ records.0.loanrepaymentaccount_record.payment_method }}</p>
+                    <p><strong>Transaction Reference:</strong> {{ records.0.loanrepaymentaccount_record.transaction_reference }}</p>
+
+                    <!-- View Details Button -->
+                    
+                        <button class="btn btn-primary btn-sm" type="button">
+                            <i class="fa fa-eye"></i> View Details
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        
+
+        <!-- Penalty Account Card -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Penalty Account</h5>
+                    <p><strong>Loan ID:</strong> {{ records.0.penaltyaccount_record.loan.loan_id }}</p>
+                    <p><strong>Penalty Amount:</strong> {{ records.0.penaltyaccount_record.penalty_amount }}</p>
+                    <p><strong>Penalty Reason:</strong> {{ records.0.penaltyaccount_record.penalty_reason }}</p>
+                    <p><strong>Penalty Date:</strong> {{ records.0.penaltyaccount_record.penalty_date }}</p>
+        
+                    <p><strong>Status:</strong> {{ records.0.penaltyaccount_record.status }}</p>
+        
+                   <!-- View Details Button -->
+                    
+                        <button class="btn btn-primary btn-sm" type="button">
+                            <i class="fa fa-eye"></i> View Details
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Interest Account Card -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Interest Account</h5>
+                    <p><strong>Loan ID:</strong> {{ records.0.interestaccount_record.loan.loan_id }}</p>
+                    <p><strong>Interest Accrued:</strong> {{ records.0.interestaccount_record.interest_accrued }}</p>
+
+                    <p><strong>Interest Payment Date:</strong> 
+                        {% if records.0.interestaccount_record.interest_payment_date %}
+                            {{ records.0.interestaccount_record.interest_payment_date }}
+                        {% else %}
+                            Not Paid Yet
+                        {% endif %}
+                    </p>
+        
+                    <p><strong>Interest Payment Amount:</strong> {{ records.0.interestaccount_record.interest_payment_amount }}</p>
+        
+
+                    <!-- View Details Button -->
+                    
+                        <button class="btn btn-primary btn-sm" type="button">
+                            <i class="fa fa-eye"></i> View Details
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+
+      </div> <!-- End Row -->
+    </section>
+
+  </main><!-- End #main -->
+
+{% endblock %}
