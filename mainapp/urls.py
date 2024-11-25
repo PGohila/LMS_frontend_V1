@@ -11,6 +11,7 @@ urlpatterns = [
     path('company-view/', company_view, name='company_view'),
     path('company-edit/<pk>/', company_edit, name='company_edit'),
     path('company-delete/<pk>/', company_delete, name='company_delete'),
+    path('company-list/', customer_list, name='customer_list'),
   
     path('customer/', customer_create, name='customer'),
     path('customer-view', customer_view, name='customer_view'),
@@ -19,6 +20,7 @@ urlpatterns = [
 
     path('customer_list/', customer_list, name='customerlist'),
     path('uploadmultidocument_customer/<pk>/', uploadmultidocument_customer, name='uploadmultidocumentcustomer'),
+
     path('customerdocuments/', customerdocuments_create, name='customerdocuments'),
     path('customer_view_fordoc/', customer_view_fordoc, name='customer_view_fordoc'),
 
@@ -69,6 +71,11 @@ urlpatterns = [
     path('schedule_overview/<pk>/', schedule_overview, name='schedule_overview'),
 
     path('loancalculators/', loancalculators_create, name='loancalculators'),
+
+    path('loan_list/', loan_list, name='loan_list'),
+    path('account_list/<id>', account_list, name='account_list'),
+    
+
     
     #================== Setting urls ================
     path('identificationtype/', identificationtype_create, name='identificationtype'),

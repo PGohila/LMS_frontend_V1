@@ -99,7 +99,7 @@ class LoantypeForm(forms.Form):
 	loantype = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 	disbursement_beneficiary = forms.ChoiceField(choices=DISBURSEMENT_BENEFICIARY_CHOICES, label="Disbursement Beneficiary", widget=forms.Select(attrs={'class': 'form-control'}))
 	interest_rate = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
-	loan_teams = forms.IntegerField(required=True,label="Loan Type(Months)",widget=forms.NumberInput(attrs={"class": "form-control"}))
+	loan_teams = forms.IntegerField(required=True,label="Loan Terms(Months)",widget=forms.NumberInput(attrs={"class": "form-control"}))
 	min_loan_amt = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	max_loan_amt = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	eligibility = forms.CharField( required=True, widget=forms.Textarea(attrs={"class": "form-control"}))

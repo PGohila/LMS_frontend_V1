@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+      body {
+        font-family: "Comic Sans MS", cursive;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #fafafa; /* Light grey background */
+        color: #333;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .card {
+        width: 100%;
+        background-color: #f8f8f8; /* Card background color */
+        padding: 20px;
+        border-radius: 12px; /* Card border radius */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      input {
+        padding: 10px;
+        margin-bottom: 12px;
+        border: 2px solid #ddd; /* Input border color */
+        border-radius: 8px; /* Input border radius */
+        transition: border-color 0.3s ease-in-out;
+        outline: none;
+        color: #333;
+        background-color: #f4f4f4; /* Input background color */
+      }
+
+      input:focus {
+        border-color: #012970; /* Focused input border color */
+      }
+
+      button {
+        background-color: #012970; /* Button color */
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 8px; /* Button border radius */
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      button:hover {
+        background-color: #012970; /* Button hover color */
+      }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+          <h2>OTP Verification</h2>
+          <form method="post">
+            {% csrf_token %}
+
+            <input type="text" id="otp" name="otp" placeholder="Enter OTP" required maxlength="4" pattern="\d{4}">
+            <label for="">{{otp_error}}</label>
+            {% if email %}
+            <input type="hidden"  name="email" value = {{email}}>
+            {% endif %}
+            <button type="submit">Verify OTP</button>
+          </form>
+        </div>
+      </div>
+</body>
+</html>

@@ -7,12 +7,12 @@
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Loantype Form</h1>
+      <h1>Edit Activity Setup</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
           <li class="breadcrumb-item">Forms</li>
-          <li class="breadcrumb-item active">Loan Type</li>
+          <li class="breadcrumb-item active">Edit Activity Setup</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -24,35 +24,22 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title"></h5>
-              {% if messages %}
-            
-              <div id="message-container">
-                  {% for message in messages %}
-                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                      {{ message }}
-                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                  </div>
-                  {% endfor %}
-              </div>
-              {% endif %}
 
               <!-- Vertical Form -->
               <form method="post" class="row g-3">
                 {% csrf_token %}
                 {% for data in form %}
-                  <div class="col-12">
-                      <label for="{{ data.id_for_label }}">
-                          {{ data.label }}
-                          {% if data.field.required %}<span style="color: red;">*</span>{% endif %}
-                      </label>
-                      {{ data }}
-                  </div>
-                  {% endfor %}
+                <div class="col-12">
+                    {{data.label_tag}}
+                    {{ data }}
+                  
+                </div>
+                {% endfor %}
                 
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary">Submit</button>
                   <button type="reset" class="btn btn-secondary">Reset</button>
-                  <a href="{% url 'loantype_view' %}" type="reset" class="btn btn-primary">View</a>
+                  
                 </div>
               </form><!-- Vertical Form -->
 
