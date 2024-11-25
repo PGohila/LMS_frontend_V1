@@ -632,3 +632,49 @@ def document_delete(request,entity_id,folder_id,document_id):
                 return render(request, "error.html", {"error": error})
 
 
+@custom_login_required
+def client_folder_delete(request,folder_id,entity_id):
+        try:
+                token = request.session['user_token']
+                #document delete
+                MSID = get_service_plan('folder delete')
+                data = format_data(MSID,{'folder_id':folder_id})
+                print('data',data)
+                folder_list_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token)
+                if folder_list_response.status_code != 200:
+                        print('folder_list_response error',folder_list_response)
+                else:
+                        print(folder_list_response.json())
+                return redirect(f'/document_storage/{entity_id}/')
+        
+        except Exception as error:
+                return render(request, "error.html", {"error": error})
+
+
+@custom_login_required
+def document_edit(request,entity_id,folder_id):
+        try:
+                token = request.session['user_token']
+                #document edit
+                MSID = get_service_plan('document edit')
+                document_name = request.POST.get('document_name')
+                document_id = request.POST.get('document_id')
+                print("document_id---",document_id)
+                doc_upload = request.FILES['file']
+                print("attachment---",doc_upload)
+                files = {'files': (doc_upload.name, doc_upload.read())}
+                data = {
+                        'ms_id':MSID,
+                        'ms_payload':json.dumps({'document_id':document_id,'document_name':document_name})
+                }                
+                print(f'data (type: {type(data)}):', data)
+                folder_list_response = call_post_method_with_token(BASEURL,ENDPOINT,data,token,files)
+                print("folder_list_response===",folder_list_response)
+                if folder_list_response.status_code != 200:
+                        print('folder_list_response error',folder_list_response)
+                else:
+                        print(folder_list_response.json())
+                return redirect(f'/folder/{entity_id}/{folder_id}/')
+        
+        except Exception as error:
+                return render(request, "error.html", {"error": error})

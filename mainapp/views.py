@@ -3010,6 +3010,7 @@ def audit_view(request):
             if response['status_code'] == 1:
                 return render(request,'error.html',{'error':str(response['data'])})
             master_view = response['data']
+            print("master_view4567890",master_view)
         else:
             master_view=None
             pass            

@@ -103,11 +103,11 @@
                                       
                                         <ul class="dropdown-menu custom-menu" aria-labelledby="customDropdownButton">
                                             <li>
-                                              {% comment %} <a href="{% url 'customer_folder_delete' entity_id folder.folder_id %}">
+                                               <a href="{% url 'client_folder_delete' entity_id folder1.folder_id %}">
                                                 <button class="dropdown-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
                                                   <i class="mdi mdi-delete-forever"></i> Delete
                                                 </button>
-                                              </a> {% endcomment %}
+                                              </a> 
                                             </li>
                                         </ul>
                                       </div>
@@ -152,11 +152,7 @@
                                           <i class="mdi mdi-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                          <li>
-                                            <button class="dropdown-item" data-toggle="modal" data-target="#documentEdit" onclick="getValueEdit('{{doc.document_title}}','{{doc.document_id}}')" title="Add Hearing">
-                                              <i class="mdi mdi-table-edit"></i> Edit
-                                            </button>
-                                          </li>
+                                          <li><button class="dropdown-item" data-toggle="modal" data-target="#documentEdit" onclick="getValueEdit('{{doc.document_title}}','{{doc.document_id}}')" data-toggle="tooltip" data-placement="top" title="Add Hearing"><i class="mdi mdi-table-edit"></i> Edit</button></li>
                                           <li>
                                             <a href="{{BASEURL}}/{{doc.document_upload}}" download class="dropdown-item download-link" data-id="{{doc.id}}" data-reason="Reason for download">
                                               <i class="mdi mdi-download"></i> Download
@@ -198,6 +194,40 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+{% if not main_folder %}
+<div class="modal fade " id="documentEdit" tabindex="-1" role="dialog" aria-labelledby="documentEdit"
+  aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <form method="post" action="{% url 'document_edit' entity_id=entity_id folder_id=folder_id %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Document Edit</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group col-lg-12">
+              <label for="">Document name</label>
+              <input type="text" class="form-control" name="document_name" id="edit_document_name">
+              <label for="">Upload Edit File</label>
+              <input type="file" class="form-control" name="file" id="edit_document_name" required>
+              <input type="hidden" class="form-control" name="document_id" id="edit_document_id">
+            </div>
+          </div>
+        </div>
+       
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success" >Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}
 
 
   <div class="modal fade " id="folder" tabindex="-1" role="dialog" aria-labelledby="uploadDocumentTitle"
@@ -280,22 +310,23 @@
               <button type="button" class="btn btn-primary ml-auto" data-toggle="modal" data-target="">+</button>
             </a>
           </div>
+          <hr>
           <div class="col-md-12">
             <label for="show-fields">Contract </label>
             <input type="checkbox" id="show-fields" name="show-fields">
-        </div>
+          </div>
 
-        <div class="time-fields">
-          <div class="col-md-12">
-              <label for="start-time">Start Date</label>
-              {{document_form.start_date}}
-          </div>
-          <div class="col-md-12">
-              <label for="end-time">End Date</label>
-              {{document_form.end_date}}
-          </div>
-      </div>
-        
+          <div class="time-fields" style="display: none;"> <!-- Hide by default -->
+            <div class="col-md-12">
+                <label for="start-time">Start Date</label>
+                {{document_form.start_date}}
+            </div>
+            <div class="col-md-12">
+                <label for="end-time">End Date</label>
+                {{document_form.end_date}}
+            </div>
+        </div>
+        <hr>
           <div class="col-md-12">
             <label for="">Description</label>
             {{document_form.description}}
@@ -319,13 +350,19 @@
 
 
 <script>
+  function getValueEdit(folderName,fodlerId){
+    // alert(documentName);
+    $('#edit_folder_name').val(folderName);
+    $('#edit_folder_id').val(fodlerId);
+  }
+</script>
+<script>
   function getValueEdit(documentName,documentId){
     // alert(documentName);
     $('#edit_document_name').val(documentName);
     $('#edit_document_id').val(documentId);
   }
 </script>
-
 <script>
   $(document).ready(function(){
     $('.dropdown-submenu a.dropdown-toggle').on("click", function(e){
