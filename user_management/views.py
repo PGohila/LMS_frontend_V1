@@ -580,7 +580,7 @@ def login(request):
                 user_data=login_tokes['user_data']
                 print('user_data',user_data)
                 request.session['user_data']=login_tokes['user_data']
-                return redirect('dashboard')
+                return redirect('company_selecting')
             else:
                 login_tokes = login_response.json()
                 login_error='Invalid Username and Password'
