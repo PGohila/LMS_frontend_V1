@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Customer Documents</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Customer Documents</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+              <form method="post">
+                    <div style="border: 2;">
+                      <h5 class="card-title">Customer Documents</h5>
+                    {% for data in documents %}
+                    <div class="col-md-12 px-3 py-3">
+                      <i class="bi bi-star me-1 text-success"></i>
+                        <a href="{{BASEURL}}{{ data.documentfile }}" target="_blank">{{ data.documentfile }}</a></div>
+                        
+                    {% endfor %}
+                  </div>
+
+                </div>
+                
+            </form>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}
+
+ 

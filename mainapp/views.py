@@ -3023,3 +3023,53 @@ def audit_view(request):
 
     except Exception as error:
         return render(request, "error.html", {"error": error})    
+
+
+
+def document_list(request):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        # getting all customer data 
+        MSID = get_service_plan('view customer') # view_customer
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        # Check if the response contains data
+        if 'data' in response:
+            customer_records = response['data']
+        else:
+            print('Data not found in response')
+
+        return render(request,'customer_management/document_list.html',{'records':customer_records})
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+
+
+def customer_document_view(request,pk): #pk = customer id
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        MSID = get_service_plan('getting verified ducuments') 
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {"company_id":company_id,'customer_id':pk}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        
+        customer_doc = response['data']
+        context = {'documents':customer_doc,'BASEURL':BASEURL}
+
+        return render(request,'customer_management/customer_document_view.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 

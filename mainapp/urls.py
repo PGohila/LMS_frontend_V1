@@ -126,5 +126,6 @@ urlpatterns = [
 
 
     path('audit_view', audit_view, name='audit_view'),
-
+    path('document_list/', document_list, name='document_list'),
+    path('customer_document_view/<pk>/',customer_document_view, name='customer_document_view'),
 ]
