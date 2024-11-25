@@ -635,6 +635,7 @@ def login(request):
                 login_tokes = login_response.json()
                 request.session['user_token']=login_tokes['access_token']
                 request.session['user_data']=login_tokes['user_data']
+
                 request.session['user_permissions'] = login_tokes['user_permission']['permission']
                 user_data=login_tokes['user_data']
                 print('user_data',request.session['user_permissions'])
@@ -659,6 +660,7 @@ def login(request):
                     return redirect('company_selecting')
                 elif not user_data['multi_factor_auth']:
                     return redirect('multi_factor_authentication')
+
             else:
                 login_error='Invalid Username or Password'
                 context={"login_error":login_error}

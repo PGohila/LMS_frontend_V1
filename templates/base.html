@@ -318,7 +318,7 @@
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
             <a href="{% url 'company' %}">
-              <i class="bi bi-building"></i><span>Company</span>
+              <i class="bi bi-circle"></i><span>Company</span>
             </a>
           </li>
           
@@ -467,7 +467,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#valuechain-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-diagram-3"></i><span>Value Chain Set-Ups</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-diagram-3"></i><span>Disbursement Trenches</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="valuechain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -476,8 +476,13 @@
             </a>
           </li>
           <li>
-            <a href="{% url 'list_agreement' %}">
-              <i class="bi bi-circle"></i><span>Agreement Review</span>
+            <a href="{% url 'disply_valuechain' %}">
+              <i class="bi bi-circle"></i><span>MileStones</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'loan_list' %}">
+              <i class="bi bi-circle"></i><span>Loan Trenches</span>
             </a>
           </li>
        
@@ -485,26 +490,7 @@
           
         </ul>
       </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#milestone-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-flag"></i><span>MileStone Set-ups</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="milestone-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{% url 'listapprovedapplications' %}">
-              <i class="bi bi-circle"></i><span>Generate Agreement</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'list_agreement' %}">
-              <i class="bi bi-circle"></i><span>Agreement Review</span>
-            </a>
-          </li>
-       
- 
-          
-        </ul>
-      </li>
+    
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#disbursement-nav" data-bs-toggle="collapse" href="#">
@@ -786,6 +772,22 @@
         $('.select').select2(); // Apply Select2 to all fields with the 'form-control' class
     });
     </script>
+    <script>
+      // Wait for the page to fully load
+      window.onload = function () {
+          setTimeout(function () {
+              // Select the message container and hide it
+              var messageContainer = document.getElementById('message-container');
+              if (messageContainer) {
+                  messageContainer.style.transition = "opacity 0.5s ease-out";
+                  messageContainer.style.opacity = "0";
+                  setTimeout(() => {
+                      messageContainer.remove();
+                  }, 500); // Remove after fade-out
+              }
+          }, 3000); // 3 seconds timeout
+      };
+  </script>
     
  
 </body>

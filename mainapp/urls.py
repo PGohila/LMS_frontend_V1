@@ -18,6 +18,9 @@ urlpatterns = [
     path('customer-edit/<pk>/', customer_edit, name='customer_edit'),
     path('customer-delete/<pk>/', customer_delete, name='customer_delete'),
 
+    path('customer_list/', customer_list, name='customerlist'),
+    path('uploadmultidocument_customer/<pk>/', uploadmultidocument_customer, name='uploadmultidocumentcustomer'),
+
     path('customerdocuments/', customerdocuments_create, name='customerdocuments'),
     path('customer_view_fordoc/', customer_view_fordoc, name='customer_view_fordoc'),
 
