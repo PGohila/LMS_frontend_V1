@@ -94,6 +94,7 @@ def user_registration(request):
                     print('MISID not found')      
                 cleaned_data = form.cleaned_data
                 
+                
                 data={
                     'ms_id':MSID,
                     'ms_payload':cleaned_data
@@ -174,7 +175,7 @@ def user_list(request):
 def user_edit(request,pk):
     try:
         token = request.session['user_token']
-        MSID= get_service_plan('role list')
+        MSID= get_service_plan('userprofile list')
         if MSID is None:
             print('MISID not found') 
         payload_form={
@@ -190,7 +191,8 @@ def user_edit(request,pk):
         if response['status_code'] ==  0:                  
             messages.info(request, "Well Done..! Application Submitted..")
             print('error',response['data'])
-        role=response['data']
+        user_profile=response['data']
+        
 
         MSID= get_service_plan('get user')
         if MSID is None:
@@ -205,15 +207,11 @@ def user_edit(request,pk):
         json_data = json.dumps(data)
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
     
-        if response['status_code'] ==  0:                  
-            messages.info(request, "Well Done..! Application Submitted..")
-            print('error',response['data'])
+
         record=response['data'][0]
-        
         if request.method == 'POST':
             form = UserRegistrationForm(request.POST,initial=record)
-            if form.is_valid():
-    
+            if form.is_valid():    
                 MSID= get_service_plan('user edit')
                 print('MSID',MSID)
                 if MSID is None:
@@ -234,10 +232,11 @@ def user_edit(request,pk):
                 else:
                     messages.info(request, "Oops..! Application Failed to Submitted..")
         else:
+            print('form-error')
             form = UserRegistrationForm(initial=record)
 
         context = {
-            'form': form, 'user_edit': 'active', 'user_edit_show': 'show','role':role,'record':record
+            'form': form, 'user_edit': 'active', 'user_edit_show': 'show','userprofile':user_profile,'record':record
         }
         return render(request, 'UserManagement/user_edit.html', context)
     except Exception as error:
@@ -246,6 +245,22 @@ def user_edit(request,pk):
 def user_view(request,pk):
     try:
         token = request.session['user_token']
+
+        MSID= get_service_plan('userprofile list')
+        if MSID is None:
+            print('MISID not found') 
+        payload_form={
+
+        }     
+        data={
+            'ms_id':MSID,
+            'ms_payload':payload_form
+        } 
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+    
+        userprofile=response['data']
+
         print('data is comming',pk)
         MSID= get_service_plan('get user')
         if MSID is None:
@@ -267,7 +282,7 @@ def user_view(request,pk):
             
         #records = User.objects.all()
             context = {
-                'user_list': 'active', 'user_list_show': 'show', 'form': form,'screen_name':'User'
+                'user_list': 'active', 'user_list_show': 'show', 'form': form,'screen_name':'User','userprofile':userprofile,'records':records
             }
             return render(request, 'UserManagement/user_view.html', context)
     except Exception as error:
@@ -556,11 +571,52 @@ def function_setup(request):
     except Exception as error:
         return render(request, "error.html", {"error": error})   
     
+def multi_factor_authentication(request):
+    try:
+        token = request.session['user_token']
+
+        otp = request.POST.get('otp')
+        if request.method == "POST":
+            MSID= get_service_plan('multi factor authentication')
+            if MSID is None:
+                print('MISID not found') 
+            payload_form={
+                'otp':otp
+            }     
+            data={
+                'ms_id':MSID,
+                'ms_payload':payload_form
+            } 
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] ==  1:    
+                otp_error = 'Invailed OTP'              
+                return render(request, 'UserManagement/otp_verification.html',{'otp_error':otp_error})
+        
+            return redirect('company_selecting')
+        else:
+            MSID= get_service_plan('generate and send otp')
+            if MSID is None:
+                print('MISID not found') 
+            payload_form={
+                
+            }     
+            data={
+                'ms_id':MSID,
+                'ms_payload':payload_form
+            } 
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        
+            return render(request, 'UserManagement/otp_verification.html')
+    except Exception as error:
+        return render(request, "error.html", {"error": error})  
 
 
 def login(request):
-    try:
+    # try:
         # Check if the request method is POST
+        
         if request.method == "POST":
             email = request.POST.get('email')
             password = request.POST.get('password')
@@ -574,22 +630,43 @@ def login(request):
             ENDPOINT = 'api/token/'
             login_response = call_post_method_without_token(BASEURL+ENDPOINT,json_payload)
             print('login_response',login_response)
+            
             if login_response.status_code == 200:
                 login_tokes = login_response.json()
                 request.session['user_token']=login_tokes['access_token']
-                user_data=login_tokes['user_data']
-                print('user_data',user_data)
                 request.session['user_data']=login_tokes['user_data']
-                return redirect('dashboard')
+                request.session['user_permissions'] = login_tokes['user_permission']['permission']
+                user_data=login_tokes['user_data']
+                print('user_data',request.session['user_permissions'])
+                #===============getting User Permission==============
+                
+                # MSID= get_service_plan('get permissions for session')
+                # if MSID is None:
+                #     print('MISID not found') 
+                # payload_form={
+                #     # 'user_profile_id':user_data['user_profile']
+                # }     
+                # data={
+                #     'ms_id':MSID,
+                #     'ms_payload':payload_form
+                # } 
+                # json_data = json.dumps(data)
+                # response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+                # print('response_permission',response)
+                # request.session['permission'] = response['data_list']
+                
+                if user_data['multi_factor_auth'] or user_data['is_superuser']:
+                    return redirect('company_selecting')
+                elif not user_data['multi_factor_auth']:
+                    return redirect('multi_factor_authentication')
             else:
-                login_tokes = login_response.json()
-                login_error='Invalid Username and Password'
+                login_error='Invalid Username or Password'
                 context={"login_error":login_error}
                 return render(request, 'Auth/login.html',context)
           
         return render(request, 'Auth/login.html')
-    except Exception as error:
-        return HttpResponse(f'<h1>{error}</h1>')
+    # except Exception as error:
+    #     return HttpResponse(f'<h1>{error}</h1>')
     
   
 
@@ -614,14 +691,127 @@ def logout(request):
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
         print('response',response)
         print('response',response['data'])
-        if response['status_code'] ==  0:                  
+        if response['status_code'] ==  0:   
+            request.session['user_permissions'] = []               
             return redirect('login')
         else:
             return redirect('dashboard')
     except Exception as error:
         return render(request, "error.html", {"error": error})   
 
+def change_password(request):
+    try:
+        token = request.session['user_token']
+        MSID = get_service_plan('change password')
+        if MSID is None:
+            print('MSID not found') 
+        user_data = request.session["user_data"]
+        if request.method == 'POST':
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            if new_password != confirm_password:
+                return render(request, "UserManagement/password_change_form.html", {"error": "New passwords do not match."})
+            payload_form = {
+                'user_id':user_data['id'],
+                'old_password': old_password,
+                'new_password': new_password,
+                'confirm_password':confirm_password,
+            }
+            data = {
+                'ms_id': MSID,
+                'ms_payload': payload_form
+            }
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+            print('response', response)
+            if response['status_code'] == 0:
+                return redirect('logout')
+            else:
+                return render(request, "UserManagement/password_change_form.html", {"error": response['data']})
+        else:
+            return render(request, "UserManagement/password_change_form.html")
+    except Exception as error:
+        return render(request, "error.html", {"error": error})
 
+def forgot_password(request):
+    try:
+        token = request.session['user_token']
+        if request.method == 'POST':
+            email = request.POST.get('email')
+            otp = request.POST.get('otp')
+            if not otp:
+                MSID = get_service_plan('forgot password')
+                if MSID is None:
+                    print('MSID not found') 
+                payload_form = {
+                    'email':email
+                }
+                data = {
+                    'ms_id': MSID,
+                    'ms_payload': payload_form
+                }
+                json_data = json.dumps(data)
+                response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+                print('response', response)
+                if response['status_code'] == 0:
+                    return render(request, "UserManagement/otp_verification.html",{'email':email})
+                else:
+                    return render(request, "Auth/forget_password_form.html", {"error": 'Invalid email ID'})
+            else:
+                        
+                MSID = get_service_plan('verify forgot password')
+                if MSID is None:
+                    print('MSID not found') 
+                payload_form = {
+                    'email':email,
+                    'otp':otp
+                }
+                data = {
+                    'ms_id': MSID,
+                    'ms_payload': payload_form
+                }
+                json_data = json.dumps(data)
+                response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+                print('response', response)
+                if response['status_code'] == 0:
+                    return redirect('set_password',email=email)
+                else:
+                    return render(request, "UserManagement/otp_verification.html",{'email':email,'otp_error':response['data']})
+        else:
+            return render(request, "Auth/forget_password_form.html")
+    except Exception as error:
+        return render(request, "error.html", {"error": error})
+
+def set_password(request,email):
+    token = request.session['user_token']
+    user_data = request.session['user_data']
+    print('token--',token)
+    print('user_data--',user_data)
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        MSID = get_service_plan('set password')
+        if MSID is None:
+            print('MSID not found') 
+        payload_form = {
+            'email':email,
+            'new_password':new_password,
+            'confirm_password':confirm_password
+        }
+        data = {
+            'ms_id': MSID,
+            'ms_payload': payload_form
+        }
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        print('response', response)
+        if response['status_code'] == 0:
+            return redirect('login')
+        else:
+            return render(request, "Auth/set_password.html",{'email':email,'set_password_error':response['data']})
+    else:
+        return render(request, "Auth/set_password.html",{'email':email})
 def userprofile_list(request):
     try:
         token = request.session['user_token']
@@ -697,11 +887,11 @@ def userprofile_create(request):
         context={
             'roles': 'active', 'roles_show': 'show','form':form,'screen_name':"User Profile Creation"
         }
-        return render(request,'create.html',context)
+        return render(request,'UserManagement/UserProfile.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error})  
 
-def userprofile_edit(request,pk):
+def userprofile_edit(request,id):
     try:
         token = request.session['user_token']
 
@@ -724,7 +914,7 @@ def userprofile_edit(request,pk):
         if MSID is None:
             print('MISID not found') 
         payload_form={
-            'id':pk
+            'id':id
         }     
         data={
             'ms_id':MSID,
@@ -747,7 +937,8 @@ def userprofile_edit(request,pk):
                 if MSID is None:
                     print('MISID not found') 
                 cleaned_data=form.cleaned_data
-                cleaned_data['id']=pk  
+                print('cleaned_data',cleaned_data)
+                cleaned_data['id']=id  
                 data={
                     'ms_id':MSID,
                     'ms_payload':cleaned_data
@@ -757,7 +948,7 @@ def userprofile_edit(request,pk):
             
                 if response['status_code'] ==  0:                  
                     messages.info(request, "Well Done..! Application Submitted..")
-                    return redirect('roles')
+                    return redirect('userprofile_list')
                 else:
                     messages.info(request, "Oops..! Application Failed to Submitted..")
             else:
@@ -766,10 +957,10 @@ def userprofile_edit(request,pk):
         context={
             'roles': 'active', 'roles_show': 'show','form':form,'screen_name':"Roles"
         }
-        return render(request,'create.html',context)
+        return render(request,'UserManagement/UserProfile.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error})   
-def userprofile_delete(request,pk):
+def userprofile_delete(request,id):
     try:
         token = request.session['user_token']
 
@@ -777,7 +968,7 @@ def userprofile_delete(request,pk):
         if MSID is None:
             print('MISID not found') 
         payload_form={
-            'id':pk
+            'id':id
         }     
         data={
             'ms_id':MSID,
@@ -788,7 +979,7 @@ def userprofile_delete(request,pk):
         print('response',response)
         if response['status_code'] ==  0:                  
             messages.info(request, "Well Done..! Application Submitted..")
-            return redirect('roles')
+            return redirect('userprofile_list')
         else:
             messages.info(request, "Oops..! Application Failed to Submitted..")
 
