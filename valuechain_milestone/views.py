@@ -405,36 +405,6 @@ def activities_delete(request,pk):
     except Exception as error:
         return render(request, "error.html", {"error": error})
 
-def loan_list(request):
-    try:
-        token = request.session['user_token']
-        company_id = request.session.get('company_id')
-
-        MSID = get_service_plan('getting loan tranches') # getting_loan_tranches
-        if MSID is None:
-            print('MSID not found')
-        payloads = {'company_id':company_id}
-        data = {'ms_id': MSID,'ms_payload': payloads}
-        json_data = json.dumps(data)
-        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
-        if response['status_code'] == 1:
-            return render(request,'error.html',{'error':str(response['data'])})
-        loan_details = response['data']
-
-        MSID = get_service_plan('create loanvaluechain') # create_loanvaluechain
-        if MSID is None:
-            print('MSID not found')
-        payloads = {'company_id':company_id}
-        data = {'ms_id': MSID,'ms_payload': payloads}
-        json_data = json.dumps(data)
-        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
-        if response['status_code'] == 1:
-            return render(request,'error.html',{'error':str(response['data'])})
-        
-        context = {'loan_details':loan_details}
-        return render(request,'valuechain/loan_list.html',context)
-    except Exception as error:
-        return render(request, "error.html", {"error": error})
 
 def show_trenches(request,pk): # pk = is the loan id
     try:
