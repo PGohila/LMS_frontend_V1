@@ -125,5 +125,8 @@ urlpatterns = [
 
 
     path('document_delete/<entity_id>/<folder_id>/<document_id>/', document_delete,name='document_delete'),
+    path('aggrement_template_create/', aggrement_template_create,name='aggrement_template_create'),
+    path('aggrement_template_list/', aggrement_template_list,name='aggrement_template_list'),
+    path('aggrement_template_view/<template_id>/', aggrement_template_view,name='aggrement_template_view'),
 
 ]

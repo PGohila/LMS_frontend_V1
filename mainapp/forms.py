@@ -175,11 +175,17 @@ class LoanAgreementForm(forms.Form):
 	customer_id = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 	loan_id = forms.CharField(max_length=20, widget=forms.TextInput(attrs={"class": "form-control"}), required=True)
 	loanapp_id = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	agreement_terms = forms.CharField(required=True,widget=forms.Textarea(attrs={"class": "form-control"}))
-	attachment = forms.FileField(required=False, label='Borrower Signature')
-	attachment1 = forms.FileField(required=False, label='Lender Signature')
-	maturity_date = forms.DateField(required=False, widget=forms.DateTimeInput(attrs={"class": "form-control","type": "date"}))
-	is_active = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
+	agreement_template = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
+	# attachment = forms.FileField(required=False, label='Borrower Signature')
+	# attachment1 = forms.FileField(required=False, label='Lender Signature')
+	# maturity_date = forms.DateField(required=False, widget=forms.DateTimeInput(attrs={"class": "form-control","type": "date"}))
+	# is_active = forms.BooleanField(required=True,widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
+	
+	def __init__(self, *args, **kwargs):
+		template_list = kwargs.pop('template_choice', [])
+		super().__init__(*args, **kwargs)
+		self.fields['agreement_template'].choices = [(item['id'], f"{item['template_name']}") for item in template_list]
+
 
 
 
@@ -594,3 +600,8 @@ class DocumentEntityForm(forms.Form):
     ]
     entity_type = forms.ChoiceField(label='Entity Type', choices=ENTITY_TYPE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}), required=False)
+
+from ckeditor.widgets import CKEditorWidget
+
+class TemplateForm(forms.Form):
+    content = forms.CharField(widget=CKEditorWidget(), label="Content")
