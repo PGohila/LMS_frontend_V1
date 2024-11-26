@@ -331,18 +331,17 @@ def customer_edit(request,pk):
                 response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
                 if response['status_code'] == 0:
                     messages.info(request, "Well Done..! Application Submitted..")
-                    return redirect('/customer')
+                    return redirect('customer_view')
                 else:
                     # return JsonResponse({'error': 'Failed to save form data'}, status=400)
                     messages.info(request, "Oops..! Application Failed to Submitted..")
             else:
                 print('errorss',form.errors) 
 
-        context={   
+        context = {   
             "customer_view_active":"active",
             "form":form,
             "edit":True,
-            
         }
         return render(request, 'customer_management/customer.html',context)   
     except Exception as error:
@@ -351,12 +350,11 @@ def customer_edit(request,pk):
 def customer_delete(request,pk):
     try:
         token = request.session['user_token']
-
         MSID= get_service_plan('delete customer')
         if MSID is None:
             print('MISID not found') 
         payload_form = { "customer_id":pk}
-        data={
+        data = {
             'ms_id':MSID,
             'ms_payload':payload_form
         }
@@ -365,7 +363,7 @@ def customer_delete(request,pk):
         if response['status_code'] == 0:
             
             messages.info(request, "Well Done..! Application Submitted..")
-            return redirect('customer')
+            return redirect('customer_view')
         else:
             messages.info(request, "Oops..! Application Failed to Submitted..")
     except Exception as error:
@@ -765,7 +763,7 @@ def application_status_tracking(request,pk): # pk = application id
 # loan eligibilities check
 # disply active and document verified applications list
 def show_active_applications(request): 
-    # try:
+    try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
         # ================== check over all submited applications eligibility ==============================
@@ -805,8 +803,8 @@ def show_active_applications(request):
 
         context =  {'submitted_data':active_data,'eligible_data':eligible_data,'ineligible_data':ineligible_data}
         return render(request,"loan_approval/verified_applications.html",context)
-    # except Exception as error:
-    #     return render(request, "error.html", {"error": error}) 
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
 
 def eligibility_status(request,pk): # pk = application_id
     try:
@@ -1300,7 +1298,7 @@ def agreement_confirmation(request,pk): # pk = agreement id
             approve = request.POST.get('Confirmed')
             rejected = request.POST.get('Reject')
             if approve == "Confirmed":
-                MSID = get_service_plan('loanagreement confirmation') # loanagreement confirmation
+                MSID = get_service_plan('loanagreement confirmation') # loanagreement_confirmation
                 if MSID is None:
                     print('MISID not found') 
                 payload_form = {'company_id':company_id,'loanagreementid':pk,'status':'Completed'}
