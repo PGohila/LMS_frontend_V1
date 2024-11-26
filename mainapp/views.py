@@ -802,8 +802,11 @@ def show_active_applications(request):
         active_data = [entry for entry in application_records if entry['is_active'] == True]
         eligible_data = [entry for entry in application_records if entry['is_eligible'] == True and entry['is_active'] == True]
         ineligible_data = [entry for entry in application_records if entry['is_eligible'] == False and entry['is_active'] == True]
-
-        context =  {'submitted_data':active_data,'eligible_data':eligible_data,'ineligible_data':ineligible_data}
+        print("=============",active_data)
+        print("=============",eligible_data)
+        print("=============",ineligible_data)
+        
+        context =  {'is_eligible':True,'submitted_data':active_data,'eligible_data':eligible_data,'ineligible_data':ineligible_data}
         return render(request,"loan_approval/verified_applications.html",context)
     # except Exception as error:
     #     return render(request, "error.html", {"error": error}) 
@@ -826,7 +829,7 @@ def eligibility_status(request,pk): # pk = application_id
         if response['status_code'] == 1:
             return render(request,'error.html',{'error':str(response['data'])})
         eligibility_status = response['data'][0]
-        
+
         context = {'is_eligible':eligibility_status['eligible_status'],'reject_reason':eligibility_status['errors']}
         return render(request,"loan_approval/eligibility_status.html",context)
     except Exception as error:

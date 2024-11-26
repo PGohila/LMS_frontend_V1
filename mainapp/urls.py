@@ -21,7 +21,7 @@ urlpatterns = [
     path('customer_list/', customer_list, name='customerlist'),
     path('uploadmultidocument_customer/<pk>/', uploadmultidocument_customer, name='uploadmultidocumentcustomer'),
 
-    path('customerdocuments/', customerdocuments_create, name='customerdocuments'),
+    # path('customerdocuments/', customerdocuments_create, name='customerdocuments'),
     path('customer_view_fordoc/', customer_view_fordoc, name='customer_view_fordoc'),
 
     path('loanapplication/', loanapplication_create, name='loanapplication'),
