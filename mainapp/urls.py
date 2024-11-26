@@ -45,7 +45,8 @@ urlpatterns = [
     path('loan_approval/<pk>/', loan_approval, name='loanapproval'),
 
     path('list_approved_applications/', list_approved_applications, name='listapprovedapplications'),
-    path('create_agreement/<pk>', create_agreement, name='createagreement'),
+    path('create_agreement/<pk>/', create_agreement, name='createagreement'),
+    path('agreement_review/<loanapp_id>/<template_id>/', agreement_review, name='agreement_review'),
     path('list_agreement/', list_agreement, name='list_agreement'),
     path('agreement_confirmation/<pk>', agreement_confirmation, name='agreementconfirmation'),
     path('edit_agreement/<pk>', edit_agreement, name='editagreement'),
@@ -129,6 +130,9 @@ urlpatterns = [
     #============Ac
     path('customer_folder_delete/<entity_id>/<folder_id>/',customer_folder_delete,name="customer_folder_delete"),
     path('document_delete/<entity_id>/<folder_id>/<document_id>/', document_delete,name='document_delete'),
+    path('aggrement_template_create/', aggrement_template_create,name='aggrement_template_create'),
+    path('aggrement_template_list/', aggrement_template_list,name='aggrement_template_list'),
+    path('aggrement_template_view/<template_id>/', aggrement_template_view,name='aggrement_template_view'),
     path('document_edit/<entity_id>/<folder_id>/', document_edit,name='document_edit'),
 
 
