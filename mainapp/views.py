@@ -800,8 +800,11 @@ def show_active_applications(request):
         active_data = [entry for entry in application_records if entry['is_active'] == True]
         eligible_data = [entry for entry in application_records if entry['is_eligible'] == True and entry['is_active'] == True]
         ineligible_data = [entry for entry in application_records if entry['is_eligible'] == False and entry['is_active'] == True]
-
-        context =  {'submitted_data':active_data,'eligible_data':eligible_data,'ineligible_data':ineligible_data}
+        print("=============",active_data)
+        print("=============",eligible_data)
+        print("=============",ineligible_data)
+        
+        context =  {'is_eligible':True,'submitted_data':active_data,'eligible_data':eligible_data,'ineligible_data':ineligible_data}
         return render(request,"loan_approval/verified_applications.html",context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
@@ -824,7 +827,7 @@ def eligibility_status(request,pk): # pk = application_id
         if response['status_code'] == 1:
             return render(request,'error.html',{'error':str(response['data'])})
         eligibility_status = response['data'][0]
-        
+
         context = {'is_eligible':eligibility_status['eligible_status'],'reject_reason':eligibility_status['errors']}
         return render(request,"loan_approval/eligibility_status.html",context)
     except Exception as error:
@@ -2191,6 +2194,8 @@ def repayment_schedule(request,pk): # pk = loan id
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
 
+
+
 def disbursedloans_foroverview(request):
     try:
         token = request.session['user_token']
@@ -2220,6 +2225,153 @@ def schedule_overview(request,pk):  # pk = loan id
         return render(request,'repayment_schedule/schedule_overview.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
+
+
+
+#---------------------------------------repayment 2 ----------------------------
+
+
+def disbursed_loans1(request):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        # getting loans
+        MSID = get_service_plan('view loan') # view_loan
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company':company_id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        
+        active_loan  = [data for data in response['data'] if data['is_active'] == True and data['workflow_stats'] == 'Disbursment']
+        
+        context = {'records':active_loan}
+        return render(request,'repayment_schedule1/disbursed_loans1.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+
+def repayment_schedule1(request,pk): # pk = loan id
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+         # getting loans
+        MSID = get_service_plan('view loan') # view_loan
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'loan_id':pk}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        loan_data = response['data'][0]
+
+        MSID = get_service_plan('getting repayment schedules') # getting_repayment_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company_id':company_id,'loanapp_id':pk}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        schedules = response['data']
+        # calculate Total amount Due
+        
+        total_installment_amount = sum(item['instalment_amount'] for item in schedules)
+        total_paid_amount = sum(item['paid_amount'] for item in schedules)
+        
+        # next payments
+        
+        if request.method == 'POST':
+            MSID = get_service_plan('confirmed schedule') # confirmed_schedule
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'loan_id':pk}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            return redirect('disbursed_loans')
+
+        context = {'schedules':response['data'],'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount}
+        return render(request,'repayment_schedule1/repayment_schedule1.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+
+def disbursedloans_foroverview1(request):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        # getting loans
+        MSID = get_service_plan('view loan') # view_loan
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company':company_id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        
+        active_loan  = [data for data in response['data'] if data['is_active'] == True and data['workflow_stats'] == 'Disbursment']
+        
+        context = {'records':active_loan}
+        return render(request,'repayment_schedule1/disbursedloans_overview1.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+def schedule_overview1(request,pk):  # pk = loan id
+    try:
+        context = {}
+        return render(request,'repayment_schedule1/schedule_overview1.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+
+def payment_process(request,schedule_id):
+    try:
+        token = request.session['user_token'] 
+        company_id = request.session.get('company_id') 
+        MSID = get_service_plan('getting schedule') # getting_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'schedule_id':schedule_id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        schedule = response['data']
+        print('schedule',schedule)
+
+
+        if request.method == 'POST':
+            MSID = get_service_plan('paid schedule') # paid
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'schedule_id':schedule_id}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            return redirect('disbursed_loans1')
+
+        context= {'schedule':response['data']}
+        return render(request,'repayment_schedule1/payment_process.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+        
 
 
 

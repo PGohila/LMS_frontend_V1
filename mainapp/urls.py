@@ -70,14 +70,17 @@ urlpatterns = [
     path('repayment_schedule/<pk>/', repayment_schedule, name='repayment_schedule'),
     path('disbursedloans_foroverview/', disbursedloans_foroverview, name='disbursedloans_foroverview'),
     path('schedule_overview/<pk>/', schedule_overview, name='schedule_overview'),
-
     path('loancalculators/', loancalculators_create, name='loancalculators'),
 
     path('loan_list/', loan_list, name='loan_list'),
     path('account_list/<id>', account_list, name='account_list'),
     
-
-    
+#--------------- repayment 2 ----------------------
+    path('disbursed_loans1/', disbursed_loans1, name='disbursed_loans1'),
+    path('repayment_schedule1/<pk>/', repayment_schedule1, name='repayment_schedule1'),
+    path('disbursedloans_foroverview1/', disbursedloans_foroverview1, name='disbursedloans_foroverview1'),
+    path('schedule_overview1/<pk>/', schedule_overview1, name='schedule_overview1'),
+    path('payment_process/<schedule_id>/', payment_process, name='payment_process'),
     #================== Setting urls ================
     path('identificationtype/', identificationtype_create, name='identificationtype'),
     path('identificationtype-view/', identificationtype_view, name='identificationtype_view'),
