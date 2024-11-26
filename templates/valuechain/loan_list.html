@@ -60,12 +60,14 @@
                                     <td>{{data.tenure}} {{data.tenure_type}}</td>
                             
                                     <td>
-                                      <a href="#"><span data-toggle="tooltip" title="edit" style="color: black;"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
+                                      {% if data.disbursement_trenches %}
+                                      <a href="{% url 'loan_detail_trenches' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
                                       </button></a>
-                                      <a href="{% url 'customer_edit' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"> <button class="btn btn-secondary btn-sm" type="button"><i class='fa fa-edit'></i>
+                                      {% else %}
+                                      <a href="{% url 'loan_upadate_trenches' data.id %}"><span data-toggle="tooltip" title="Apply disbursement trenches" style="color: black;"> <button class="btn btn-danger btn-sm" type="button"><i class="fa fa-clone"></i>
                                       </button></a>
-                                        <a href="{% url 'customer_delete' data.id %}"><span data-toggle="tooltip" title="Delete" style="color: black;"><button class="btn btn-danger btn-sm" type="button"><i class='fa fa-remove' onclick="alert('You want to Delete this Item..?')"></i>
-                                        </button></a>
+                                      {% endif %}
+                                     
                 
                                     </td>
                                 </tr>

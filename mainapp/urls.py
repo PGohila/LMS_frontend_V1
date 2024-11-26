@@ -139,4 +139,9 @@ urlpatterns = [
     path('audit_view', audit_view, name='audit_view'),
     path('document_list/', document_list, name='document_list'),
     path('customer_document_view/<pk>/',customer_document_view, name='customer_document_view'),
+    path('loan_detail_trenches/<loanapp_id>/',loan_detail_trenches, name='loan_detail_trenches'),
+    path('loan_upadate_trenches/<loanapp_id>/',loan_upadate_trenches, name='loan_upadate_trenches'),
+    path('milstone_edit_v1/<loanapp_id>/',milstone_edit_v1, name='milstone_edit_v1'),
+    path('milstone_activity_edit_v1/<loanapp_id>/',milstone_activity_edit_v1, name='milstone_activity_edit_v1'),
+    path('milstone_activity_create_v1/<loanapp_id>/',milstone_activity_create_v1, name='milstone_activity_create_v1'),
 ]
