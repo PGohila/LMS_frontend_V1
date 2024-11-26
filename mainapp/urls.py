@@ -147,4 +147,5 @@ urlpatterns = [
     path('milestone_activity_delete_v1/<loanapp_id>/<activity_id>/',milestone_activity_delete_v1, name='milestone_activity_delete_v1'),
     path('milestone_delete_v1/<loanapp_id>/<milestone_id>/',milestone_delete_v1, name='milestone_delete_v1'),
     path('milestone_create_v1/<loanapp_id>/',milestone_create_v1, name='milestone_create_v1'),
+    path('agreement_signature_update/<agreement_id>/',agreement_signature_update, name='agreement_signature_update'),
 ]
