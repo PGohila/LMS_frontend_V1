@@ -42,7 +42,8 @@ urlpatterns = [
     path('loan_approval/<pk>/', loan_approval, name='loanapproval'),
 
     path('list_approved_applications/', list_approved_applications, name='listapprovedapplications'),
-    path('create_agreement/<pk>', create_agreement, name='createagreement'),
+    path('create_agreement/<pk>/', create_agreement, name='createagreement'),
+    path('agreement_review/<loanapp_id>/<template_id>/', agreement_review, name='agreement_review'),
     path('list_agreement/', list_agreement, name='list_agreement'),
     path('agreement_confirmation/<pk>', agreement_confirmation, name='agreementconfirmation'),
     path('edit_agreement/<pk>', edit_agreement, name='editagreement'),

@@ -1206,7 +1206,9 @@ def create_agreement(request,pk):
                 cleaned_data['customer_id'] = loan_data['customer']['id']
                 cleaned_data['loan_id'] = loan_data['id']
                 cleaned_data['loanapp_id'] = loan_data['loanapp_id']['id']
+                agreement_template = cleaned_data['agreement_template'] 
 
+                # return redirect(f"/agreement_review/{pk}/{agreement_template}/")
                 data = {'ms_id':MSID,'ms_payload':cleaned_data} 
                 json_data = json.dumps(data)
                 response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
