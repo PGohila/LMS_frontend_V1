@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<style>
+   
+
+    .total-risk-section {
+        text-align: center;
+    }
+    
+    .risk-score {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .progress-bar {
+        width: 80%;
+        height: 20px;
+        background-color: #ddd;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        overflow: hidden;
+    }
+    
+    .progress {
+        height: 100%;
+        background-color: #4caf50;
+        border-radius: 10px;
+    }
+    
+    
+    </style>
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Value Chain Detail</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Details</li>
+          <li class="breadcrumb-item active">Value Chain Detail</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">Value Chain Detail</h5>
+                    <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tr>
+                        <th >loan Type</th><td style="width: 250px;"> {{valuechain_details.loan_type.loantype}}</td>
+                        <th>Value Chain Name</th><td style="width: 250px;">{{valuechain_details.valuechain_name}}</td>
+                        </tr>
+                        <tr>
+                            <th>Minimum Amount</th><td style="width: 250px;">{{valuechain_details.min_amount}}</td>
+                            <th>Maximum Amount</th><td style="width: 250px;">{{valuechain_details.max_amount}}</td>
+                        </tr>
+                   
+                     
+                        
+                    </table>
+                    </div>
+                    
+      
+                  </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body"><br>
+                        <h5 class="card-title">Add Milestones for Loantype</h5>
+                        <div class="table-responsive">
+                            <form method="POST">
+                                {% csrf_token %}
+                            
+                            <table class="table table-bordered">
+                                <tr>
+                            
+                                    <th>Milestone Name</th>
+                                    <th>Max Amount</th>
+                                    <th>Min Amount</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                    
+                                </tr>
+                                <tr>
+                                    <td><input type="text" name="milestone_name"  class="form-control"></td>
+                                    <td><input type="number" name="MaxAmount" class="form-control" required></td>
+                                    <td><input type="number" name="MinAmount" class="form-control" required></td>
+                                    <td><textarea name="description" id="description" class="form-control" style="height: 70px;  width: 400px;"></textarea></td>
+                                    <td><button type="submit" class="btn btn-primary" style="font-size: 16px;" id="openModal">
+                                        <i class="fas fa-plus"></i>
+                                    </button></td>
+                                </tr>
+                            </table>
+                        </form>
+                        </div>
+                    </div>
+
+                    </div>
+            </div>
+         
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body"><br>
+                        <h5 class="card-title">List Milestones for Loantype</h5>
+                        <div class="table-responsive">
+                           
+                            
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Value chain</th>
+                                    <th>Milestone Name</th>
+                                    <th>Max Amount</th>
+                                    <th>Min Amount</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                    
+                                </tr>
+                                {% for data in milestone_details %}
+                                <tr>
+                                    <td>{{data.valuechain_id.valuechain_name}}</td>
+                                    <td>{{data.milestone_name}}</td>
+                                    <td>{{data.max_amount}}</td>
+                                    <td>{{data.min_amount}}</td>
+                                    <td>{{data.description}}</td>
+                                    <td>
+                                        <a href="{% url 'add_milestonestages' data.id %}"><span data-toggle="tooltip" title="Add" style="color: black;"> <button class="btn btn-info btn-sm" type="button"><i class="fas fa-plus"></i>
+                                        </button></a>
+                                        <a href="{% url 'milestonesetup_edit' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"> <button class="btn btn-secondary btn-sm" type="button"><i class='fa fa-edit'></i>
+                                        </button></a>
+                                          <a href="{% url 'milestonesetupdelete' data.id %}"><span data-toggle="tooltip" title="Delete" style="color: black;"><button class="btn btn-danger btn-sm" type="button"><i class='fa fa-remove' onclick="alert('You want to Delete this Item..?')"></i>
+                                          </button></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                     
+                        </div>
+                    </div>
+
+                    </div>
+            </div>
+
+        </div>
+  
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}
+
+ 

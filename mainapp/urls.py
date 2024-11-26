@@ -18,6 +18,9 @@ urlpatterns = [
     path('customer-edit/<pk>/', customer_edit, name='customer_edit'),
     path('customer-delete/<pk>/', customer_delete, name='customer_delete'),
 
+    path('customer_list/', customer_list, name='customerlist'),
+    path('uploadmultidocument_customer/<pk>/', uploadmultidocument_customer, name='uploadmultidocumentcustomer'),
+
     path('customerdocuments/', customerdocuments_create, name='customerdocuments'),
     path('customer_view_fordoc/', customer_view_fordoc, name='customer_view_fordoc'),
 
@@ -69,6 +72,11 @@ urlpatterns = [
     path('schedule_overview/<pk>/', schedule_overview, name='schedule_overview'),
 
     path('loancalculators/', loancalculators_create, name='loancalculators'),
+
+    path('loan_list/', loan_list, name='loan_list'),
+    path('account_list/<id>', account_list, name='account_list'),
+    
+
     
     #================== Setting urls ================
     path('identificationtype/', identificationtype_create, name='identificationtype'),
@@ -106,7 +114,7 @@ urlpatterns = [
     path('matter_workspace/', customer_workspace,name='matter_workspace'),
     path('document_storage/<entity_id>/', document_storage, name='document_storage'),
     path('folder/<entity_id>/<folder_id>/', folder, name='folder'),
-
+    path('client_folder_delete/<entity_id>/<folder_id>/',client_folder_delete,name="client_folder_delete"),
 
     path('create_folder/<entity_id>/', create_folder,name='create_folder'),
     path('create_sub_folder/<entity_id>/<folder_id>/', create_sub_folder,name='create_sub_folder'),
@@ -119,15 +127,16 @@ urlpatterns = [
 
     path('document_view/<entity_id>/<folder_id>/<document_id>/', document_view,name='document_view'),
     path('document_version/<document_id>/', document_version,name='document_version'),
-
-
     #============Ac
     path('customer_folder_delete/<entity_id>/<folder_id>/',customer_folder_delete,name="customer_folder_delete"),
-
-
     path('document_delete/<entity_id>/<folder_id>/<document_id>/', document_delete,name='document_delete'),
     path('aggrement_template_create/', aggrement_template_create,name='aggrement_template_create'),
     path('aggrement_template_list/', aggrement_template_list,name='aggrement_template_list'),
     path('aggrement_template_view/<template_id>/', aggrement_template_view,name='aggrement_template_view'),
+    path('document_edit/<entity_id>/<folder_id>/', document_edit,name='document_edit'),
 
+
+    path('audit_view', audit_view, name='audit_view'),
+    path('document_list/', document_list, name='document_list'),
+    path('customer_document_view/<pk>/',customer_document_view, name='customer_document_view'),
 ]

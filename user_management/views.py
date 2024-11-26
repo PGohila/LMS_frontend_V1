@@ -93,8 +93,7 @@ def user_registration(request):
                 if MSID is None:
                     print('MISID not found')      
                 cleaned_data = form.cleaned_data
-                
-                
+        
                 data={
                     'ms_id':MSID,
                     'ms_payload':cleaned_data
@@ -103,10 +102,13 @@ def user_registration(request):
                 response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
                 
                 if response['status_code'] ==  0:                  
-                    messages.info(request, "Well Done..! Application Submitted..")
+                    messages.info(request, "Successfully created User")
                     return redirect('user_list')
                 else:
-                    messages.info(request, "Oops..! Application Failed to Submitted..")
+                    context = {
+                        'form': form, 'user_registration': 'active', 'user_registration_show': 'show','userprofile':userprofile,"error": response['data']
+                    }
+                    return render(request, 'UserManagement/user_registration.html', context)
         else:
             form = UserRegistrationForm()
 
@@ -593,7 +595,7 @@ def multi_factor_authentication(request):
                 otp_error = 'Invailed OTP'              
                 return render(request, 'UserManagement/otp_verification.html',{'otp_error':otp_error})
         
-            return redirect('company_selecting')
+            return redirect('dashboard')
         else:
             MSID= get_service_plan('generate and send otp')
             if MSID is None:
@@ -635,6 +637,8 @@ def login(request):
                 login_tokes = login_response.json()
                 request.session['user_token']=login_tokes['access_token']
                 request.session['user_data']=login_tokes['user_data']
+
+
                 request.session['user_permissions'] = login_tokes['user_permission']['permission']
                 user_data=login_tokes['user_data']
                 print('user_data',request.session['user_permissions'])
@@ -656,9 +660,13 @@ def login(request):
                 # request.session['permission'] = response['data_list']
                 
                 if user_data['multi_factor_auth'] or user_data['is_superuser']:
-                    return redirect('company_selecting')
+                    if user_data['is_superuser']:
+                        return redirect('company_selecting')
+                    else:
+                        return redirect('dashboard')
                 elif not user_data['multi_factor_auth']:
                     return redirect('multi_factor_authentication')
+
             else:
                 login_error='Invalid Username or Password'
                 context={"login_error":login_error}
