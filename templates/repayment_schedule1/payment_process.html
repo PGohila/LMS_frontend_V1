@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Repayment Schedule</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Repayment Schedule 1</li>
+        </ol>
+      </nav>
+                          
+      <section class="section">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Payment Schedule Details</h5>
+                {% for data in schedule %}
+                <table style="font-size: 12px; line-height: 20px;">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <table style="background-color: #FFF; padding: 30px; border: 1px solid #D7DAE0;width: 100%;font-size: 15px; line-height: 20px; table-layout: fixed;">
+                          <tbody>
+                            <tr>
+                              <td style="vertical-align: top;padding-bottom: 20px;">
+                                <table style="table-layout: fixed;width:-webkit-fill-available;">
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;SI.No:</th>
+                                    <td>{{ forloop.counter }}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Schedule ID:</th>
+                                    <td><a href="#">{{ data.schedule_id }}</a></td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Payment Date:</th>
+                                    <td>{{ data.repayment_date }}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Amount Due:</th>
+                                    <td>${{ data.instalment_amount }}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Interest Amount:</th>
+                                    <td>${{ data.interest_amount }}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                              <td style="vertical-align: top;padding-bottom: 20px;">
+                                <table style="table-layout: fixed;width:-webkit-fill-available;">
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Amount To be Paid:</th>
+                
+                                    <td>${{ data.remaining_balance }}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Payment Status:</th>
+                                    <td>{{ data.repayment_status }}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Payment Method:</th>
+                                    <td>{% if data.payment_method == None %} - {% else %} {{ data.payment_method }} {% endif %}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Transaction ID:</th>
+                                    <td>{% if data.transaction_id == None %} - {% else %} {{ data.transaction_id }} {% endif %}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+      {% endfor %}
+               
+                <form method="post">
+                    {% csrf_token %}
+                
+                <!-- Action Buttons -->
+                <div class="button-container">
+                    
+                    <button class="btn btn-success btn-sm" type="submit"> Make Payment</button>
+                </div>
+            </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}
+
+ 
