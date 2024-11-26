@@ -41,7 +41,7 @@
             {{form.category_name.label_tag}}
             {{ form.category_name }}
           </div>
-          <div class="col-md-11 mb-3">
+          {% comment %} <div class="col-md-11 mb-3">
             <label for="">Department</label>
             <select name="department_id" id="id_department" class="form-control">
               <option value="">Select</option>
@@ -49,12 +49,8 @@
               <option value="{{data.id}}">{{data.department_name}}</option>
               {% endfor %}
             </select>
-          </div>
-          <div class="col-md-1" style="padding-top: 30px;">
-            <a onclick="openDepartment()">
-              <button type="button" class="btn btn-primary ml-auto">+</button>
-            </a>
-          </div>
+          </div> {% endcomment %}
+          
           <div class="col-md-12 mb-3">
                   {{form.description.label_tag}}
                   {{ form.description }}
@@ -81,7 +77,6 @@
                             <tr style="white-space: nowrap;"> 
                                 <th>S.no</th>
                                 <th>Category name</th>
-                                <th>Department</th>
                                 <th>Description</th>
                                 <th>Action</th>
                             </tr>
@@ -91,7 +86,6 @@
                             <tr>
                                 <td>{{forloop.counter}}</td>                            
                                 <td>{{data.category_name}}</td>
-                                <td>{{data.department.department_name}}</td>
                                 <td>{{data.description}}</td>
                                 <td>
                                     <div class="container">

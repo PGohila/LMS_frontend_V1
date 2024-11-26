@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_block %}
+<style>
+    .ck-editor .ck-editor__editable {
+        height: 250px;
+        /* Set height here */
+        width: 100%;
+        /* Set width here, or specify a fixed width */
+    }
+    .django-ckeditor-widget{
+        height: 250px;
+        /* Set height here */
+        width: 100% !important;
+
+    }
+</style>
+<main id="main" class="main">
+
+    <div class="pagetitle">
+
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item">template</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+
+            <div class="col-lg-12">
+                <br>
+                <h5 class="text text-warning mb-3">Your Template</h5>
+                <div class="card mb-12">
+                    <div class="card-body">
+                      
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <!-- Render the form fields dynamically -->
+                            <div class="form-group">
+                               <label for="">Template name</label>
+                                <input type="text" name="template_name" class="form-control" value="{{record.template_name}}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ form.content.id_for_label }}">{{ form.content.label }}</label>
+                                <br>
+                                {{ form.content }} <!-- This will render the RichTextField editor -->
+                            </div>
+                            <p class="" style="font-size: smaller; color: rgba(48, 46, 46, 0.811);">
+                                {{help_text}}
+                                <br style="color: rgb(69, 68, 68);">
+                                This content contains placeholders that will be replaced with specific values during the generation process. If additional placeholders are needed, create a new name for the tag, and we will ask for the corresponding value to include it in the final output.
+                            </p>
+
+                            <div style="padding-top: 30px; display: flex; gap: 10px;">
+                                {% if not view %}
+                                <button type="submit" class="btn btn-primary">
+                                    Submit
+                                </button>
+                                {% endif %}
+                                <a href="" class="btn btn-danger">
+                                    Back
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+
+<script src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        ClassicEditor
+            .create(document.querySelector('#id_content')) // Initialize CKEditor on the textarea
+            .catch(error => {
+                console.error('There was a problem initializing the editor:', error);
+            });
+    });
+</script>
+{% endblock %}

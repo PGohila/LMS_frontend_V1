@@ -1,73 +1,114 @@
 {% extends 'base.html' %}
 {% block body_block %}
-{% load static %}
-<style>
-    .form-check-input{
-        padding: 100px !important;
-        background-color: black;
-    }
-    .errorlist{
-        color: red;
-    }
-</style>
-<div class="content-wrapper">
-    <div class="col-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-header">
-                <h3>User Edit</h3>
-            </div>
+<body>
+  <main id="main" class="main">
+
+    <!-- Page Title -->
+    <div class="pagetitle">
+      <h1>User Edit</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Settings</li>
+          <li class="breadcrumb-item active">User Edit</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <!-- Section -->
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
             <div class="card-body">
-                <form action="" method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        {{ form.first_name.label_tag }}
-                        {{ form.first_name }}
-                        {{ form.first_name.errors }}
+              <h5 class="card-title">Edit User</h5>
+
+              <!-- Vertical Form -->
+              <form method="post" class="row g-3">
+                {% csrf_token %}
+                
+                <!-- First Name -->
+                <div class="col-12">
+                  {{ form.first_name.label_tag }}
+                  {{ form.first_name }}
+                  {% if form.first_name.errors %}
+                    <div class="errorlist">
+                      {{ form.first_name.errors }}
                     </div>
-                    <div class="form-group">
-                        {{ form.last_name.label_tag }}
-                        {{ form.last_name }}
-                        {{ form.last_name.errors }}
+                  {% endif %}
+                </div>
+                
+                <!-- Last Name -->
+                <div class="col-12">
+                  {{ form.last_name.label_tag }}
+                  {{ form.last_name }}
+                  {% if form.last_name.errors %}
+                    <div class="errorlist">
+                      {{ form.last_name.errors }}
                     </div>
-                    <div class="form-group">
-                        {{ form.email.label_tag }}
-                        {{ form.email }}
-                        {{ form.email.errors }}
+                  {% endif %}
+                </div>
+
+                <!-- Email -->
+                <div class="col-12">
+                  {{ form.email.label_tag }}
+                  {{ form.email }}
+                  {% if form.email.errors %}
+                    <div class="errorlist">
+                      {{ form.email.errors }}
                     </div>
-                    <div class="form-group">
-                        {{ form.phone_number.label_tag }}
-                        {{ form.phone_number }}
-                        {{ form.phone_number.errors }}
+                  {% endif %}
+                </div>
+
+                <!-- Phone Number -->
+                <div class="col-12">
+                  {{ form.phone_number.label_tag }}
+                  {{ form.phone_number }}
+                  {% if form.phone_number.errors %}
+                    <div class="errorlist">
+                      {{ form.phone_number.errors }}
                     </div>
-                    <div class="form-group">
-                        {{ form.password.label_tag }}
-                        {{ form.password }}
-                        {{ form.password.errors }}
+                  {% endif %}
+                </div>
+
+                <div class="col-12">
+                  {{ form.password.label_tag }}
+                  {{ form.password }}
+                  {% if form.password.errors %}
+                    <div class="errorlist">
+                      {{ form.password.errors }}
                     </div>
-                   
-                    <div class="form-group">
-                        <label for="roles">Role </label>
-                         <select name="roles" id="roles">
-                            <option value="">Select</option>
-                            {% for data in role %}
-                            <option value="{{data.id}}" {% if data.name == record.roles %} selected {% endif %}>{{data.name}}</option>
-                            {% endfor %}
-                         </select>
-                    </div>
-                    <div class="form-group">
-                        {{ form.maker.label_tag }}
-                        {{ form.maker }}
-                        {{ form.maker.errors }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.checker.label_tag }}
-                        {{ form.checker }}
-                        {{ form.checker.errors }}
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+                  {% endif %}
+                </div>
+
+                <!-- User Profile -->
+                <div class="col-12">
+                  <label for="roles">User Profile</label>
+                  <select name="user_profile" id="roles" class="form-control">
+                    <option value="">Select</option>
+                    {% for data in userprofile %}
+                      <option value="{{ data.id }}" {% if data.id == record.user_profile %} selected {% endif %}>
+                        {{ data.name }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="reset" class="btn btn-secondary">Reset</button>
+                </div>
+              </form><!-- Vertical Form -->
+
             </div>
+          </div>
+
         </div>
-    </div>
-</div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+</body>
 {% endblock %}

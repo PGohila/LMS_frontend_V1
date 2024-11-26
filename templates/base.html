@@ -277,6 +277,13 @@
             </li>
 
             <li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'change_password' %}">
+                <i class="bi bi-lock"></i>
+                <span>Change Password</span>
+              </a>
+            </li>
+
+            <li>
               <a class="dropdown-item d-flex align-items-center" href="{% url 'logout' %}">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
@@ -294,16 +301,16 @@
   {% endblock %}
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
-
+    
     <ul class="sidebar-nav" id="sidebar-nav">
-
+      {% comment %} {% if 'user_registration' in permission_user %} {% endcomment %}
       <li class="nav-item">
         <a class="nav-link " href="index.html">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
       </li><!-- End Dashboard Nav -->
-
+      {% comment %} {% endif %} {% endcomment %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-building"></i><span>Company</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -333,8 +340,13 @@
             </a>
           </li>
           <li>
-            <a href="{% url 'customerlist' %}">
+            <a href="{% url 'customer_list' %}">
               <i class="bi bi-circle"></i><span>Customer Document Upload</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'document_list' %}">
+              <i class="bi bi-circle"></i><span>Customer Document View</span>
             </a>
           </li>
           
@@ -435,6 +447,11 @@
               <i class="bi bi-circle"></i><span>Approve/Reject Loan</span>
             </a>
           </li>
+          <li>
+            <a href="{% url 'loan_list' %}">
+              <i class="bi bi-circle"></i><span>Approved Loans</span>
+            </a>
+          </li>
           
         </ul>
       </li>
@@ -443,6 +460,11 @@
           <i class="bi bi-file-earmark-check"></i><span>Loan Agreement</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="agreement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'aggrement_template_list' %}">
+              <i class="bi bi-circle"></i><span>Agreement template</span>
+            </a>
+          </li>
           <li>
             <a href="{% url 'listapprovedapplications' %}">
               <i class="bi bi-circle"></i><span>Generate Agreement</span>
@@ -630,6 +652,11 @@
             <i class="bi bi-circle"></i><span>Collateral Type</span>
           </a>
         </li>
+        <li>
+          <a href="{% url 'audit_view' %}">
+            <i class="bi bi-circle"></i><span>Audit Log</span>
+          </a>
+        </li>
         <!-- <li>
           <a href="">
              <i class="bi bi-circle"></i><span>Tax</span> 
@@ -720,15 +747,16 @@
           </a>
         </li>
         <li>
-          <a href="{% url 'user_list' %}">
-            <i class="bi bi-circle"></i><span>User</span>
-          </a>
-        </li>
-        <li>
           <a href="{% url 'userprofile_list' %}">
             <i class="bi bi-circle"></i><span>User Profile</span>
           </a>
         </li>
+        <li>
+          <a href="{% url 'user_list' %}">
+            <i class="bi bi-circle"></i><span>User</span>
+          </a>
+        </li>
+        
     </ul>
     </li>
  
