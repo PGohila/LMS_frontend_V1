@@ -2980,5 +2980,124 @@ def loantype_delete(request,pk):
             messages.info(request, "Oops..! Application Failed to Submitted..")
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
+    
+    
+#application status vice report
+def application_status_vice_report(request):    
+    
+    try:
+         token = request.session['user_token']
+         if request.method== "POST":
+           
+            from_date = request.POST.get('from_date')
+            to_date = request.POST.get('to_date')
+            status = request.POST.get('status')
+            print("datexxxxxx=====", to_date, from_date, status)
+            # date_dt = datetime.strftime(date, "%Y-%m-%d")
+            MSID = get_service_plan('filter loan applications')
+            if MSID is None:
+                 print('MISID not found')
+            payload_form = {
+                "to_date": to_date,
+                "from_date":from_date,
+                # "status":status
+            }
+            data={
+                 'ms_id':MSID,
+                'ms_payload':payload_form
+            }
+
+            json_data = json.dumps(data)
+            print("data=====", json_data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            print("response=====",response)
+            if response['status_code']==1:
+                messages.error(request,response['data'] )
+            else:
+                records = response['data']
+            return render(request,  "application_status_vice_report.html",{"records": records})
+
+         return render(request,  "application_status_vice_report.html" )
+        
+    except Exception as error:
+        return render(request,'500.html',{'error':error}) 
+    
+    
+    
+    # return render(request, "application_status_vice_report.html")
+    
+    
+#repayment
+def repayment(request):
+    try:
+         token = request.session['user_token']
+         if request.method== "POST":
+           
+            date = request.POST.get('date')
+            print("datexxxxxx=====", date)
+            # date_dt = datetime.strftime(date, "%Y-%m-%d")
+            MSID = get_service_plan('repayment report fillter')
+            if MSID is None:
+                 print('MISID not found')
+            payload_form = {
+                "date": date ,
+            }
+            data={
+                 'ms_id':MSID,
+                'ms_payload':payload_form
+            }
+
+            json_data = json.dumps(data)
+            print("data=====", json_data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            print("response=====",response)
+            if response['status_code']==1:
+                messages.error(request,response['data'] )
+            else:
+                records = response['data']
+            return render(request, "repayment.html", context={"records": records})
+
+         return render(request, "repayment.html" )
+        
+    except Exception as error:
+        return render(request,'500.html',{'error':error})
+    # return render(request, "repayment.html")
+    
+    
+    
+#dasboard
+def dasboard_repayment(request):
+    try:
+         token = request.session['user_token']
+         if request.method== "POST":
+           
+            date = request.POST.get('date')
+            print("datexxxxxx=====", date)
+            # date_dt = datetime.strftime(date, "%Y-%m-%d")
+            MSID = get_service_plan('repayment report fillter')
+            if MSID is None:
+                 print('MISID not found')
+            payload_form = {
+                "date": date ,
+            }
+            data={
+                 'ms_id':MSID,
+                'ms_payload':payload_form
+            }
+
+            json_data = json.dumps(data)
+            print("data=====", json_data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            print("response=====",response)
+            if response['status_code']==1:
+                messages.error(request,response['data'] )
+            else:
+                records = response['data']
+            return render(request, "dashboard.html", context={"records": records})
+
+         return render(request, "dashboard.html" )
+        
+    except Exception as error:
+        return render(request,'500.html',{'error':error})
 
 

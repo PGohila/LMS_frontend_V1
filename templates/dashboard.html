@@ -49,10 +49,32 @@
                     <span class="text-success small pt-1 fw-bold">5%</span> <span class="text-muted small pt-2 ps-1">increase</span>
 
                   </div>
+                  
+                </div>
+                <br>
+                <div class="card-body">
+                  <h5 class="card-title">Loans Issued <span>| Today</span></h5>
+    
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-cart"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>45</h6>
+                      <span class="text-success small pt-1 fw-bold">5%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+    
+                    </div>
+                    
+                  </div>
                 </div>
               </div>
 
+             
+
             </div>
+
+            
+
           </div><!-- End Sales Card -->
 
           <!-- Revenue Card -->
@@ -86,8 +108,27 @@
                   </div>
                 </div>
               </div>
+              <br>
+              <div class="card-body">
+                <h5 class="card-title" style="white-space: nowrap;">Total Repayments <span></span></h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-currency-dollar"></i>
+                  </div>
+                  <div class="ps-3">
+                    {% for data in records %}
+                    <h6><a href="#">{{ data.repayment_date }}</h6>
+                    {% endfor %}
+                    <span class="text-success small pt-1 fw-bold">3%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+
+                  </div>
+                </div>
+              </div>
+
 
             </div>
+            
           </div><!-- End Revenue Card -->
 
           <!-- Customers Card -->
@@ -107,6 +148,23 @@
                   <li><a class="dropdown-item" href="#">This Year</a></li>
                 </ul>
               </div>
+
+              <div class="card-body">
+                <h5 class="card-title" style="white-space: nowrap;">New Applications <span></span></h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-people"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>1,025</h6>
+                    <span class="text-danger small pt-1 fw-bold">10%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+
+                  </div>
+                </div>
+
+              </div>
+              <br>
 
               <div class="card-body">
                 <h5 class="card-title" style="white-space: nowrap;">New Applications <span></span></h5>

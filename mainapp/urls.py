@@ -11,13 +11,14 @@ urlpatterns = [
     path('company-view/', company_view, name='company_view'),
     path('company-edit/<pk>/', company_edit, name='company_edit'),
     path('company-delete/<pk>/', company_delete, name='company_delete'),
+    
     path('company-list/', customer_list, name='customer_list'),
-  
     path('customer/', customer_create, name='customer'),
     path('customer-view', customer_view, name='customer_view'),
     path('customer-edit/<pk>/', customer_edit, name='customer_edit'),
     path('customer-delete/<pk>/', customer_delete, name='customer_delete'),
 
+    # path('uploadmultidocument_customer/<pk>/',  uploadmultidocument_customer, name=" uploadmultidocument_customer"),
     path('customerdocuments/', customerdocuments_create, name='customerdocuments'),
     path('customer_view_fordoc/', customer_view_fordoc, name='customer_view_fordoc'),
 
@@ -125,5 +126,12 @@ urlpatterns = [
 
 
     path('document_delete/<entity_id>/<folder_id>/<document_id>/', document_delete,name='document_delete'),
+    
+    
+    #application status vice report
+    path('application_status_vice_report/', application_status_vice_report, name="application_status_vice_report"),
+    
+    #repayment
+    path('repayment/', repayment, name="repayment")
 
 ]
