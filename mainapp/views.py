@@ -1111,14 +1111,14 @@ def loan_list(request):
     except Exception as error:
         return render(request, "error.html", {"error": error})
 
-def account_list(request,id):
+def account_list(request,loan_id):
     try:
         token = request.session['user_token']
         MSID = get_service_plan('account list')
         if MSID is None:
                 print('MISID not found') 
         payload_form = {
-            "loan_id":id
+            "loan_id":loan_id
         }
         data = {
             'ms_id':MSID,

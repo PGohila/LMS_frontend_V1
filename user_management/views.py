@@ -39,6 +39,21 @@ def call_post_method_without_token(URL,data):
     response = requests.post(api_url,data=data,headers=headers)
     return response
 
+def call_post_method_without_token_forgot(URL, data):
+    api_url = URL
+    headers = {"Content-Type": "application/json"}  # No token included
+    try:
+        response = requests.post(api_url, json=data, headers=headers)
+        if response.status_code in [200, 201]:
+            print("Response if condition", response.status_code)
+            return {'status_code': 0, 'data': response.json()}
+        else:
+            print("Response status code", response.status_code)
+            return {'status_code': 1, 'data': response.json()}
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        return {'status_code': 1, 'data': 'Something went wrong'}
+
 
 
 def call_post_method_with_token_v2(URL, endpoint, data, access_token, files=None):
@@ -67,6 +82,7 @@ def call_post_method_with_token_v2(URL, endpoint, data, access_token, files=None
 def user_registration(request):
     try:
         token = request.session['user_token']
+        company_id = request.session.get('company_id')
         MSID= get_service_plan('userprofile list')
         if MSID is None:
             print('MISID not found') 
@@ -616,7 +632,7 @@ def multi_factor_authentication(request):
 
 
 def login(request):
-    # try:
+    try:
         # Check if the request method is POST
         
         if request.method == "POST":
@@ -673,8 +689,8 @@ def login(request):
                 return render(request, 'Auth/login.html',context)
           
         return render(request, 'Auth/login.html')
-    # except Exception as error:
-    #     return HttpResponse(f'<h1>{error}</h1>')
+    except Exception as error:
+        return HttpResponse(f'<h1>{error}</h1>')
     
   
 
@@ -700,7 +716,8 @@ def logout(request):
         print('response',response)
         print('response',response['data'])
         if response['status_code'] ==  0:   
-            request.session['user_permissions'] = []               
+            request.session.delete()
+
             return redirect('login')
         else:
             return redirect('dashboard')
@@ -744,12 +761,12 @@ def change_password(request):
 
 def forgot_password(request):
     try:
-        token = request.session['user_token']
         if request.method == 'POST':
             email = request.POST.get('email')
             otp = request.POST.get('otp')
             if not otp:
                 MSID = get_service_plan('forgot password')
+                print('MSID',MSID)
                 if MSID is None:
                     print('MSID not found') 
                 payload_form = {
@@ -760,9 +777,11 @@ def forgot_password(request):
                     'ms_payload': payload_form
                 }
                 json_data = json.dumps(data)
-                response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
-                print('response', response)
-                if response['status_code'] == 0:
+                url = BASEURL + 'micro-service-forgot/'
+                print('url',url)
+                response = call_post_method_without_token(url, json_data)
+                print('response2', response)
+                if response.status_code == 200:
                     return render(request, "UserManagement/otp_verification.html",{'email':email})
                 else:
                     return render(request, "Auth/forget_password_form.html", {"error": 'Invalid email ID'})
@@ -780,9 +799,11 @@ def forgot_password(request):
                     'ms_payload': payload_form
                 }
                 json_data = json.dumps(data)
-                response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
-                print('response', response)
-                if response['status_code'] == 0:
+                url = BASEURL + 'micro-service-forgot/'
+                print('url',url)
+                response = call_post_method_without_token(url, json_data)
+                print('response1', response)
+                if response.status_code == 200:
                     return redirect('set_password',email=email)
                 else:
                     return render(request, "UserManagement/otp_verification.html",{'email':email,'otp_error':response['data']})
@@ -812,9 +833,10 @@ def set_password(request,email):
             'ms_payload': payload_form
         }
         json_data = json.dumps(data)
-        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        url = BASEURL + 'micro-service-forgot/'
+        response = call_post_method_without_token(url, json_data)
         print('response', response)
-        if response['status_code'] == 0:
+        if response.status_code == 200:
             return redirect('login')
         else:
             return render(request, "Auth/set_password.html",{'email':email,'set_password_error':response['data']})
@@ -837,7 +859,7 @@ def userprofile_list(request):
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
         print('response',response)
         print('response',response['data'])
-        if response['status_code'] ==  1:                  
+        if response['status_code'] == 201:                
             messages.info(request, "Well Done..! Application Submitted..")
             print('error',response['data'])
         records=response['data']
