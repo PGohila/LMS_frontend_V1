@@ -38,15 +38,15 @@
               </div>
 
               <div class="card-body">
-                <h5 class="card-title">Loans Issued <span>| Today</span></h5>
+                <h5 class="card-title">Today Due Accounts <span></span></h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                     <i class="bi bi-cart"></i>
                   </div>
                   <div class="ps-3">
-                    <h6>45</h6>
-                    <span class="text-success small pt-1 fw-bold">5%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                    <h6>{{records.0.count_today_overdue}}</h6>
+                    {% comment %} <span class="text-success small pt-1 fw-bold">5%</span> <span class="text-muted small pt-2 ps-1">increase</span> {% endcomment %}
 
                   </div>
                 </div>
@@ -73,15 +73,15 @@
               </div>
 
               <div class="card-body">
-                <h5 class="card-title" style="white-space: nowrap;">Total Repayments <span></span></h5>
+                <h5 class="card-title" style="white-space: nowrap;">This Month Due Accounts <span></span></h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                     <i class="bi bi-currency-dollar"></i>
                   </div>
                   <div class="ps-3">
-                    <h6>$12,750</h6>
-                    <span class="text-success small pt-1 fw-bold">3%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                    <h6>{{records.0.count_of_overdue_this_month}}</h6>
+                    {% comment %} <span class="text-success small pt-1 fw-bold">3%</span> <span class="text-muted small pt-2 ps-1">increase</span> {% endcomment %}
 
                   </div>
                 </div>
@@ -109,15 +109,15 @@
               </div>
 
               <div class="card-body">
-                <h5 class="card-title" style="white-space: nowrap;">New Applications <span></span></h5>
+                <h5 class="card-title" style="white-space: nowrap;">Over due Accounts <span></span></h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                     <i class="bi bi-people"></i>
                   </div>
                   <div class="ps-3">
-                    <h6>1,025</h6>
-                    <span class="text-danger small pt-1 fw-bold">10%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+                    <h6>{{records.0.count_past_overdue}}</h6>
+                    {% comment %} <span class="text-danger small pt-1 fw-bold">10%</span> <span class="text-muted small pt-2 ps-1">decrease</span> {% endcomment %}
 
                   </div>
                 </div>
@@ -144,7 +144,7 @@
                 </ul>
               </div>
 
-              <div class="card-body">
+              {% comment %} <div class="card-body">
                 <h5 class="card-title">Loan Reports <span>/Today</span></h5>
 
                 <!-- Line Chart -->
@@ -212,7 +212,7 @@
               </script>
                 <!-- End Line Chart -->
 
-              </div>
+              </div> {% endcomment %}
 
             </div>
           </div><!-- End Reports -->
@@ -235,65 +235,40 @@
               </div>
 
               <div class="card-body">
-                <h5 class="card-title">Recent Applications <span>| Today</span></h5>
-
+                <h5 class="card-title">Recent Applications <span></span></h5>
+            
                 <table class="table table-borderless datatable">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Customer</th>
-                      <th scope="col">Loan Type</th>
-                      <th scope="col">Amount</th>
-                      <th scope="col">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row"><a href="#">#1457</a></th>
-                      <td>John Doe</td>
-                      <td><a href="#" class="text-primary">Personal Loan</a></td>
-                      <td>$5,000</td>
-                      <td><span class="badge bg-success">Approved</span></td>
-                    </tr>
-                    <tr>
-                      <th scope="row"><a href="#">#1458</a></th>
-                      <td>Jane Smith</td>
-                      <td><a href="#" class="text-primary">Mortgage</a></td>
-                      <td>$120,000</td>
-                      <td><span class="badge bg-warning">Pending</span></td>
-                    </tr>
-                    <tr>
-                      <th scope="row"><a href="#">#1459</a></th>
-                      <td>Bob Johnson</td>
-                      <td><a href="#" class="text-primary">Auto Loan</a></td>
-                      <td>$15,000</td>
-                      <td><span class="badge bg-danger">Rejected</span></td>
-                    </tr>
-                    <tr>
-                      <th scope="row"><a href="#">#1457</a></th>
-                      <td>John Doe</td>
-                      <td><a href="#" class="text-primary">Personal Loan</a></td>
-                      <td>$5,000</td>
-                      <td><span class="badge bg-success">Approved</span></td>
-                    </tr>
-                    <tr>
-                      <th scope="row"><a href="#">#1458</a></th>
-                      <td>Jane Smith</td>
-                      <td><a href="#" class="text-primary">Mortgage</a></td>
-                      <td>$120,000</td>
-                      <td><span class="badge bg-warning">Pending</span></td>
-                    </tr>
-                    <tr>
-                      <th scope="row"><a href="#">#1459</a></th>
-                      <td>Bob Johnson</td>
-                      <td><a href="#" class="text-primary">Auto Loan</a></td>
-                      <td>$15,000</td>
-                      <td><span class="badge bg-danger">Rejected</span></td>
-                    </tr>
-                  </tbody>
+                    <thead>
+                        <tr>
+                            <th scope="col">Application ID</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Applied At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in records.0.recent_application %}
+                            <tr>
+                                <th scope="row"><a href="#">{{ loan.application_id }}</a></th>
+                                <td>{{ loan.customer_id.firstname }}</td>
+                                <td>KES {{ loan.loan_amount }}</td>
+                                <td>
+                                    {% if loan.application_status == "Approved" %}
+                                        <span class="badge bg-success">Approved</span>
+                                    {% elif loan.application_status == "Rejected" %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ loan.applied_at }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
-
-              </div>
+            </div>
+            
 
             </div>
           </div><!-- End Recent Sales -->
@@ -316,58 +291,42 @@
               </div>
 
               <div class="card-body pb-0">
-                <h5 class="card-title">Top Loans <span>| Today</span></h5>
-
+                <h5 class="card-title">Approved Loans <span></span></h5>
+            
                 <table class="table table-borderless">
-                  <thead>
-                    <tr>
-                      <th scope="col">Preview</th>
-                      <th scope="col">Loan Type</th>
-                      <th scope="col">Amount</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Interest Revenue</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row"><a href="#"><img src="assets/img/loan-1.jpg" alt=""></a></th>
-                      <td><a href="#" class="text-primary fw-bold">Personal Loan</a></td>
-                      <td>$10,000</td>
-                      <td><span class="badge bg-success">Approved</span></td>
-                      <td>$500</td>
-                  </tr>
-                  <tr>
-                      <th scope="row"><a href="#"><img src="assets/img/loan-2.jpg" alt=""></a></th>
-                      <td><a href="#" class="text-primary fw-bold">Home Loan</a></td>
-                      <td>$250,000</td>
-                      <td><span class="badge bg-warning">Pending</span></td>
-                      <td>$1,200</td>
-                  </tr>
-                  <tr>
-                      <th scope="row"><a href="#"><img src="assets/img/loan-3.jpg" alt=""></a></th>
-                      <td><a href="#" class="text-primary fw-bold">Auto Loan</a></td>
-                      <td>$20,000</td>
-                      <td><span class="badge bg-danger">Rejected</span></td>
-                      <td>$0</td>
-                  </tr>
-                  <tr>
-                      <th scope="row"><a href="#"><img src="assets/img/loan-4.jpg" alt=""></a></th>
-                      <td><a href="#" class="text-primary fw-bold">Education Loan</a></td>
-                      <td>$15,000</td>
-                      <td><span class="badge bg-success">Approved</span></td>
-                      <td>$750</td>
-                  </tr>
-                  <tr>
-                      <th scope="row"><a href="#"><img src="assets/img/loan-5.jpg" alt=""></a></th>
-                      <td><a href="#" class="text-primary fw-bold">Business Loan</a></td>
-                      <td>$50,000</td>
-                      <td><span class="badge bg-success">Approved</span></td>
-                      <td>$2,500</td>
-                  </tr>
-                  </tbody>
+                    <thead>
+                        <tr>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Loan Amount</th>
+                            <th scope="col">Loan Type</th>
+                            <th scope="col">Interest Rate</th>
+                            <th scope="col">Tenure</th>
+                            
+                        </tr>
+                    </thead>
+                    {% comment %} <h1>{{records.0.loan_records}}</h1> {% endcomment %}
+                    <tbody>
+                        {% for loan in records.0.loan_records %}
+                            <tr>
+                                
+                                <td>
+                                    <a href="#" class="text-primary fw-bold">{{ loan.loanapp_id.customer_id.firstname }} {{ loan.loanapp_id.customer_id.lastname }}</a>
+                                </td>
+                                <td>KES {{ loan.loan_amount|floatformat:2 }}</td>
+                                <td>{{ loan.loanapp_id.loantype.loantype }}</td>
+                                <td>{{ loan.interest_rate|floatformat:2 }}%</td>
+                                <td>{{ loan.tenure }} {{ loan.tenure_type }}</td>
+                                
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6">No loans available.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
-
-              </div>
+            </div>
+            
 
             </div>
           </div><!-- End Top Selling -->
@@ -376,80 +335,60 @@
       </div><!-- End Left side columns -->
 
       <!-- Right side columns -->
-      <div class="col-lg-4">
+<div class="col-lg-4">
 
-        <!-- Recent Activity -->
-        <div class="card">
-          <div class="filter">
-            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+  <!-- Recent Activity -->
+  <div class="card">
+      <div class="filter">
+          <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
               <li class="dropdown-header text-start">
-                <h6>Filter</h6>
+                  <h6>Filter</h6>
               </li>
-
               <li><a class="dropdown-item" href="#">Today</a></li>
               <li><a class="dropdown-item" href="#">This Month</a></li>
               <li><a class="dropdown-item" href="#">This Year</a></li>
-            </ul>
+          </ul>
+      </div>
+
+      <div class="card-body">
+          <h5 class="card-title">Recent Loan Activities <span>| Today</span></h5>
+
+          <div class="activity">
+              {% for record in records.0.audit_records %}
+                  <div class="activity-item d-flex">
+                      <div class="activite-label">
+                          {% if record.datetime %}
+                              {{ record.datetime }} 
+                          {% endif %}
+                      </div>
+
+                      <i class="bi bi-circle-fill activity-badge 
+                          {% if record.action == 'Create' %}text-success
+                          {% elif record.action == 'Delete' %}text-danger
+                          {% else %}text-primary{% endif %} align-self-start"></i>
+
+                      <div class="activity-content">
+                          {% if record.action == 'Create' %}
+                              {{record.screen_name}} Done by <a href="#" class="fw-bold text-dark">{{ record.user.first_name }}</a> submitted
+                          {% elif record.action == 'Update' %}
+                              {{record.screen_name}} Done by <a href="#" class="fw-bold text-dark">{{ record.user.first_name }}</a>
+                          {% elif record.action == 'Delete' %}
+                              {{record.screen_name}} Done by <a href="#" class="fw-bold text-dark">{{ record.user.first_name }}</a> rejected
+                          {% else %}
+                              {{record.screen_name}} Done by <a href="#" class="fw-bold text-dark">{{ record.user.first_name }}</a>
+                          {% endif %}
+                      </div>
+                  </div><!-- End activity item-->
+              {% empty %}
+                  <p>No recent activities found.</p>
+              {% endfor %}
           </div>
+      </div><!-- End card-body -->
+  </div><!-- End card -->
 
-          <div class="card-body">
-            <h5 class="card-title">Recent Loan Activities <span>| Today</span></h5>
-
-            <div class="activity">
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">32 min</div>
-                <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                <div class="activity-content">
-                  Loan application for <a href="#" class="fw-bold text-dark">John Doe</a> submitted
-                </div>
-              </div><!-- End activity item-->
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">56 min</div>
-                <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                <div class="activity-content">
-                  Loan application for <a href="#" class="fw-bold text-dark">Jane Smith</a> rejected
-                </div>
-              </div><!-- End activity item-->
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">2 hrs</div>
-                <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
-                <div class="activity-content">
-                  Loan approved for <a href="#" class="fw-bold text-dark">Emily Johnson</a>
-                </div>
-              </div><!-- End activity item-->
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">1 day</div>
-                <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
-                <div class="activity-content">
-                  Payment received for loan <a href="#" class="fw-bold text-dark">#12345</a>
-                </div>
-              </div><!-- End activity item-->
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">2 days</div>
-                <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
-                <div class="activity-content">
-                  Loan status updated for <a href="#" class="fw-bold text-dark">Michael Brown</a>
-                </div>
-              </div><!-- End activity item-->
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">4 weeks</div>
-                <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
-                <div class="activity-content">
-                  New loan type <a href="#" class="fw-bold text-dark">Business Loan</a> added
-                </div>
-              </div><!-- End activity item-->
-
-            </div>
-
-          </div>
-        </div><!-- End Recent Activity -->
+              
+              
 
         <!-- Budget Report -->
         <div class="card">
@@ -466,7 +405,7 @@
             </ul>
           </div>
 
-          <div class="card-body pb-0">
+          {% comment %} <div class="card-body pb-0">
             <h5 class="card-title">Loan Performance Report <span>| This Month</span></h5>
             <div id="loanChart" style="min-height: 400px;" class="echart"></div>
 
@@ -504,10 +443,10 @@
           </script>
 
           </div>
-        </div><!-- End Budget Report -->
+        </div><!-- End Budget Report --> {% endcomment %}
 
         <!-- Website Traffic -->
-        <div class="card">
+        {% comment %} <div class="card">
           <div class="filter">
             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -584,8 +523,8 @@
   
 
           </div>
-        </div><!-- End Website Traffic -->
-
+        </div><!-- End Website Traffic --> {% endcomment %}
+{% comment %} 
         <!-- News & Updates Traffic -->
         <div class="card">
           <div class="filter">
@@ -638,7 +577,7 @@
             </div><!-- End sidebar recent posts-->
 
           </div>
-        </div><!-- End News & Updates -->
+        </div><!-- End News & Updates --> {% endcomment %}
 
       </div><!-- End Right side columns -->
 

@@ -158,7 +158,6 @@
         const maxAmount = item.max_amount || '0.0';
         const description = item.description || 'N/A';
         const valuechain_id = item.id;
-        alert(valuechain_id);
          // Construct URLs for edit and delete actions
         const editUrl = `{% url 'create_milestone' 'valuechain_id' %}`.replace('valuechain_id', valuechain_id);
  
