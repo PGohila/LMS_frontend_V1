@@ -33,7 +33,7 @@
                         <th scope="col">Loan Amount</th>
                         <th scope="col">Approved Amount</th>
                         <th scope="col">Tenure</th>
-                        <th scope="col">Disbursement Type</th>
+                   
                         <th scope="col" >Action</th>
                       </tr>
                 </thead>
@@ -47,11 +47,11 @@
                             <td>{{ data.loan_amount }}</td>
                             <td>{{ data.approved_amount}}</td>
                             <td>{{data.tenure}} {{data.tenure_type}}</td>
-                            <td>{{data.loanapp_id.disbursement_type}}</td>
+                          
                             <td>
                               
                             <!-- <a href="{% url 'disbursement' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class="fa fa-eye"></i></a> -->
-                              <a href="{% url 'displypenaltyschedules' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
+                              <a href="{% url 'loanwisepenaltydetails' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
                               </button></a>
                             </td>
                         </tr>

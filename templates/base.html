@@ -552,11 +552,7 @@
         </ul>
       </li>
 
-   
-         
-      
-    </ul>
-  </li>
+     
       <!-- <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#Payment-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-wallet"></i><span>Payment</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -577,10 +573,10 @@
             <a href="">
               <i class="bi bi-circle"></i><span>Payment Summary</span>
             </a>
-          </li> -->
+          </li>
       
     </ul>
-  </li>
+  </li> -->
   <li class="nav-item">
     <a class="nav-link collapsed" data-bs-target="#Penalty-nav" data-bs-toggle="collapse" href="#">
       <i class="bi bi-exclamation-circle"></i><span>Penalties</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -593,12 +589,9 @@
        
       </li>
       <li>
-        <a href="">
-          <i class="bi bi-circle"></i><span>Penalty Overview</span>
-        </a>
-      </li>
+  
       <li>
-        <a href="">
+        <a href="{% url 'penalty_details' %}">
           <i class="bi bi-circle"></i><span>Penalty Details</span>
         </a>
       </li>
@@ -714,35 +707,6 @@
     </ul>
     </li>
     <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-target="#Reports-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-bar-chart"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
-      </a>
-      <ul id="Reports-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-        <li>
-          <a href="">
-            <i class="bi bi-circle"></i><span>Financial Reports</span>
-          </a>
-        </li>
-        <li>
-          <a href="">
-            <i class="bi bi-circle"></i><span>Loan Performance Report</span>
-          </a>
-        </li>
-        <li>
-          <a href="">
-            <i class="bi bi-circle"></i><span>Overdue Loans Report</span>
-          </a>
-        </li>
-        <li>
-          <a href="">
-            <i class="bi bi-circle"></i><span>Penalties Report</span>
-          </a>
-        </li>
-
-    </ul>
-    </li>
-
-    <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#ui-basic" data-bs-toggle="collapse" href="#">
         <i class="bi bi-journal-text"></i><span>User Management</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
@@ -766,6 +730,36 @@
     </ul>
     </li>
  
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#Reports-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-bar-chart"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="Reports-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <!-- <li>
+          <a href="">
+            <i class="bi bi-circle"></i><span>Financial Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="">
+            <i class="bi bi-circle"></i><span>Loan Performance Report</span>
+          </a>
+        </li>
+        <li>
+          <a href="">
+            <i class="bi bi-circle"></i><span>Overdue Loans Report</span>
+          </a>
+        </li>
+        <li>
+          <a href="">
+            <i class="bi bi-circle"></i><span>Penalties Report</span>
+          </a>
+        </li> -->
+
+    </ul>
+    </li>
+
+    
 
 
 

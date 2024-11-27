@@ -84,6 +84,10 @@ urlpatterns = [
 
     #=============== Penalties =====================
     path('disply_penaltyloans/', disply_penaltyloans, name='disply_penaltyloans'),
+    path('disply_penaltyschedules/<pk>/', disply_penaltyschedules, name='displypenaltyschedules'),
+    path('create_penalty/', create_penalty, name='create_penalty'),
+    path('penalty_details/', penalty_details, name='penalty_details'),
+    path('loanwise_penalty_details/<pk>/', loanwise_penalty_details, name='loanwisepenaltydetails'),
 
     #================== Setting urls ================
     path('identificationtype/', identificationtype_create, name='identificationtype'),
