@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Form Layouts</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Company</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Company Form</h5>
+
+           
+              <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    {% for placeholder in placeholders %}
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="{{ placeholder.name }}">{{ placeholder.name }}</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="{{ placeholder.name }}"
+                                name="{{ placeholder.name }}"
+                                placeholder="{{ placeholder.name }}" {% if placeholder.value %}value="{{placeholder.value}}"{% endif %} required/>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div style="padding-top: 30px; text-align: left;">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}
+
+ 
