@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 
 {% block body_block %}
+<style>
+  .paid-row {
+    background-color: #d4edda !important;  /* Light green */
+  }
+</style>
 <body>
 
   <main id="main" class="main">
@@ -98,27 +103,33 @@
                         <th>Amount Paid</th>
                         <th>Balance</th>
                         <th>Payment Status</th>
-                        <th>Payment Method</th>
-                        <th>Transaction ID</th>
+                        <th>Penalty</th>
+                        <th>Penalty Reason</th>
+                        <th>Total Amount</th>
+
                     </tr>
                 </thead>
                 <tbody>
-                    {% for data in schedules %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td><a href="#">{{data.schedule_id}}</a></td>
-                        <td>{{data.repayment_date}}</td>
-                        <td>${{data.instalment_amount}}</td>
-                        <td>${{data.interest_amount}}</td>
-                        <td>${{data.paid_amount}}</td>
-                        <td>${{data.remaining_balance}}</td>
-                        <td>{{data.repayment_status}}</td>
-                        <td>{% if data.payment_method == None %} - {% else %} {{ data.payment_method }} {% endif %}</td>
-                        <td>{% if data.transaction_id == None %} - {% else %} {{ data.transaction_id }} {% endif %}</td>
-                        <td><a href="{% url 'payment_process' data.schedule_id %}">Pay</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+                  {% for data in schedules %}
+                  <tr class="{% if data.repayment_status == 'Paid' %}paid-row{% else %}not-paid-row{% endif %}">
+                    <td>{{forloop.counter}}</td>
+                      <td><a href="#">{{data.schedule_id}}</a></td>
+                      <td>{{data.repayment_date}}</td>
+                      <td>${{data.instalment_amount}}</td>
+                      <td>${{data.interest_amount}}</td>
+                      <td>${{data.paid_amount}}</td>
+                      <td>${{data.remaining_balance}}</td>
+                      <td>{{data.repayment_status}}</td>
+                      <td>{% if data.payment_method == None %} - {% else %} {{ data.payment_method }} {% endif %}</td>
+                      <td>{% if data.transaction_id == None %} - {% else %} {{ data.transaction_id }} {% endif %}</td>
+                      <td>
+                        <input type="text" value="{{data.payable_amount}}" class="form-control" readonly>
+                      </td>                     
+                       <td><a href="{% url 'payment_process' data.schedule_id %}" class="btn btn-success">Pay</a></td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+              
                 </table>
                 </div>
                 <!-- Summary Information -->
@@ -127,10 +138,12 @@
                         <td><strong>Total Amount Due:</strong> ${{total_installment_amount|floatformat:2}}</td>
                         <td><strong>Total Amount Paid:</strong> ${{total_paid_amount|floatformat:2}}</td>
                     </tr>
+                    {% for data in next_schedule %}
                     <tr>
-                        <td><strong>Next Payment Due:</strong> {{next_due_date}}</td>
-                        <td><strong>Next Payment Amount:</strong> {{amount_due}}</td>
+                        <td><strong>Next Payment Due:</strong> {{data.next_due_date}}</td>
+                        <td><strong>Next Payment Amount:</strong> {{data.amount_due}}</td>
                     </tr>
+                    {% endfor %}
                     <tr>
                         <td><strong>Overdue Amount:</strong> $0</td>
                     
@@ -140,13 +153,7 @@
                 <form method="post">
                     {% csrf_token %}
                 
-                <!-- Action Buttons -->
-                <div class="button-container">
-                    <!-- <button class="button">Make Payment</button> -->
-                    
-                    <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i> Download</button>
-                    <button class="btn btn-success btn-sm" type="submit"><i class="fa fa-eye"></i> Confirm</button>
-                </div>
+                
             </form>
             </div>
           </div>
@@ -158,6 +165,7 @@
 
 
   </main><!-- End #main -->
+  
   {% endblock %}
 
  
