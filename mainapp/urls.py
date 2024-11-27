@@ -45,7 +45,8 @@ urlpatterns = [
     path('loan_approval/<pk>/', loan_approval, name='loanapproval'),
 
     path('list_approved_applications/', list_approved_applications, name='listapprovedapplications'),
-    path('create_agreement/<pk>', create_agreement, name='createagreement'),
+    path('create_agreement/<pk>/', create_agreement, name='createagreement'),
+    path('agreement_review/<loanapp_id>/<template_id>/', agreement_review, name='agreement_review'),
     path('list_agreement/', list_agreement, name='list_agreement'),
     path('agreement_confirmation/<pk>', agreement_confirmation, name='agreementconfirmation'),
     path('edit_agreement/<pk>', edit_agreement, name='editagreement'),
@@ -80,6 +81,10 @@ urlpatterns = [
     path('disbursedloans_foroverview1/', disbursedloans_foroverview1, name='disbursedloans_foroverview1'),
     path('schedule_overview1/<pk>/', schedule_overview1, name='schedule_overview1'),
     path('payment_process/<schedule_id>/', payment_process, name='payment_process'),
+
+    #=============== Penalties =====================
+    path('disply_penaltyloans/', disply_penaltyloans, name='disply_penaltyloans'),
+
     #================== Setting urls ================
     path('identificationtype/', identificationtype_create, name='identificationtype'),
     path('identificationtype-view/', identificationtype_view, name='identificationtype_view'),
@@ -132,10 +137,22 @@ urlpatterns = [
     #============Ac
     path('customer_folder_delete/<entity_id>/<folder_id>/',customer_folder_delete,name="customer_folder_delete"),
     path('document_delete/<entity_id>/<folder_id>/<document_id>/', document_delete,name='document_delete'),
+    path('aggrement_template_create/', aggrement_template_create,name='aggrement_template_create'),
+    path('aggrement_template_list/', aggrement_template_list,name='aggrement_template_list'),
+    path('aggrement_template_view/<template_id>/', aggrement_template_view,name='aggrement_template_view'),
     path('document_edit/<entity_id>/<folder_id>/', document_edit,name='document_edit'),
 
 
     path('audit_view', audit_view, name='audit_view'),
     path('document_list/', document_list, name='document_list'),
     path('customer_document_view/<pk>/',customer_document_view, name='customer_document_view'),
+    path('loan_detail_trenches/<loanapp_id>/',loan_detail_trenches, name='loan_detail_trenches'),
+    path('loan_upadate_trenches/<loanapp_id>/',loan_upadate_trenches, name='loan_upadate_trenches'),
+    path('milestone_edit_v1/<loanapp_id>/',milestone_edit_v1, name='milestone_edit_v1'),
+    path('milestone_activity_edit_v1/<loanapp_id>/',milestone_activity_edit_v1, name='milestone_activity_edit_v1'),
+    path('milestone_activity_create_v1/<loanapp_id>/',milestone_activity_create_v1, name='milestone_activity_create_v1'),
+    path('milestone_activity_delete_v1/<loanapp_id>/<activity_id>/',milestone_activity_delete_v1, name='milestone_activity_delete_v1'),
+    path('milestone_delete_v1/<loanapp_id>/<milestone_id>/',milestone_delete_v1, name='milestone_delete_v1'),
+    path('milestone_create_v1/<loanapp_id>/',milestone_create_v1, name='milestone_create_v1'),
+    path('agreement_signature_update/<agreement_id>/',agreement_signature_update, name='agreement_signature_update'),
 ]

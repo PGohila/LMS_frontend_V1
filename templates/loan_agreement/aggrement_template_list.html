@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block body_block %}
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Approved Application List</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active">Agreement Template</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+              <a href="{% url 'aggrement_template_create' %}" class="btn btn-primary" style="float: right;">Create</a>
+<br>
+<br>
+              <table class="table datatable">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Template name</th>
+                        <th scope="col">Created At</th>
+                        <th scope="col" >Action</th>
+                      </tr>
+                </thead>
+                <tbody>
+                    {% for data in records %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter}}</th>
+                            <td>{{ data.template_name }}</td>
+                            <td>{{ data.created_at }}</td>
+                            <td>
+                            <!-- <a href=""><span data-toggle="tooltip" title="edit" style="color: black;"><i class='fa fa-edit'></i></a>
+                                <a href=""><span data-toggle="tooltip" title="Delete" style="color: black;"><i class='fa fa-remove' onclick="alert('You want to Delete this Item..?')"></i></a> -->
+                                  <a href="{% url 'aggrement_template_view' data.id %}"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button"><i class="fa fa-eye"></i>
+                                  </button></a> 
+                            </td>
+                        </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}
+
+ 

@@ -13,6 +13,6 @@ urlpatterns = [
     path('add_milestonestages/<pk>',add_milestonestages,name='add_milestonestages'),
     path('activities_edit/<pk>',activities_edit,name='activities_edit'),
     path('activities_delete/<pk>',activities_delete,name='activities_delete'),
-    path('loan_list',loan_list,name='loan_list'),
+    # path('loan_list',loan_list,name='loan_list'),
  
 ]

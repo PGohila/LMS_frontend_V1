@@ -461,6 +461,11 @@
         </a>
         <ul id="agreement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
+            <a href="{% url 'aggrement_template_list' %}">
+              <i class="bi bi-circle"></i><span>Agreement template</span>
+            </a>
+          </li>
+          <li>
             <a href="{% url 'listapprovedapplications' %}">
               <i class="bi bi-circle"></i><span>Generate Agreement</span>
             </a>
@@ -553,10 +558,10 @@
         </ul>
       </li>
 
-    
+
     </ul>
   </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#Payment-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-wallet"></i><span>Payment</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -576,7 +581,7 @@
             <a href="">
               <i class="bi bi-circle"></i><span>Payment Summary</span>
             </a>
-          </li>
+          </li> -->
       
     </ul>
   </li>
@@ -586,7 +591,7 @@
     </a>
     <ul id="Penalty-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
-        <a href="">
+        <a href="{% url 'disply_penaltyloans' %}">
           <i class="bi bi-circle"></i><span>Penalty</span>
         </a>
        
