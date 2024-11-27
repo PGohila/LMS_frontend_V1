@@ -111,8 +111,24 @@ def company_selecting(request):
 
         
 def dashboard(request):
-
-    return render(request, 'dashboard.html')
+    token = request.session['user_token']
+    company_id = request.session.get('company_id')
+    MSID = get_service_plan('dashboard records')
+    if MSID is None:
+        print('MISID not found')        
+    data = {
+        'ms_id':MSID,'ms_payload':{
+            'company_id':company_id
+        }
+        } 
+    json_data = json.dumps(data)
+    response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+    print('response',response)
+    records = response['data']
+    user_data = request.session['user_data']
+    
+    
+    return render(request, 'dashboard.html',{'records':records,'user_data':user_data})
 
 # ================== create company =========================
 def company_create(request):
@@ -1507,6 +1523,7 @@ def disply_loans(request):
         if response['status_code'] == 1:
             return render(request,'error.html',{'error':str(response['data'])})
         loan_data = response['data']
+        print('loan_data',loan_data)
 
         context = {'records':loan_data}
         return render(request,'disbursement/loan_list.html',context)
@@ -1555,7 +1572,6 @@ def disbursement_create(request,loanid):
             response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
             if response['status_code'] ==  0:                  
                 messages.info(request, "Well Done..! Application Submitted..")
-            print("==============",response)
             return redirect("disply_loans")
          
         context={      
@@ -3663,6 +3679,79 @@ def penalty_details(request):
         return render(request,"Penalties/penalty_details.html",context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
+
+
+def milestone_disbursement(request,loan_id):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+        
+        
+        MSID = get_service_plan('loan detail value chain get') # getting_valuechainsetups
+        if MSID is None:
+            print('MSID not found')
+        payloads = {'loanapp_id':loan_id}
+        data = {'ms_id': MSID,'ms_payload': payloads}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        records = response['data']
+        print('records',records)
+
+          # getting related loan data
+        MSID = get_service_plan('view loan') # view_loan
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'loan_id':loan_id}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        loan_data = response['data'][0]
+       
+
+        #  getting customeraccount
+        MSID = get_service_plan('getting customeraccount') # getting_customeraccount
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'customer_id':loan_data['customer']['id']}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        borroweraccount = response['data'][0]
+
+        if request.method == "POST":
+            MSID = get_service_plan('create disbursement') # create_disbursement
+            if MSID is None:
+                print('MISID not found')      
+            payloads = {'company_id':company_id,'customer_id':loan_data['customer']['id'],'loan_id':loan_data['id'], 'loan_application_id':loan_data['loanapp_id']['id'], 'amount':request.POST.get('disursement_amount'), 'disbursement_type':loan_data['loanapp_id']['disbursement_type'], 'disbursement_status':request.POST.get('disbursement_status'),'bank':borroweraccount['id']}
+            data = {'ms_id':MSID,'ms_payload':payloads} 
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] ==  0:                  
+                messages.info(request, "Well Done..! Application Submitted..")
+
+            MSID = get_service_plan('milestone compelete') # create_disbursement
+            milestone_id = request.POST.get('milestone_id')
+            if MSID is None:
+                print('MISID not found')      
+            payloads = {'milestone_id':milestone_id}
+            data = {'ms_id':MSID,'ms_payload':payloads} 
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] ==  0:                  
+                messages.info(request, "Well Done..! Application Submitted..")
+            return redirect("disply_loans")
+        
+
+        context = {
+            'records':records,'loan_id':loan_id,'borroweraccount':borroweraccount
+        }
+        return render(request,'disbursement/milestone_disbursement.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error})
 
 
 def loanwise_penalty_details(request,pk): # pk = loan id
