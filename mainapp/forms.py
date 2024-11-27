@@ -501,22 +501,7 @@ class RepaymentscheduleForm(forms.Form):
 		self.fields['loan_application_id'].choices = [(item['id'], item['name']) for item in loan_application_list]
 		self.fields['payment_method_id'].choices = [(item['id'], item['name']) for item in payment_method_list]
 
-class PenaltiesForm(forms.Form):
-	loan_application_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
-	repaymentschedule_id_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
-	panalty_date = forms.DateField(required=True, widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
-	penalty_amount = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
-	penalty_reason = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	payment_status = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	transaction_refference = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
-	def __init__(self, *args, **kwargs):
 
-		loan_application_list = kwargs.pop('loan_application_choice', [])
-		repaymentschedule_id_list = kwargs.pop('repaymentschedule_id_choice', [])
-		super().__init__(*args, **kwargs)
-	
-		self.fields['loan_application_id'].choices = [(item['id'], item['application_id']) for item in loan_application_list]
-		self.fields['repaymentschedule_id_id'].choices = [(item['id'], item['schedule_id']) for item in repaymentschedule_id_list]
 
 class LoancalculatorsForm(forms.Form):
 	TENURE_TYPE = [
@@ -603,3 +588,30 @@ from ckeditor.widgets import CKEditorWidget
 
 class TemplateForm(forms.Form):
     content = forms.CharField(widget=CKEditorWidget(), label="Content")
+
+class PenaltyForm(forms.Form):
+    penalty_date = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'class': 'form-control', 
+            'type': 'date', 
+            'placeholder': 'Select Date'
+        }),
+        label="Penalty Date"
+    )
+    penalty_amount = forms.FloatField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control', 
+            'placeholder': 'Enter Penalty Amount'
+        }),
+        label="Penalty Amount"
+    )
+    penalty_reason = forms.ChoiceField(
+        choices=[
+            ('Late Payment', 'Late Payment'),
+            ('Missed Payment', 'Missed Payment'),
+        ],
+        widget=forms.Select(attrs={
+            'class': 'form-control'
+        }),
+        label="Reason for Penalty"
+    )

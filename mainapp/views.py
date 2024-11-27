@@ -3575,14 +3575,114 @@ def milestone_create_v1(request,loanapp_id):
 
 def disply_penaltyloans(request):
     try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        MSID = get_service_plan('getting penalty loans') # getting_penalty_loans
+        if MSID is None:
+            print('MSID not found')
+        payloads = {'company_id':company_id}
+        data = {'ms_id': MSID,'ms_payload': payloads}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        records = response['data']
+        print("====================",records)
+        context = {'records':records}
+        return render(request,"Penalties/disply_penaltyloans.html",context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+def disply_penaltyschedules(request,pk): # pk is a loan ID
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        MSID = get_service_plan('getting overdue') # getting_overdue
+        if MSID is None:
+            print('MSID not found')
+        payloads = {'company_id':company_id,'loan_ID':pk}
+        data = {'ms_id': MSID,'ms_payload': payloads}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        records = response['data']
+        form = PenaltyForm()
+        context = {'records':records,'form':form}
+        return render(request,"Penalties/disply_penaltyschedules.html",context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+def create_penalty(request):
+    try:
         
-        return render(request,"Penalties/disply_penaltyloans.html")
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+        if request.method == "POST":
+            schedule = request.POST.get('schedule_id')
+
+            # ============== getting schedule =====================
+            MSID = get_service_plan('getting schedule') # getting_schedule
+            if MSID is None:
+                print('MSID not found')
+            payloads = {'uniques_id':schedule}
+            data = {'ms_id': MSID,'ms_payload': payloads}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+            if response['status_code'] == 1:
+                return render(request,'error.html',{'error':str(response['data'])})
+            schedule_details = response['data'][0]
+            form = PenaltyForm(request.POST)
+            
+            if form.is_valid():
+         
+                cleaned = form.cleaned_data
+                cleaned['company'] = company_id
+                cleaned['loan'] = schedule_details['loan_id']['id']
+                cleaned['repayment_schedule'] = schedule
+                if cleaned['penalty_date']:
+                    del cleaned['penalty_date'] 
+
+                MSID = get_service_plan('create penalty') # create_penalty
+                if MSID is None:
+                    print('MSID not found')
+                data = {'ms_id': MSID,'ms_payload': cleaned}
+                json_data = json.dumps(data)
+                response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+                if response['status_code'] == 1:
+                    return render(request,'error.html',{'error':str(response['data'])})
+                
+            else:
+                print("cleaned,cleaned",form.errors)
+ 
+        return redirect('disply_penaltyloans')
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+
+def penalty_details(request):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        MSID = get_service_plan('get penalties for loan') # get_penalties_for_loan
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'company_id': company_id}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        context = {'records':response['data']}
+        return render(request,"Penalties/penalty_details.html",context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
 
 
 def milestone_disbursement(request,loan_id):
-    # try:
+    try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
         
@@ -3645,10 +3745,33 @@ def milestone_disbursement(request,loan_id):
                 messages.info(request, "Well Done..! Application Submitted..")
             return redirect("disply_loans")
         
-        
+
         context = {
             'records':records,'loan_id':loan_id,'borroweraccount':borroweraccount
         }
         return render(request,'disbursement/milestone_disbursement.html',context)
-    # except Exception as error:
-    #     return render(request, "error.html", {"error": error})
+    except Exception as error:
+        return render(request, "error.html", {"error": error})
+
+
+def loanwise_penalty_details(request,pk): # pk = loan id
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        MSID = get_service_plan('getting penalities withloan') # getting_penalities_withloan
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'company_id': company_id,'loan_id':pk}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+       
+        context = {'penalties':response['data']}
+        return render(request,"Penalties/loanwise_penalty_details.html",context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+        
+
+    

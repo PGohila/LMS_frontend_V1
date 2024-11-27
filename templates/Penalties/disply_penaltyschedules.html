@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block body_block %}
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Loan Penalty Schedules</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Loan Penalty Schedules</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <table class="table datatable">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Loan ID</th>
+                        <th scope="col">Schedule id</th>
+                        <th scope="col">Period</th>
+                        <th scope="col">repayment_date</th>
+                        <th scope="col">instalment_amount</th>
+                        <th scope="col">Loan Amount</th>
+                     
+                        <th scope="col" >Action</th>
+                      </tr>
+                </thead>
+                <tbody>
+                    {% for data in records %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter}}</th>
+                            <td><a href="#">{{ data.loan_id.loan_id }}</a></td>
+                            <td><a href="#">{{ data.schedule_id }}</a></td>
+                            <td><a href="#">{{ data.period }}</a></td>
+                            
+                            <td>{{ data.repayment_date }}</td>
+                            <td>{{ data.instalment_amount }}</td>
+                            <td>{{ data.principal_amount}}</td>
+                  
+                            <td>
+                              
+                            <!-- <a href="{% url 'disbursement' data.id %}"><span data-toggle="tooltip" title="edit" style="color: black;"><i class="fa fa-eye"></i></a> -->
+                              <a href="#" data-id="{{ data.id }}" 
+                              class="btn btn-primary btn-sm open-modal" 
+                              data-bs-toggle="modal" data-bs-target="#largeModal"><span data-toggle="tooltip" title="View" style="color: black;"> <button class="btn btn-primary btn-sm" type="button">Add
+                              </button></a>
+                            </td>
+                        </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+
+  <!-- Modal -->
+<!-- Modal -->
+<div class="modal fade" id="largeModal" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="scheduleForm" method="POST" action="{% url 'create_penalty' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scheduleModalLabel">Schedule Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Schedule ID:</strong> <span id="scheduleId"></span></p>
+                    <input type="hidden" id="hiddenScheduleId" name="schedule_id">
+                    <!-- Add more fields as needed -->
+                    {% for data in form %}
+                    <div class="col-12">
+                        {{data.label_tag}}
+                        {{ data }}
+                      
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                    
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+    <script>
+    $(document).on("click", ".open-modal", function() {
+        const scheduleId = $(this).data("id");
+        $("#scheduleId").text(scheduleId); // Display the schedule ID in the modal
+        $("#hiddenScheduleId").val(scheduleId); // Set the schedule ID in the hidden input field
+    });
+</script>
+
+
+  {% endblock %}
+
+ 
