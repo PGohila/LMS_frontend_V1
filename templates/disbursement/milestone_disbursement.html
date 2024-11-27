@@ -47,15 +47,21 @@
                                     <h6 class="mb-2 mb-md-0">{{ milestone.milestone_name }}</h6>
                                     <div class="d-flex flex-wrap justify-content-start justify-content-md-end align-items-center">
                                         <span class="badge bg-info me-2 mb-2 mb-md-0">Amount: {{ milestone.amount }}</span>
-                                        <span class="badge {% if milestone.active %}bg-success{% else %}bg-danger{% endif %} me-2 mb-2 mb-md-0">
-                                            {{ milestone.active|yesno:"Active,Inactive" }}
+                                        <span class="badge {% if milestone.actual_completion_date %}bg-success{% else %}bg-danger{% endif %} me-2 mb-2 mb-md-0">
+                                            {% if milestone.actual_completion_date %}
+                                            Payment Completed
+                                            {% else %}
+                                            Payment Pending
+                                            {% endif %}
                                         </span>
                                         <!-- <button class="btn btn-sm btn-outline-danger" onclick="deleteMilestone({{ milestone.id }})">
                                             <i class="fas fa-trash"></i>
                                         </button> -->
+                                        {% if not milestone.actual_completion_date %}
                                         <button class="btn btn-sm btn-outline-danger" onclick="editMilestone({{ milestone.id }},{{ milestone.amount }})">
                                             <i class="fa fa-location-arrow"></i>
                                         </button>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

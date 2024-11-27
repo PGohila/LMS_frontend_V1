@@ -3726,14 +3726,15 @@ def milestone_disbursement(request,loan_id):
             MSID = get_service_plan('create disbursement') # create_disbursement
             if MSID is None:
                 print('MISID not found')      
-            payloads = {'company_id':company_id,'customer_id':loan_data['customer']['id'],'loan_id':loan_data['id'], 'loan_application_id':loan_data['loanapp_id']['id'], 'amount':request.POST.get('disursement_amount'), 'disbursement_type':loan_data['loanapp_id']['disbursement_type'], 'disbursement_status':request.POST.get('disbursement_status'),'bank':borroweraccount['id']}
+            payloads = {'company_id':company_id,'customer_id':loan_data['customer']['id'],'loan_id':loan_data['id'], 'loan_application_id':loan_data['loanapp_id']['id'], 'amount':float(request.POST.get('disursement_amount')), 'disbursement_type':loan_data['loanapp_id']['disbursement_type'], 'disbursement_status':request.POST.get('disbursement_status'),'bank':borroweraccount['id']}
             data = {'ms_id':MSID,'ms_payload':payloads} 
             json_data = json.dumps(data)
             response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            print('create disbursement',response)
             if response['status_code'] ==  0:                  
                 messages.info(request, "Well Done..! Application Submitted..")
 
-            MSID = get_service_plan('milestone compelete') # create_disbursement
+            MSID = get_service_plan('milestone compelete') # 
             milestone_id = request.POST.get('milestone_id')
             if MSID is None:
                 print('MISID not found')      
@@ -3741,6 +3742,7 @@ def milestone_disbursement(request,loan_id):
             data = {'ms_id':MSID,'ms_payload':payloads} 
             json_data = json.dumps(data)
             response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            print('milestone compelete',response)
             if response['status_code'] ==  0:                  
                 messages.info(request, "Well Done..! Application Submitted..")
             return redirect("disply_loans")
