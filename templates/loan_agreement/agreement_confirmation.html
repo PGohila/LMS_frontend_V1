@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block body_block %}
 <style>
-    .card{
+    .card {
         font-family: Arial, sans-serif;
         margin: 20px;
         padding: 20px;
@@ -18,172 +18,227 @@
     p {
         line-height: 1.5;
     }
-    .confirm-button {
-        display: block;
-        margin: 20px auto;
-        padding: 10px 20px;
-        font-size: 1em;
-        color: white;
-        background-color: #007BFF;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    .signature-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px; /* Space between the signatures */
+    }
+    .signature-block {
+        flex: 1;
         text-align: center;
     }
-    .confirm-button:hover {
-        background-color: #0056b3;
+    canvas {
+        display: block;
+        margin: 0 auto;
     }
-    .button-row {
-        display: flex;
-        gap: 10px; /* Space between the buttons */
+    .btn-group {
+        margin-top: 20px;
     }
 </style>
 <body>
 
-  <main id="main" class="main">
-
+<main id="main" class="main">
     <div class="pagetitle">
-   
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item">Generate</li>
-          <li class="breadcrumb-item active">Loan Agreement</li>
-        </ol>
-      </nav>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item">Generate</li>
+                <li class="breadcrumb-item active">Loan Agreement</li>
+            </ol>
+        </nav>
     </div><!-- End Page Title -->
     <section class="section">
-      <div class="row">
-    
-        <div class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    {{template|safe}}
+                    <br><br>
+                    <div class="container">
+                        <!-- Signatures in a Single Row -->
+                        <div class="signature-row">
+                            <!-- Borrower Signature -->
+                            <div class="signature-block">
+                                <label for="borrower-sig-canvas">Borrower Signature</label>
+                                <br>
+                                {% if agreement_data.borrower_signature %}
+                                <img src="{{agreement_data.borrower_signature}}" alt="">
+                                {% else %}
+                                <canvas id="borrower-sig-canvas" width="300" height="160"></canvas>
+                                <div>
+                                    <button class="btn btn-primary" id="borrower-sig-submitBtn">Submit</button>
+                                    <button class="btn btn-default" id="borrower-sig-clearBtn">Clear</button>
+                                </div>
+                                {% endif %}
+                            </div>
 
-          <div class="card">
-                <div class="agreement">
-                <h1>Loan Agreement</h1><br>
-                <p>THIS LOAN AGREEMENT (this “Agreement”) is entered into as of the ____ day of ____________, 20__, by and between <strong>[COMPANY NAME]</strong>, a ________________ [corporation] with a principal business address located at <strong>[PRINCIPAL BUSINESS ADDRESS]</strong> (the “Lender”), and <strong>[BORROWER NAME]</strong>, a ____________ [corporation] with a principal business address located at <strong>[PRINCIPAL BUSINESS ADDRESS]</strong> (the “Borrower”).</p>
+                            <!-- Lender Signature -->
+                            <div class="signature-block">
+                                <label for="lender-sig-canvas">Lender Signature</label>
+                                <br>
+                                {% if agreement_data.lender_signature %}
+                                <img src="{{agreement_data.lender_signature}}" alt="">
+                                {% else %}
+                                <canvas id="lender-sig-canvas" width="300" height="160"></canvas>
+                                <div>
+                                    <button class="btn btn-primary" id="lender-sig-submitBtn">Submit</button>
+                                    <button class="btn btn-default" id="lender-sig-clearBtn">Clear</button>
+                                </div>
+                                
+                                {% endif %}
+                            </div>
+                        </div>
+                        <form action="{% url 'agreement_signature_update' agreement_id %}" method="post" id="agreement_signature_update_form">
+                          {% csrf_token %}
+                          <input type="hidden" id="borrower-sig-hidden" name="borrower_signature">
+                          <input type="hidden" id="lender-sig-hidden" name="lender_signature">
 
-<h2>RECITALS</h2>
-<p>WHEREAS, the Borrower wishes to borrow from the Lender, and the Lender wishes to lend to the Borrower up to the sum of <strong>[AMOUNT]</strong> Dollars (US $_____________).</p>
-<p>WHEREAS, the Borrower and the Lender wish to memorialize the terms of such loan and to set forth their mutual understanding with respect to how the repayment of such amounts shall be accomplished.</p>
+                        </form>
 
-<p>NOW, THEREFORE, the parties hereby set forth their understanding as follows:</p>
-
-<h2>1. Loan.</h2>
-<p>Subject to and upon the terms and conditions herein set forth, the Lender shall lend to the Borrower and the Borrower shall borrow from the Lender up to the sum of <strong>____________________</strong> Dollars (US $________).</p>
-
-<h2>3. Note.</h2>
-<p>All borrowings hereunder shall be evidenced by a promissory note to the order of the Lender substantially in the form of Exhibit A hereto (the “Note”), in the aggregate principal amount of up to <strong>_________________</strong> Dollars ($___________). The Note shall be payable over a <strong>[NUMBER]</strong> (____) year term, in ____ (__) annual installments of interest only, with all outstanding principal and interest due and payable on the _____ (___) anniversary of the date of the Note. Interest on that portion of the unpaid principal balance attributable to each such borrowing shall accrue from the date of such borrowing at the lowest allowable Applicable Federal Rate as of the date of such borrowing. No interest shall accrue prior to the first borrowing under the Note. All accrued and unpaid interest shall be paid on or before <strong>[DATE]</strong> of each year. <em>[The Borrower shall have the right to prepay all or any part of the outstanding principal balance of the Note without penalty.]</em></p>
-
-<h2>4. Further Assurances.</h2>
-<p>The Borrower shall, at its sole cost and expense, upon request of the Lender, duly execute and deliver to the Lender such further instruments, and do and cause to be done such further acts, as may be necessary or proper in the opinion of the Lender to carry out the provisions and purposes of this Agreement.</p>
-
-<h2>5. Events of Default.</h2>
-<h3>5.1 Events of Default.</h3>
-<p>If any one or more of the following events (“Events of Default”) shall occur and be continuing, the Lender may, at its option, declare the Note to be immediately due and payable, whereupon the maturity of the then unpaid balance of the Note shall be accelerated and the same, together with all interest accrued thereon, shall forthwith become due and payable without presentment, demand, protest, or notice of any kind, all of which are hereby expressly waived.</p>
-<ul>
-    <li>(a) If default shall be made in the due and punctual payment of the principal or interest under the Note, when and as the same shall become due and payable.</li>
-    <li>(b) If default shall be made in the performance or observance of any covenant, agreement, or other provision of this Agreement.</li>
-    <li>(c) If any representation or warranty or any other statement of fact herein or in any writing, certificate, report, or statement at any time furnished to the Lender shall be false or misleading in any material respect.</li>
-    <li>(d) If the Borrower shall admit in writing its inability to pay its debts generally as they become due.</li>
-    <li>(e) If any judgment against the Borrower remains unpaid for more than [NUMBER] (__) days.</li>
-</ul>
-
-<h2>6. Modification and Waiver.</h2>
-<p>No modification or waiver of any provision of the Note or of this Agreement shall be effective unless such modification or waiver shall be in writing and signed by the Lender.</p>
-
-<h2>7. Applicable Law.</h2>
-<p>The Note and this Agreement shall be construed in accordance with and governed by the laws of <strong>[STATE]</strong>.</p>
-
-<h2>8. Notices.</h2>
-<p>All notices, requests, demands, or other communications provided for herein shall be in writing.</p>
-
-<h2>9. Captions.</h2>
-<p>The captions of the various sections and paragraphs of this Agreement have been inserted only for the purposes of convenience.</p>
-
-<h2>10. Benefit of Agreement.</h2>
-<p>This Agreement shall be binding upon and inure to the benefit of the Borrower and the Lender and their successors and assigns.</p>
-
-<h2>11. Execution in Counterparts.</h2>
-<p>This Agreement may be executed in counterparts, all of which taken together shall be deemed one original.</p>
-
-<div class="signature">
-    <p>IN WITNESS WHEREOF, the parties hereto have set their hands and seals as of the day and year first set forth above.</p>
-    <div>
-        <p>BORROWER:</p>
-        <p>[NAME OF BORROWER]</p>
-        <p>By: __________________________________</p>
-        <p>Its: __________________________________</p>
-    </div>
-    <div>
-        <p>LENDER:</p>
-        <p>[NAME OF LENDER]</p>
-        <p>By: __________________________________</p>
-        <p>Its: __________________________________</p>
-    </div>
-</div>          <form method="post">
-                    {% csrf_token %}
-                   
-                    <div class="btn-group" role="group" aria-label="Basic outlined example">
-                      <button type="submit" class="btn btn-outline-success" name="Confirmed" value="Confirmed">Approve</button>
-                      <button type="submit" name="Reject" value="terminated"  class="btn btn-outline-danger" >Terminate</button>
-                      <a href="button" type="button" class="btn btn-outline-primary" onclick="generatePDF()">PDF Generate</a>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="btn-group" role="group" aria-label="Basic outlined example">
+                              {% if agreement_data.borrower_signature and agreement_data.lender_signature %}
+                                <button type="submit" class="btn btn-outline-success" name="Confirmed" value="Confirmed">Approve</button>
+                                {% else %}
+                                <button type="submit" class="btn btn-outline-success" name="Confirmed" value="Confirmed" disabled>Approve</button>
+                                {% endif %}
+                                <button type="submit" name="Reject" value="terminated" class="btn btn-outline-danger">Terminate</button>
+                                <a href="#" type="button" class="btn btn-outline-primary" onclick="generatePDF()">PDF Generate</a>
+                            </div>
+                        </form>
                     </div>
-
-                </form>
                 </div>
-                <script>
-                    function confirmAgreement() {
-                        alert("Loan Agreement Confirmed!");
-                        // Here you can add the functionality to submit the agreement, e.g., via an API call.
-                    }
-                </script>
-       
-          </div>
-
+            </div>
         </div>
-      </div>
     </section>
+</main><!-- End #main -->
 
-  </main><!-- End #main -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
     function generatePDF() {
-      const { jsPDF } = window.jspdf;
-  
-      // Create a new instance of jsPDF
-      const doc = new jsPDF();
-  
-      // Get the content of the agreement
-      const content = document.querySelector('.agreement').innerHTML;
-  
-      // Add the HTML content to the PDF document
-      doc.html(content, {
-        callback: function (doc) {
-          // Save the PDF with the filename
-          doc.save('loan_agreement.pdf');
-        },
-        x: 10,
-        y: 10,
-        width: 190, // Optional: Set the width of the PDF
-      });
+        const { jsPDF } = window.jspdf;
+
+        // Create a new instance of jsPDF
+        const doc = new jsPDF();
+
+        // Get the content of the agreement
+        const content = document.querySelector('.agreement').innerHTML;
+
+        // Add the HTML content to the PDF document
+        doc.html(content, {
+            callback: function (doc) {
+                // Save the PDF with the filename
+                doc.save('loan_agreement.pdf');
+            },
+            x: 10,
+            y: 10,
+            width: 190, // Optional: Set the width of the PDF
+        });
     }
-  </script>
-  
-  {% endblock %}
+</script>
+<script>
+    function setupSignatureCanvas(canvasId, submitBtnId, clearBtnId, hiddenFieldId) {
+        var canvas = document.getElementById(canvasId);
+        var ctx = canvas.getContext("2d");
+        ctx.strokeStyle = "#222222";
+        ctx.lineWidth = 4;
 
- 
+        var drawing = false;
+        var mousePos = { x: 0, y: 0 };
+        var lastPos = mousePos;
 
+        canvas.addEventListener("mousedown", function(e) {
+            drawing = true;
+            lastPos = getMousePos(canvas, e);
+        }, false);
 
+        canvas.addEventListener("mouseup", function(e) {
+            drawing = false;
+        }, false);
 
+        canvas.addEventListener("mousemove", function(e) {
+            mousePos = getMousePos(canvas, e);
+        }, false);
 
+        canvas.addEventListener("touchstart", function(e) {
+            mousePos = getTouchPos(canvas, e);
+            var touch = e.touches[0];
+            var me = new MouseEvent("mousedown", {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(me);
+        }, false);
 
+        canvas.addEventListener("touchmove", function(e) {
+            var touch = e.touches[0];
+            var me = new MouseEvent("mousemove", {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(me);
+        }, false);
 
+        canvas.addEventListener("touchend", function(e) {
+            var me = new MouseEvent("mouseup", {});
+            canvas.dispatchEvent(me);
+        }, false);
 
+        function getMousePos(canvasDom, mouseEvent) {
+            var rect = canvasDom.getBoundingClientRect();
+            return {
+                x: mouseEvent.clientX - rect.left,
+                y: mouseEvent.clientY - rect.top
+            };
+        }
 
+        function getTouchPos(canvasDom, touchEvent) {
+            var rect = canvasDom.getBoundingClientRect();
+            return {
+                x: touchEvent.touches[0].clientX - rect.left,
+                y: touchEvent.touches[0].clientY - rect.top
+            };
+        }
 
+        function renderCanvas() {
+            if (drawing) {
+                ctx.moveTo(lastPos.x, lastPos.y);
+                ctx.lineTo(mousePos.x, mousePos.y);
+                ctx.stroke();
+                lastPos = mousePos;
+            }
+        }
 
+        (function drawLoop() {
+            window.requestAnimationFrame(drawLoop);
+            renderCanvas();
+        })();
 
+        function clearCanvas() {
+            canvas.width = canvas.width;
+        }
 
+        var clearBtn = document.getElementById(clearBtnId);
+        var submitBtn = document.getElementById(submitBtnId);
+        var hiddenField = document.getElementById(hiddenFieldId);
 
+        clearBtn.addEventListener("click", function(e) {
+            clearCanvas();
+            hiddenField.value = ""; // Clear the hidden field
+        }, false);
 
-
+        submitBtn.addEventListener("click", function(e) {
+            var dataUrl = canvas.toDataURL();
+            hiddenField.value = dataUrl; // Save the signature data URL to the hidden field
+            $('#agreement_signature_update_form').submit()
+        }, false);
+    }
+    {% if not agreement_data.borrower_signature %}
+    setupSignatureCanvas("borrower-sig-canvas", "borrower-sig-submitBtn", "borrower-sig-clearBtn", "borrower-sig-hidden");
+    {% endif %}
+    {% if not agreement_data.lender_signature %}
+    setupSignatureCanvas("lender-sig-canvas", "lender-sig-submitBtn", "lender-sig-clearBtn", "lender-sig-hidden");
+    {% endif %}
+</script>
+{% endblock %}

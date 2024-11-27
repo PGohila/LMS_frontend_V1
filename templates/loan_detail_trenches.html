@@ -11,11 +11,11 @@
                 </ol>
             </nav>
         </div>
-        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <!-- <div class="col-md-4 text-md-end mt-3 mt-md-0">
             <a href="{% url 'aggrement_template_create' %}" class="btn btn-primary">
                 <i class="fas fa-plus me-2"></i>Create New Trench
             </a>
-        </div>
+        </div> -->
     </div>
 
     <div class="accordion" id="accordionLoanTrenches">
@@ -100,7 +100,7 @@
                         <p class="text-muted">No milestones available.</p>
                     {% endif %}
                     
-                    <button class="btn btn-outline-success" onclick="addMilestone({{ data.id }})">
+                    <button class="btn btn-outline-success" onclick="createMilestone({{ data.id }})">
                         <i class="fas fa-plus me-1"></i> Add Milestone
                     </button>
                 </div>
@@ -120,7 +120,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="{% url 'milstone_edit_v1' loanapp_id %}" method="post" id="milestone_edit_form">
+          <form action="{% url 'milestone_edit_v1' loanapp_id %}" method="post" id="milestone_edit_form">
             {% csrf_token %}
             <input type="hidden" name="milestone_id" id="milestone_id">
             <label for="">Amount</label>
@@ -145,7 +145,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="{% url 'milstone_activity_edit_v1' loanapp_id %}" method="post" id="activity_edit_form">
+          <form action="{% url 'milestone_activity_edit_v1' loanapp_id %}" method="post" id="activity_edit_form">
             {% csrf_token %}
             <input type="hidden" name="activity_id" id="activity_id">
             <label for="">Amount</label>
@@ -171,13 +171,13 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="{% url 'milstone_activity_create_v1' loanapp_id %}" method="post" id="activity_create_form">
+          <form action="{% url 'milestone_activity_create_v1' loanapp_id %}" method="post" id="activity_create_form">
             {% csrf_token %}
             <input type="hidden" name="milestone_id" id="activity_milestone_id" required>
-            <label for="">activity_name</label>
-            <input type="text" name="activity_name" id="activity_name" class="form-control" readonly>
+            <label for="">activity name</label>
+            <input type="text" name="activity_name" id="activity_name" class="form-control" required>
             <label for="">amount</label>
-            <input type="text" name="amount" id="amount" class="form-control" readonly>
+            <input type="text" name="amount" id="amount" class="form-control" required>
             <label for="">description</label>
             <input type="text" name="description" id="description" class="form-control">
 
@@ -190,6 +190,39 @@
       </div>
     </div>
   </div>
+
+
+  <!-- milestone create Modal -->
+  <div class="modal fade" id="create_milestone" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create_milestoneLabel" aria-hidden="true">
+    <div class=" modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="create_milestoneLabel">Create Milestone</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'milestone_create_v1' loanapp_id %}" method="post" id="milestone_create_form">
+            {% csrf_token %}
+            <input type="hidden" name="valuechain_id" id="valuechain_ids" required>
+            <label for="">milestone name</label>
+            <input type="text" name="milestone_name" id="milestone_name" class="form-control" required>
+            <label for="">amount</label>
+            <input type="number" name="amount" id="amount" class="form-control" required>
+            <label for="">due date</label>
+            <input type="date" name="due_date" id="due_date" class="form-control" required>
+            <label for="">description</label>
+            <input type="text" name="description" id="description" class="form-control">
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" form="milestone_create_form">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <style>
     @media (max-width: 767px) {
         .accordion-button {
@@ -200,33 +233,6 @@
 </style>
 
 <script>
-    function addMilestone(valuechainId) {
-        alert('Add Milestone functionality for Value Chain ID: ' + valuechainId);
-        // Add your logic to open a modal/form for adding a milestone.
-    }
-
-    function addActivity(milestoneId) {
-        alert('Add Activity functionality for Milestone ID: ' + milestoneId);
-        // Add your logic to open a modal/form for adding an activity.
-    }
-
-    function deleteMilestone(milestoneId) {
-        const modalElement = document.getElementById('staticBackdrop');
-    
-   
-    // Create a new Bootstrap Modal instance
-    const modal = new bootstrap.Modal(modalElement, {
-      backdrop: 'static', // Prevents closing the modal by clicking on the backdrop
-      keyboard: false     // Disables closing the modal with the ESC key
-    });
-    
-    // Show the modal
-    modal.show();
-        // if (confirm('Are you sure you want to delete this milestone?')) {
-        //     alert('Delete Milestone functionality for Milestone ID: ' + milestoneId);
-        //     // Add your logic to delete the milestone.
-        // }
-    }
 
     function editMilestone(milestoneId,amount) {
         const modalElement = document.getElementById('edit_milestone');
@@ -272,11 +278,29 @@
         // Show the modal
         modal.show();
     }
+    
+    function createMilestone(valuechain) {
+        const modalElement = document.getElementById('create_milestone');
+        console.log('valuechain',valuechain)
+        $('#valuechain_ids').val(valuechain)
+        // Create a new Bootstrap Modal instance
+        const modal = new bootstrap.Modal(modalElement, {
+        backdrop: 'static',
+        keyboard: false 
+        });
+        
+        // Show the modal
+        modal.show();
+    }
 
     function deleteActivity(activityId) {
         if (confirm('Are you sure you want to delete this activity?')) {
-            alert('Delete Activity functionality for Activity ID: ' + activityId);
-            // Add your logic to delete the activity.
+            window.location.href = "/milestone_activity_delete_v1/"+"{{loanapp_id}}/"+activityId + '/';
+        }
+    }
+    function deleteMilestone(vlauechaniId) {
+        if (confirm('Are you sure you want to delete this Milestone?')) {
+            window.location.href = "/milestone_delete_v1/"+"{{loanapp_id}}/"+vlauechaniId + '/';
         }
     }
 </script>
