@@ -81,6 +81,10 @@ urlpatterns = [
     path('disbursedloans_foroverview1/', disbursedloans_foroverview1, name='disbursedloans_foroverview1'),
     path('schedule_overview1/<pk>/', schedule_overview1, name='schedule_overview1'),
     path('payment_process/<schedule_id>/', payment_process, name='payment_process'),
+
+    #=============== Penalties =====================
+    path('disply_penaltyloans/', disply_penaltyloans, name='disply_penaltyloans'),
+
     #================== Setting urls ================
     path('identificationtype/', identificationtype_create, name='identificationtype'),
     path('identificationtype-view/', identificationtype_view, name='identificationtype_view'),
