@@ -40,7 +40,7 @@
                         <tr>
                             <th scope="row">{{ forloop.counter}}</th>
                             <td>{{ data.application_id }}</td>
-                            <td>{{ data.customer_id.customer_id }}</td>
+                            <td>{{data.customer_id.firstname}} {{data.customer_id.lastname}} ({{ data.customer_id.customer_id }})</td>
                             <td>{{ data.loantype.loantype }}</td>
                             <td>{{ data.loan_amount}}</td>
                        

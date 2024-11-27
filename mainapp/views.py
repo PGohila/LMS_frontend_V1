@@ -1470,10 +1470,10 @@ def disply_loans(request):
         token = request.session['user_token']
         company_id = request.session.get('company_id')
         # getting loan agreement data
-        MSID = get_service_plan('view loan') # view_loan
+        MSID = get_service_plan('getting completed agreement') # getting_completed_agreement
         if MSID is None:
             print('MISID not found') 
-        payload_form = {'company':company_id}
+        payload_form = {'company_id':company_id}
         data = {'ms_id':MSID,'ms_payload':payload_form}
         json_data = json.dumps(data)
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
@@ -1494,69 +1494,6 @@ def disbursement_create(request,loanid):
         token = request.session['user_token']
         company_id = request.session.get('company_id')
 
-        # getting company related customers
-        MSID = get_service_plan('view customer') # view_customer
-        if MSID is None:
-            print('MSID not found')
-
-        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id}}
-        json_data = json.dumps(data)
-        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
-        if response['status_code'] == 1:
-            return render(request,'error.html',{'error':str(response['data'])})
-        # Check if the response contains data
-        if 'data' in response:
-            customer_id_records = response['data']
-        else:
-            print('Data not found in response')
-
-        # getting company related loan applications
-        MSID = get_service_plan('view loanapplication')
-        if MSID is None:
-            print('MSID not found')
-        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id}}
-        json_data = json.dumps(data)
-        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
-        if response['status_code'] == 1:
-            return render(request,'error.html',{'error':str(response['data'])})
-        # Check if the response contains data
-        if 'data' in response:
-            loan_application_records = response['data']
-        else:
-            print('Data not found in response')
-
-        # getting all Currency
-        MSID = get_service_plan('view currency')
-        if MSID is None:
-            print('MSID not found')
-        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id}}
-        json_data = json.dumps(data)
-        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
-        if response['status_code'] == 1:
-            return render(request,'error.html',{'error':str(response['data'])})
-        # Check if the response contains data
-        if 'data' in response:
-            currency_records = response['data']
-        else:
-            print('Data not found in response')
-        currency_records = response['data']
-
-        # getting company related bank accounts
-        MSID = get_service_plan('view bank account')
-        if MSID is None:
-            print('MSID not found')
-        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id}}
-        json_data = json.dumps(data)
-        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
-        if response['status_code'] == 1:
-            return render(request,'error.html',{'error':str(response['data'])})
-        all_banks = response['data']
-        # Check if the response contains data
-        if 'data' in response:
-            all_banks = response['data']
-        else:
-            print('Data not found in response')
-        
         # getting related loan data
         MSID = get_service_plan('view loan') # view_loan
         if MSID is None:
@@ -1567,49 +1504,35 @@ def disbursement_create(request,loanid):
         if response['status_code'] == 1:
             return render(request,'error.html',{'error':str(response['data'])})
         loan_data = response['data'][0]
+       
 
-        initial_data = {
-            'customer_id': loan_data['loanapp_id']['customer_id']['customer_id'],
-            'loan_id': loan_data['loan_id'],
-            'loan_application_id': loan_data['loanapp_id']['application_id'],
-            'amount':loan_data['loan_amount']
-        }
-        
-        form = DisbursementForm(initial=initial_data,bank_choice=all_banks,currency_choice=currency_records)
-        MSID = get_service_plan('view disbursement')
+        #  getting customeraccount
+        MSID = get_service_plan('getting customeraccount') # getting_customeraccount
         if MSID is None:
-            print('MISID not found')
-        data = {'ms_id':MSID,'ms_payload':{'company_id':company_id}}
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'customer_id':loan_data['customer']['id']}}
         json_data = json.dumps(data)
-        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
-        master_view = response['data']
-        print("==================")
-        if request.method == "POST":
-            form = DisbursementForm(request.POST,bank_choice=all_banks,currency_choice=currency_records)
-            if form.is_valid():
-                MSID = get_service_plan('create disbursement') # create_disbursement
-                if MSID is None:
-                    print('MISID not found')      
-                cleaned_data = form.cleaned_data 
-                cleaned_data['company_id'] = company_id
-                cleaned_data['customer_id'] = loan_data['loanapp_id']['customer_id']['id']
-                cleaned_data['loan_id'] = loan_data['id']
-                cleaned_data['loan_application_id'] = loan_data['loanapp_id']['id']
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        borroweraccount = response['data'][0]
 
-                data = {'ms_id':MSID,'ms_payload':cleaned_data} 
-                json_data = json.dumps(data)
-                response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
-                print('response4564========',response)
-                if response['status_code'] ==  0:                  
-                    messages.info(request, "Well Done..! Application Submitted..")
-                    return redirect('disply_loans')
-                else:
-                    messages.info(request, "Oops..! Application Failed to Submitted..")
-                return redirect("disply_loans")
-            else:
-                print('errorss',form.errors) 
+        if request.method == "POST":
+            
+            MSID = get_service_plan('create disbursement') # create_disbursement
+            if MSID is None:
+                print('MISID not found')      
+            payloads = {'company_id':company_id,'customer_id':loan_data['customer']['id'],'loan_id':loan_data['id'], 'loan_application_id':loan_data['loanapp_id']['id'], 'amount':request.POST.get('disursement_amount'), 'disbursement_type':loan_data['loanapp_id']['disbursement_type'], 'disbursement_status':request.POST.get('disbursement_status'),'bank':borroweraccount['id']}
+            data = {'ms_id':MSID,'ms_payload':payloads} 
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] ==  0:                  
+                messages.info(request, "Well Done..! Application Submitted..")
+            print("==============",response)
+            return redirect("disply_loans")
+         
         context={      
-            'form':form,'records':master_view,"save":True
+            "save":True,'loan_data':loan_data,'borroweraccount':borroweraccount
         }
         return render(request, 'disbursement/disbursement.html',context)
     except Exception as error:
@@ -3412,7 +3335,7 @@ def loan_upadate_trenches(request,loanapp_id):
     try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
-        MSID = get_service_plan('create loanvaluechain')
+        MSID = get_service_plan('create loanvaluechain') # create_loanvaluechain
         if MSID is None:
             print('MSID not found')
         payloads = {'company_id':company_id,'loanapp_id':loanapp_id}
@@ -3541,5 +3464,14 @@ def milstone_activity_create_v1(request,loanapp_id):
                 return render(request,'error.html',{'error':str(response['data'])})
             return redirect(f"/loan_detail_trenches/{loanapp_id}/")
        
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+#=================== Penalty ==========================
+
+def disply_penaltyloans(request):
+    try:
+        
+        return render(request,"Penalties/disply_penaltyloans.html")
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
