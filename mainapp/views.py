@@ -10,6 +10,9 @@ from .forms import *
 from django.forms import formset_factory
 BASEURL = settings.BASEURL
 ENDPOINT = 'micro-service/'
+import re
+from django.utils.html import escape
+from .scripts import *
 
 def get_service_plan(service_plan_id):
     try:
@@ -1218,7 +1221,7 @@ def create_agreement(request,pk):
                 cleaned_data['loanapp_id'] = loan_data['loanapp_id']['id']
                 agreement_template = cleaned_data['agreement_template'] 
 
-                # return redirect(f"/agreement_review/{pk}/{agreement_template}/")
+                return redirect(f"/agreement_review/{pk}/{agreement_template}/")
                 data = {'ms_id':MSID,'ms_payload':cleaned_data} 
                 json_data = json.dumps(data)
                 response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
@@ -1242,62 +1245,42 @@ def agreement_review(request,loanapp_id,template_id):
         token = request.session['user_token']
         company_id = request.session.get('company_id')
         # getting loan application data
-        MSID = get_service_plan('view loan') # view_loan
+        MSID = get_service_plan('template fields') # view_loan
         if MSID is None:
             print('MISID not found') 
-        payload_form = {'loanapp_id':loanapp_id}
+        payload_form = {'loan_id':loanapp_id,'template_id':template_id}
         data = {'ms_id':MSID,'ms_payload':payload_form}
         json_data = json.dumps(data)
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
         if response['status_code'] == 1:
             return render(request,'error.html',{'error':str(response['data'])})
-        loan_data = response['data'][0]
-
-        # getting loan application data
-        MSID = get_service_plan('view template') # view_loan
-        if MSID is None:
-            print('MISID not found') 
-        data = {'ms_id':MSID,'ms_payload':{}}
-        json_data = json.dumps(data)
-        template_response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
-        if template_response['status_code'] == 1:
-            return render(request,'error.html',{'error':str(template_response['data'])})
-        template_records = template_response['data']
-        print('template_records',template_records)
-        initial = {'customer_id':loan_data['customer']['customer_id'],'loan_id':loan_data['loan_id'],'loanapp_id':loan_data['loanapp_id']['application_id']}
-        form = LoanAgreementForm(initial=initial,template_choice=template_records)
+        placeholders = response['data']
+        print('placeholders',placeholders)
+      
         if request.method == "POST":
-            form = LoanAgreementForm(request.POST,template_choice=template_records)
-            if form.is_valid():
-                MSID = get_service_plan('create loanagreement') # create_loanagreement
-                if MSID is None:
-                    print('MISID not found')      
-                cleaned_data = form.cleaned_data
-                del cleaned_data['customer_id']
-                del cleaned_data['loan_id']
-                del cleaned_data['loanapp_id']
-
-                cleaned_data['company_id'] = company_id
-                
-                cleaned_data['customer_id'] = loan_data['customer']['id']
-                cleaned_data['loan_id'] = loan_data['id']
-                cleaned_data['loanapp_id'] = loan_data['loanapp_id']['id']
-
-                data = {'ms_id':MSID,'ms_payload':cleaned_data} 
-                json_data = json.dumps(data)
-                response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
-                print("response",response)
-                if response['status_code'] ==  0:                  
-                    messages.info(request, "Well Done..! Application Submitted..")
-                    return redirect('list_agreement')
-                else:
-                    messages.info(request, "Oops..! Application Failed to Submitted..")
-            else:
-                print('errorss',form.errors) 
+            for data in placeholders:
+                value = request.POST.get(data.get('name'))
+                data['value']=value
             
+            MSID = get_service_plan('agreement draft') # create_loanagreement
+            if MSID is None:
+                print('MISID not found')      
+           
+            data = {'ms_id':MSID,'ms_payload':{'loan_id':loanapp_id,'agreement_template':template_id,'agreement_template_value':placeholders}} 
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            print("response",response)
+            if response['status_code'] ==  0:                  
+                messages.info(request, "Well Done..! Application Submitted..")
+                return redirect('list_agreement')
+            else:
+                messages.info(request, "Oops..! Application Failed to Submitted..")
+           
 
-        context = {'form':form}
-        return render(request,"loan_agreement/loan_agreement.html",context)
+        context = {
+            'placeholders':placeholders
+            }
+        return render(request,"loan_agreement/loan_agreement_preview1.html",context)
     except Exception as error:
         return render(request, "error.html", {"error": error})
 
@@ -1352,13 +1335,57 @@ def agreement_confirmation(request,pk): # pk = agreement id
                 if response['status_code'] == 1:
                     return render(request,'error.html',{'error':str(response['data'])})
                 return redirect('list_agreement')
+        else:
+            MSID = get_service_plan('view loanagreement') # view_loanagreement
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'loanagreement_id':pk}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,'error.html',{'error':str(response['data'])})
+            agreement_data = response['data'][0]
+            # print('agreement_data',agreement_data)
+            template = tag_replacement(agreement_data.get('agreement_template').get('content'),agreement_data.get('agreement_template_value'))
             
 
-        context = {}
+        context = {
+            'template':template,'agreement_id':pk,'agreement_data':agreement_data
+        }
         return render(request,'loan_agreement/agreement_confirmation.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error})
         
+
+def agreement_signature_update(request,agreement_id): # pk = agreement id
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+        if request.method == "POST":
+            borrower_signature = request.POST.get('borrower_signature')
+            lender_signature = request.POST.get('lender_signature')
+            
+            MSID = get_service_plan('agreement signature update') # loanagreement confirmation
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'agreement_id':agreement_id}
+            if borrower_signature:
+                payload_form['borrower_signature']=borrower_signature
+            if lender_signature:
+                payload_form['lender_signature']=lender_signature
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,'error.html',{'error':str(response['data'])})
+        return redirect(f'/agreement_confirmation/{agreement_id}')
+        
+
+    except Exception as error:
+        return render(request, "error.html", {"error": error})
+        
+
 def edit_agreement(request,pk):
     try:
         token = request.session['user_token']
@@ -3223,7 +3250,8 @@ def aggrement_template_create(request):
         template_form = TemplateForm()
         help_text = '''
         {{cutomer_first_name}},{{cutomer_lastname}},{{cutomer_email}},{{cutomer_age}},{{cutomer_phone_number}},{{cutomer_address}},{{dateofbirth}}
-        {{application_id}},{{loan_type}},{{loan_amount}},{{loan_purpose}},{{loan_type}},{{loan_type}}
+        {{application_id}},{{loan_type}},{{loan_amount}},{{loan_purpose}},{{approved_amount}},{{interest_rate}},{{tenure}},{{tenure_type}},{{repayment_schedule}},{{repayment_mode}},
+        {{interest_basics}},{{loan_calculation_method}},
 
         '''
         if request.method == 'POST':
@@ -3285,7 +3313,7 @@ def aggrement_template_view(request,template_id):
         token = request.session['user_token']
         MSID= get_service_plan('view template')
         if MSID is None:
-            print('MISID not found') 
+            print('MISID not found')
         payload_form = {"template_id":template_id}
         data={
             'ms_id':MSID,
@@ -3452,7 +3480,7 @@ def loan_detail_trenches(request,loanapp_id):
         return render(request, "error.html", {"error": error}) 
     
 
-def milstone_edit_v1(request,loanapp_id):
+def milestone_edit_v1(request,loanapp_id):
     try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
@@ -3460,7 +3488,7 @@ def milstone_edit_v1(request,loanapp_id):
             milestone_id = request.POST.get('milestone_id')
             amount = request.POST.get('amount')
 
-            MSID = get_service_plan('milstone edit v1') # getting_valuechainsetups
+            MSID = get_service_plan('milestone edit v1') # getting_valuechainsetups
             if MSID is None:
                 print('MSID not found')
             payloads = {'milestone_id':milestone_id,'amount':amount}
@@ -3475,7 +3503,7 @@ def milstone_edit_v1(request,loanapp_id):
         return render(request, "error.html", {"error": error}) 
     
 
-def milstone_activity_edit_v1(request,loanapp_id):
+def milestone_activity_edit_v1(request,loanapp_id):
     try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
@@ -3483,7 +3511,7 @@ def milstone_activity_edit_v1(request,loanapp_id):
             activity_id = request.POST.get('activity_id')
             amount = request.POST.get('amount')
 
-            MSID = get_service_plan('milstone activity edit v1') # getting_valuechainsetups
+            MSID = get_service_plan('milestone activity edit v1') # getting_valuechainsetups
             if MSID is None:
                 print('MSID not found')
             payloads = {'activity_id':activity_id,'amount':amount}
@@ -3498,29 +3526,47 @@ def milstone_activity_edit_v1(request,loanapp_id):
         return render(request, "error.html", {"error": error}) 
 
 
-def milstone_activity_delete_v1(request,loanapp_id,activity_id):
+def milestone_activity_delete_v1(request,loanapp_id,activity_id):
     try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
-        if request.method == 'POST':
-            activity_id = request.POST.get('activity_id')
 
-            MSID = get_service_plan('milstone activity delete v1') # getting_valuechainsetups
-            if MSID is None:
-                print('MSID not found')
-            payloads = {'activity_id':activity_id}
-            data = {'ms_id': MSID,'ms_payload': payloads}
-            json_data = json.dumps(data)
-            response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
-            if response['status_code'] == 1:
-                return render(request,'error.html',{'error':str(response['data'])})
-            return redirect(f"/loan_detail_trenches/{loanapp_id}/")
+        MSID = get_service_plan('milestone activity delete v1') 
+        if MSID is None:
+            print('MSID not found')
+        payloads = {'activity_id':activity_id}
+        data = {'ms_id': MSID,'ms_payload': payloads}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        return redirect(f"/loan_detail_trenches/{loanapp_id}/")
        
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
 
 
-def milstone_activity_create_v1(request,loanapp_id):
+def milestone_delete_v1(request,loanapp_id,milestone_id):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        MSID = get_service_plan('milestone delete v1') 
+        if MSID is None:
+            print('MSID not found')
+        payloads = {'milestone_id':milestone_id}
+        data = {'ms_id': MSID,'ms_payload': payloads}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        return redirect(f"/loan_detail_trenches/{loanapp_id}/")
+       
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+
+def milestone_activity_create_v1(request,loanapp_id):
     try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
@@ -3530,10 +3576,36 @@ def milstone_activity_create_v1(request,loanapp_id):
             description = request.POST.get('description')
             amount = request.POST.get('amount')
 
-            MSID = get_service_plan('milstone activity create v1') # getting_valuechainsetups
+            MSID = get_service_plan('milestone activity create v1') # getting_valuechainsetups
             if MSID is None:
                 print('MSID not found')
             payloads = {'milestone_id':milestone_id,'amount':amount,'activity_name':activity_name,'description':description}
+            data = {'ms_id': MSID,'ms_payload': payloads}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+            if response['status_code'] == 1:
+                return render(request,'error.html',{'error':str(response['data'])})
+            return redirect(f"/loan_detail_trenches/{loanapp_id}/")
+       
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+    
+
+def milestone_create_v1(request,loanapp_id):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+        if request.method == 'POST':
+            valuechain_id = request.POST.get('valuechain_id')
+            milestone_name = request.POST.get('milestone_name')
+            description = request.POST.get('description')
+            amount = request.POST.get('amount')
+            due_date = request.POST.get('due_date')
+
+            MSID = get_service_plan('milestone create v1') # getting_valuechainsetups
+            if MSID is None:
+                print('MSID not found')
+            payloads = {'valuechain_id':valuechain_id,'amount':amount,'milestone_name':milestone_name,'description':description,'due_date':due_date}
             data = {'ms_id': MSID,'ms_payload': payloads}
             json_data = json.dumps(data)
             response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
