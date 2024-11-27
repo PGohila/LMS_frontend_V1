@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-0q0lkd0z)kx&pj%anaiy08yblpts*4!rzj$50r!hdpb9(#tbn%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -136,5 +136,6 @@ STATICFILES_DIRS = [
 
 PROJECT_ID = 2
 
-BASEURL = 'http://127.0.0.1:9000/'
+# BASEURL = 'http://127.0.0.1:9000/'
+BASEURL = 'https://loanmanagementb1.pythonanywhere.com/'
 # BASEURL = settings.BASEURL
