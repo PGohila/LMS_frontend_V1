@@ -2222,7 +2222,7 @@ def disbursed_loans1(request):
 
 
 def repayment_schedule1(request,pk): # pk = loan id
-    # try:
+    try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
 
@@ -2263,7 +2263,7 @@ def repayment_schedule1(request,pk): # pk = loan id
             return render(request,"error.html", {"error": response['data']})
         schedules = response['data']
         for schedule in schedules:
-            schedule['payable_amount'] = schedule['instalment_amount'] + schedule['interest_amount']
+            schedule['payable_amount'] = schedule['instalment_amount'] + schedule['interest_amount'] + schedule['payable_penalty_amt']
         # calculate Total amount Due
                 
         total_installment_amount = sum(item['instalment_amount'] for item in schedules)
@@ -2285,8 +2285,8 @@ def repayment_schedule1(request,pk): # pk = loan id
 
         context = {'schedules':response['data'],'loan_data':loan_data,'next_schedule':next_schedule,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount}
         return render(request,'repayment_schedule1/repayment_schedule1.html',context)
-    # except Exception as error:
-    #     return render(request, "error.html", {"error": error}) 
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
 
 
 def disbursedloans_foroverview1(request):
@@ -2327,18 +2327,21 @@ def payment_process(request,schedule_id):
         MSID = get_service_plan('getting schedule') # getting_schedules
         if MSID is None:
             print('MISID not found') 
-        payload_form = {'schedule_id':schedule_id}
+        payload_form = {'uniques_id':schedule_id}
         data = {'ms_id':MSID,'ms_payload':payload_form}
         json_data = json.dumps(data)
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
         if response['status_code'] == 1:
             return render(request,"error.html", {"error": response['data']})
-        schedule = response['data']
-        print('schedule',schedule)
+        schedule_data = response['data'][0]
+       
 
+        payable_amount = 0.0
+        
+        payable_amount += schedule_data['instalment_amount'] + schedule_data['interest_amount'] + schedule_data['payable_penalty_amt']
 
         if request.method == 'POST':
-            MSID = get_service_plan('paid schedule') # paid
+            MSID = get_service_plan('paid schedule') # paid_schedule
             if MSID is None:
                 print('MISID not found') 
             payload_form = {'schedule_id':schedule_id}
@@ -2349,7 +2352,7 @@ def payment_process(request,schedule_id):
                 return render(request,"error.html", {"error": response['data']})
             return redirect('disbursed_loans1')
 
-        context= {'schedule':response['data']}
+        context= {'schedule':schedule_data,'payable_amount':payable_amount}
         return render(request,'repayment_schedule1/payment_process.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 

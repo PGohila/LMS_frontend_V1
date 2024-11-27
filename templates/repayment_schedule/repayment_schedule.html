@@ -98,8 +98,8 @@
                         <th>Amount Paid</th>
                         <th>Balance</th>
                         <th>Payment Status</th>
-                        <th>Payment Method</th>
-                        <th>Transaction ID</th>
+                        <th>Penalty</th>
+                        <th>Penalty Reason</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,9 +112,12 @@
                         <td>${{data.interest_amount}}</td>
                         <td>${{data.paid_amount}}</td>
                         <td>${{data.remaining_balance}}</td>
-                        <td>{{data.repayment_status}}</td>
-                        <td>{% if data.payment_method == None %} - {% else %} {{ data.payment_method }} {% endif %}</td>
-                        <td>{% if data.transaction_id == None %} - {% else %} {{ data.transaction_id }} {% endif %}</td>
+                        <td>{% if data.repayment_status == "Paid" %}
+                          <span class="badge bg-success">Paid</span>
+                      {% else %}
+                          <span class="badge bg-danger">Pending</span>{% endif %}
+                          <td>{% if data.payable_penalty_amt == 0.0 %} - {% else %} {{ data.payable_penalty_amt }} {% endif %}</td>
+                          <td>{% if data.payable_penalty_amt == 0.0 %} - {% else %} {{ data.penalty_reason }} {% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -130,10 +133,10 @@
                         <td><strong>Next Payment Due:</strong> DD-MM-YYYY</td>
                         <td><strong>Next Payment Amount:</strong> $500</td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td><strong>Overdue Amount:</strong> $0</td>
                     
-                    </tr>
+                    </tr> -->
                     
                 </table>
                 <form method="post">
