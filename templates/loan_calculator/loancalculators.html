@@ -37,6 +37,7 @@
                 {% for data in form %}
                 <div class="col-6">
                     {{data.label_tag}}
+                    {% if data.field.required %}<span style="color: red;">*</span>{% endif %}
                     {{ data }}
                   
                 </div>

@@ -150,7 +150,7 @@ def company_create(request):
                 response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
           
                 if response['status_code'] ==  0:                  
-                    messages.info(request, "Well Done..! Application Submitted..")
+                    messages.info(request, "Well Done..! Company created..")
                     return redirect('company')
                 else:
                     messages.info(request, "Oops..! Application Failed to Submitted..")
@@ -279,10 +279,10 @@ def customer_create(request):
                 json_data = json.dumps(data)
                 response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
                 if response['status_code'] ==  0:                  
-                    messages.info(request, "Well Done..! Application Submitted..")
+                    messages.info(request, "Well Done..! Customer Created..")
                     return redirect('customer')
                 else:
-                    messages.info(request, "Oops..! Application Failed to Submitted..")
+                    messages.info(request, "Oops..! Customer Failed to Created..")
             else:
                 print("form.errors",form.errors)
                 messages.info(request, str(form.errors))
