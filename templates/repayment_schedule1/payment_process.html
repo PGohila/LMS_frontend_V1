@@ -21,7 +21,7 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Payment Schedule Details</h5>
-                {% for data in schedule %}
+        
                 <table style="font-size: 12px; line-height: 20px;">
                   <tbody>
                     <tr>
@@ -31,61 +31,73 @@
                             <tr>
                               <td style="vertical-align: top;padding-bottom: 20px;">
                                 <table style="table-layout: fixed;width:-webkit-fill-available;">
-                                  <tr>
+                                  <!-- <tr>
                                     <th style="text-align: left; color: #1A1C21;">&nbsp;SI.No:</th>
                                     <td>{{ forloop.counter }}</td>
-                                  </tr>
+                                  </tr> -->
                                   <tr>
                                     <th style="text-align: left; color: #1A1C21;">&nbsp;Schedule ID:</th>
-                                    <td><a href="#">{{ data.schedule_id }}</a></td>
+                                    <td><a href="#">{{ schedule.schedule_id }}</a></td>
                                   </tr>
                                   <tr>
                                     <th style="text-align: left; color: #1A1C21;">&nbsp;Payment Date:</th>
-                                    <td>{{ data.repayment_date }}</td>
+                                    <td>{{ schedule.repayment_date }}</td>
                                   </tr>
                                   <tr>
-                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Amount Due:</th>
-                                    <td>${{ data.instalment_amount }}</td>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Penalty Reason:</th>
+                                    <td>{{ schedule.penalty_reason }}</td>
                                   </tr>
                                   <tr>
-                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Interest Amount:</th>
-                                    <td>${{ data.interest_amount }}</td>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Payment Status:</th>
+                                    <td>{{ schedule.repayment_status }}</td>
                                   </tr>
                                 </table>
                               </td>
                               <td style="vertical-align: top;padding-bottom: 20px;">
                                 <table style="table-layout: fixed;width:-webkit-fill-available;">
                                   <tr>
-                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Amount To be Paid:</th>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Balance Amount:</th>
                 
-                                    <td>${{ data.remaining_balance }}</td>
+                                    <td>${{ schedule.remaining_balance }}</td>
                                   </tr>
                                   <tr>
-                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Payment Status:</th>
-                                    <td>{{ data.repayment_status }}</td>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Instalment Amount:</th>
+                                    <td>${{ schedule.instalment_amount }}</td>
                                   </tr>
                                   <tr>
-                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Payment Method:</th>
-                                    <td>{% if data.payment_method == None %} - {% else %} {{ data.payment_method }} {% endif %}</td>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Interest Amount:</th>
+                                    <td>${{ schedule.interest_amount }}</td>
                                   </tr>
+                                  
                                   <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Penalty Amount:</th>
+                                    <td>{{ schedule.payable_penalty_amt }}</td>
+                                  </tr>
+                                  
+                                 
+                                  <!-- <tr>
                                     <th style="text-align: left; color: #1A1C21;">&nbsp;Transaction ID:</th>
                                     <td>{% if data.transaction_id == None %} - {% else %} {{ data.transaction_id }} {% endif %}</td>
-                                  </tr>
+                                  </tr> -->
                                 </table>
                               </td>
                             </tr>
+                           
                           </tbody>
                         </table>
                       </td>
                     </tr>
+                    
                   </tbody>
                 </table>
-      {% endfor %}
+   
                
                 <form method="post">
                     {% csrf_token %}
-                
+                    <tr>
+                      <th style="text-align: left; color: #1A1C21;">&nbsp;Payable Amount:</th>
+                      <input type="number" class="form-control" value="{{payable_amount}}">
+                    </tr><br>
                 <!-- Action Buttons -->
                 <div class="button-container">
                     

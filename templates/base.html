@@ -459,10 +459,17 @@
 
         </li>
         <li>
+          <a href="{% url 'disbursed_loans1' %}">
+            <i class="bi bi-circle"></i><span>Schedule Payment</span>
+          </a>
+
+        </li>
+
+        <!-- <li>
           <a href="{% url 'disbursedloans_foroverview' %}">
             <i class="bi bi-circle"></i><span>Schedule Overview</span>
           </a>
-        </li>
+        </li> -->
 
       </ul>
     </li>
@@ -502,18 +509,14 @@
           <a href="{% url 'disply_penaltyloans' %}">
             <i class="bi bi-circle"></i><span>Penalty</span>
           </a>
-
+         
         </li>
         <li>
-          <a href="">
-            <i class="bi bi-circle"></i><span>Penalty Overview</span>
-          </a>
-        </li>
-        <li>
-          <a href="">
+          <a href="{% url 'penalty_details' %}">
             <i class="bi bi-circle"></i><span>Penalty Details</span>
           </a>
         </li>
+       
 
       </ul>
     </li>
