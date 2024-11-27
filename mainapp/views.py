@@ -2222,7 +2222,7 @@ def disbursed_loans1(request):
 
 
 def repayment_schedule1(request,pk): # pk = loan id
-    try:
+    # try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
 
@@ -2238,6 +2238,20 @@ def repayment_schedule1(request,pk): # pk = loan id
             return render(request,"error.html", {"error": response['data']})
         loan_data = response['data'][0]
 
+        # next payments
+
+        MSID = get_service_plan('getting next schedules') # getting_next_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company_id':company_id,'loanapp_id':pk}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        next_schedule = response['data']
+        print('next_schedule',next_schedule)
+
         MSID = get_service_plan('getting repayment schedules') # getting_repayment_schedules
         if MSID is None:
             print('MISID not found') 
@@ -2248,13 +2262,13 @@ def repayment_schedule1(request,pk): # pk = loan id
         if response['status_code'] == 1:
             return render(request,"error.html", {"error": response['data']})
         schedules = response['data']
+        for schedule in schedules:
+            schedule['payable_amount'] = schedule['instalment_amount'] + schedule['interest_amount']
         # calculate Total amount Due
-        
+                
         total_installment_amount = sum(item['instalment_amount'] for item in schedules)
         total_paid_amount = sum(item['paid_amount'] for item in schedules)
-        
-        # next payments
-        
+       
         if request.method == 'POST':
             MSID = get_service_plan('confirmed schedule') # confirmed_schedule
             if MSID is None:
@@ -2267,10 +2281,12 @@ def repayment_schedule1(request,pk): # pk = loan id
                 return render(request,"error.html", {"error": response['data']})
             return redirect('disbursed_loans')
 
-        context = {'schedules':response['data'],'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount}
+        
+
+        context = {'schedules':response['data'],'loan_data':loan_data,'next_schedule':next_schedule,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount}
         return render(request,'repayment_schedule1/repayment_schedule1.html',context)
-    except Exception as error:
-        return render(request, "error.html", {"error": error}) 
+    # except Exception as error:
+    #     return render(request, "error.html", {"error": error}) 
 
 
 def disbursedloans_foroverview1(request):
