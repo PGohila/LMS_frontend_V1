@@ -55,36 +55,6 @@ def call_post_method_with_token_v2(URL, endpoint, data, access_token, files=None
         except json.JSONDecodeError:
             return {'status_code': 1, 'data': 'Something went wrong'}
 
-# ====================== Login =============================
-# def login(request):
-#     try:
-#         # Check if the request method is POST
-#         if request.method == "POST":
-#             username = request.POST.get('username')
-#             password = request.POST.get('password')
-#             payload = {        
-#                 "username" : username,
-#                 "password" : password
-#             }
-#             # Convert payload to JSON format
-#             json_payload = json.dumps(payload)
-#             ENDPOINT = 'api/token/'
-#             login_response = call_post_method_without_token(BASEURL+ENDPOINT,json_payload)
-#             print('login_response',login_response)
-#             if login_response.status_code == 200:
-#                 login_tokes = login_response.json()
-#                 request.session['user_token']=login_tokes['access']
-
-#                 return redirect('company_selecting')
-#             else:
-#                 login_tokes = login_response.json()
-#                 login_error='Invalid Username and Password'
-#                 context={"login_error":login_error}
-#                 return render(request, 'login.html',context)
-          
-#         return render(request, 'login.html')
-#     except Exception as error:
-#         return HttpResponse(f'<h1>{error}</h1>')
 
 def company_selecting(request):
     try:
