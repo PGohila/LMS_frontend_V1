@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% block body_block %}
 <body>
@@ -21,6 +22,17 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Customer Form</h5>
+              {% if messages %}
+            
+              <div id="message-container">
+                  {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                      {{ message }}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  {% endfor %}
+              </div>
+              {% endif %}
 
               <!-- Vertical Form -->
               <form method="post" class="row g-3">
@@ -28,8 +40,12 @@
                 
                 {% for data in form %}
                 <div class="col-12">
-                    {{data.label_tag}}
+                  <label for="{{ data.id_for_label }}">
+                    {{ data.label }}
+                    {% if data.field.required %}<span style="color: red;">*</span>{% endif %}
+                </label>
                     {{ data }}
+                    
                   
                 </div>
                 {% endfor %}
@@ -50,5 +66,3 @@
 
   </main><!-- End #main -->
   {% endblock %}
-
- 
