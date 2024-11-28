@@ -126,12 +126,12 @@
                 <!-- Summary Information -->
                 <table class="table ">
                     <tr>
-                        <td><strong>Total Amount Due:</strong> ${{total_installment_amount|floatformat:2}}</td>
-                        <td><strong>Total Amount Paid:</strong> ${{total_paid_amount|floatformat:2}}</td>
+                        <td><strong>Total Due Amount:</strong> ${{total_installment_amount|floatformat:2}}</td>
+                        <td><strong>Total Paid Amount:</strong> ${{total_paid_amount|floatformat:2}}</td>
                     </tr>
                     <tr>
-                        <td><strong>Next Payment Due:</strong> DD-MM-YYYY</td>
-                        <td><strong>Next Payment Amount:</strong> $500</td>
+                        <td><strong>Next Payment Date:</strong>  {{next_schedule.next_due_date}}</td>
+                        <td><strong>Next Payment Amount:</strong> ${{next_schedule.amount_due}}</td>
                     </tr>
                     <!-- <tr>
                         <td><strong>Overdue Amount:</strong> $0</td>

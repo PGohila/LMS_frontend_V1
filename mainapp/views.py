@@ -2134,6 +2134,17 @@ def repayment_schedule(request,pk): # pk = loan id
             return render(request,"error.html", {"error": response['data']})
         schedules = response['data']
         # calculate Total amount Due
+
+        MSID = get_service_plan('getting next schedules') # getting_next_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company_id':company_id,'loanapp_id':pk}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        next_schedule = response['data'][0]
         
         total_installment_amount = sum(item['instalment_amount'] for item in schedules)
         total_paid_amount = sum(item['paid_amount'] for item in schedules)
@@ -2149,7 +2160,7 @@ def repayment_schedule(request,pk): # pk = loan id
                 return render(request,"error.html", {"error": response['data']})
             return redirect('disbursed_loans')
 
-        context = {'schedules':response['data'],'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount}
+        context = {'next_schedule':next_schedule,'schedules':response['data'],'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount}
         return render(request,'repayment_schedule/repayment_schedule.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
@@ -2189,7 +2200,6 @@ def schedule_overview(request,pk):  # pk = loan id
 
 
 #---------------------------------------repayment 2 ----------------------------
-
 
 def disbursed_loans1(request):
     try:
@@ -2243,7 +2253,7 @@ def repayment_schedule1(request,pk): # pk = loan id
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
         if response['status_code'] == 1:
             return render(request,"error.html", {"error": response['data']})
-        next_schedule = response['data']
+        next_schedule = response['data'][0]
         print('next_schedule',next_schedule)
 
         MSID = get_service_plan('getting repayment schedules') # getting_repayment_schedules
