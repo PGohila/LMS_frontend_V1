@@ -14,8 +14,8 @@ from django.conf import settings
 
 
 
-BASEURL = 'http://127.0.0.1:9000/'
-# BASEURL = settings.BASEURL
+# BASEURL = 'http://127.0.0.1:9000/'
+BASEURL = settings.BASEURL
 ENDPOINT = 'micro-service/'
 
 
