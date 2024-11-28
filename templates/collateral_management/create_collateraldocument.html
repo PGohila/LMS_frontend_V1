@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Collateral</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Collateral</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                  <div class="col-md-12">
+                    <h5 class="card-title">Attach Collateral Documents</h5>
+                    <form method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+       
+                        <table class="table table-bordered" id="table_attachment">
+                            <thead class="thead-light">
+                                <tr>
+                  
+                                    <th class="text-center p-3">Document Name</th>
+                                    <th>Upload</th>
+                                    <th>Description</th>
+                                    <th class="text-center p-3">Action</th> 
+                                </tr>
+                            </thead>
+    
+                            <tbody id = "attachment_tbody">
+                     
+                                <tr id="row_{{ forloop.counter }}">
+                                
+                                  
+                                    <td class="align-middle p-3">
+                                      <div class="form-group">
+                                        <input type="text" name="document_name" id="id_document_name" class="form-control" >
+                                      </div>
+                                  </td>
+                                  <td class="align-middle p-3"> 
+                                    <div class="form-group">
+                                      <input type="file" name="uploaded_file" id="id_uploaded_file" class="form-control">
+    
+                                    </div>
+                                </td>
+                                
+                              <td class="align-middle p-3"> 
+                                <div class="form-group">
+                                  <textarea name="description1" id="id_description1" class="form-control" style="height: 70px;  width: 400px;"></textarea>
+                                </div>
+                            </td>
+                                    
+                                    <td class="align-middle text-center"> 
+                                        <button class="btn btn-success" type="submit">+</button>
+                                      
+                                </tr>
+                             
+                            </tbody>
+                        </table>
+                 
+                    </div>
+                  </form>
+                  </div>
+                </div>
+            </div>
+          
+          <div class="card">
+            <div class="card-body">
+              <div class="col-md-12">
+                  <h5 class="card-title">Collateral Documentation </h5>
+                  <div class="table-responsive">
+                    <table class="table datatable">
+                      <thead>
+                          <tr>
+                              <th scope="col">#</th>
+                              <!-- <th scope="col">Application ID</th> -->
+                              <th scope="col">Collateral Document name</th>
+                              <th scope="col">Document</th>
+                              <th scope="col">Description</th>
+                                                         </tr>
+                      </thead>
+                      <tbody>
+                          {% for data in collateral_data %}
+                              <tr>
+                                  <th scope="row">{{ forloop.counter}}</th>
+                                  <!-- <td>{{ data.application_id }}</td> -->
+                                  <td>{{ data.document_name}}</td>
+                                  <td>
+                                    <div class="col-md-12 px-3 py-3">
+                                      <i class="bi bi-star me-1 text-success"></i>
+                                        <a href="{{BASEURL}}{{ data.additional_documents }}" target="_blank">{{ data.additional_documents }}</a></div>
+                                  </td>
+                                  <td>{{ data.description }}</td>
+                               
+                             
+                                  
+      
+                              </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+               
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+    
+  
+  </main><!-- End #main -->
+  
+  {% endblock %}
+
+ 
