@@ -938,10 +938,10 @@ def verify_documents(request,pk): #pk = application id
         customer_doc = response['data']
         
         # getting collateral document using application Id
-        MSID = get_service_plan('view collateraldocument') # view_collateraldocument
+        MSID = get_service_plan('get collateraldocument withloanapp') # get_collateraldocument_withloanapp
         if MSID is None:
             print('MISID not found') 
-        payload_form = {"loan_application_id":pk}
+        payload_form = {"company_id":company_id,"loan_application_id":pk}
         data = {'ms_id':MSID,'ms_payload':payload_form}
         json_data = json.dumps(data)
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
@@ -1648,56 +1648,45 @@ def create_collateral(request, pk):
         else:
             print('Data not found in response')
 
+        #============ getting collateral Details =================
+        MSID = get_service_plan('view collaterals') # view_collaterals
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id,'loan_appliaction_id':pk}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        collateral_data = response['data']
+
+
         collateral_form = CollateralsForm(collateral_type_choice = collateral_type_records)
-
+        print("3652472542")
         if request.method == 'POST':
-            collateral_butn = request.POST.get('collateral_btn')
-            attachment_butn = request.POST.get('attachment_btn')
+     
+            collateral_type = request.POST.get('collateral_type')
+            collateral_value = request.POST.get('collateral_value')
+            valuation_date = request.POST.get('value_date')
+            collateral_status = request.POST.get('collateral_status')
+            insurance_status = request.POST.get('insurance_status')
+            description = request.POST.get('description')
 
-            if collateral_butn == 'collateral_btn':
-                collateral_type = request.POST.getlist('collateral_type')
-                collateral_value = request.POST.getlist('collateral_value')
-                valuation_date = request.POST.getlist('value_date')
-                collateral_status = request.POST.getlist('collateral_status')
-                insurance_status = request.POST.getlist('insurance_status')
-                description = request.POST.getlist('description')
-                for index,data in enumerate(collateral_type):
-                    MSID = get_service_plan('create collaterals') # create_collaterals
-                    if MSID is None:
-                        print('MSID not found')
-                    payload = {'company_id':company_id, 'loanapp_id':pk, 'customer_id':loanapp_id_records['customer_id']['id'], 'collateral_type_id':collateral_type[index], 'collateral_value':collateral_value[index], 
-                            'valuation_date': valuation_date[index], 'collateral_status':collateral_status[index], 'insurance_status':insurance_status[index],'description':description[index]}
-                    data = {'ms_id': MSID,'ms_payload': payload}
-                    json_data = json.dumps(data)
-                    response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
-                    if response['status_code'] == 1:
-                        return render(request,"error.html", {"error": response['data']})
-                    return redirect(f'/create_collateral/{pk}/')
-            elif attachment_butn == 'attachment_btn':
-                document_name = request.POST.getlist('document_name')
-                attachment = request.FILES.getlist('uploaded_file')
-                description = request.POST.getlist('description1')
-
-                for index,data in enumerate(document_name):
-                    files = {}
-                    MSID = get_service_plan('upload collateraldocument') # upload_collateraldocument
-                    if MSID is None:
-                        print('MSID not found')
-                    payload = {'company_id':company_id,'loanapplication_id':pk,'document_name':document_name[index],'desctioption':description[index]}
-                    data = {'ms_id': MSID,'ms_payload': json.dumps(payload)}
-                    json_data = json.dumps(data)
-                    if attachment[index]:
-                        files['attachment'] = (attachment[index].name, attachment[index], attachment[index].content_type)
-    
-                    response = call_post_method_with_token_v2(BASEURL, ENDPOINT, data, token,files)
-                    if response['status_code'] == 1:
-                        return render(request,"error.html", {"error": response['data']})
-                return redirect(f'/create_collateral/{pk}/')
-            else:
-                pass
+            MSID = get_service_plan('create collaterals') # create_collaterals
+            if MSID is None:
+                print('MSID not found')
+            payload = {'company_id':company_id, 'loanapp_id':pk, 'customer_id':loanapp_id_records['customer_id']['id'], 'collateral_type_id':collateral_type, 'collateral_value':collateral_value, 
+                    'valuation_date': valuation_date, 'collateral_status':collateral_status, 'insurance_status':insurance_status,'description':description}
+            data = {'ms_id': MSID,'ms_payload': payload}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            print("-09243320904",response['data'])
+            return redirect(f'/create_collateral/{pk}/')
+      
     
         context = {
-            'forms': collateral_form,
+            'forms': collateral_form,'collateral_data':collateral_data,
             'collateral_formset': collateral_form,
             'collateral_type': collateral_type_records,
             'loanapplication_records':loanapp_id_records
@@ -1707,6 +1696,45 @@ def create_collateral(request, pk):
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
 
+def create_collateraldocument(request,pk): # pk is a collateral id
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        #============ getting collateral Details =================
+        MSID = get_service_plan('view collateraldocument') # view_collateraldocument
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id,'collateral_id':pk}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        collateral_data = response['data']
+
+        if request.method == 'POST':
+            document_name = request.POST.get('document_name')
+            attachment = request.FILES.get('uploaded_file')
+            description = request.POST.get('description1')
+
+            files = {}
+            MSID = get_service_plan('upload collateraldocument') # upload_collateraldocument
+            if MSID is None:
+                print('MSID not found')
+            payload = {'company_id':company_id,'collateral_id':pk,'loanapplication_id':pk,'document_name':document_name,'desctioption':description}
+            data = {'ms_id': MSID,'ms_payload': json.dumps(payload)}
+            json_data = json.dumps(data)
+            if attachment:
+                files['attachment'] = (attachment.name, attachment, attachment.content_type)
+
+            response = call_post_method_with_token_v2(BASEURL, ENDPOINT, data, token,files)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            return redirect(f'/create_collateraldocument/{pk}/')
+        context = {'collateral_data':collateral_data,'BASEURL':BASEURL}
+        return render(request, 'collateral_management/create_collateraldocument.html', context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error})
 
 # def collaterals_create(request):
 #     try:
@@ -1870,22 +1898,18 @@ def collateral_details(request,pk): # pk is a loan application id
             print('Data not found in response')
         
         # getting loan applcation document 
-        MSID = get_service_plan('view collateraldocument') # view_collateraldocument
+        MSID = get_service_plan('view collaterals withdocuments') # view_collaterals_withdocuments
         if MSID is None:
             print('MSID not found')
-        data = {'ms_id': MSID,'ms_payload': {'loan_application_id':pk}}
+        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id,'loan_appliaction_id':pk}}
         json_data = json.dumps(data)
         response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
         if response['status_code'] == 1:
             return render(request,"error.html", {"error": response['data']})
-        # Check if the response contains data
-        if 'data' in response:
-            collateraldoc_records = response['data']
-        else:
-            print('Data not found in response')
-
+        
+        colateral_data = response['data']
         context = {
-            'loanapplication_records':loanapp_id_records,'collateral_records':collateral_records,'BASEURL':BASEURL,'collateraldoc_records':collateraldoc_records
+            'loanapplication_records':loanapp_id_records,'collateral_records':collateral_records,'BASEURL':BASEURL,'colateral_data':colateral_data
         }
         return render(request, 'collateral_management/collateral_details.html', context)
     except Exception as error:
@@ -2110,6 +2134,17 @@ def repayment_schedule(request,pk): # pk = loan id
             return render(request,"error.html", {"error": response['data']})
         schedules = response['data']
         # calculate Total amount Due
+
+        MSID = get_service_plan('getting next schedules') # getting_next_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company_id':company_id,'loanapp_id':pk}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        next_schedule = response['data'][0]
         
         total_installment_amount = sum(item['instalment_amount'] for item in schedules)
         total_paid_amount = sum(item['paid_amount'] for item in schedules)
@@ -2125,7 +2160,7 @@ def repayment_schedule(request,pk): # pk = loan id
                 return render(request,"error.html", {"error": response['data']})
             return redirect('disbursed_loans')
 
-        context = {'schedules':response['data'],'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount}
+        context = {'next_schedule':next_schedule,'schedules':response['data'],'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount}
         return render(request,'repayment_schedule/repayment_schedule.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
@@ -2165,7 +2200,6 @@ def schedule_overview(request,pk):  # pk = loan id
 
 
 #---------------------------------------repayment 2 ----------------------------
-
 
 def disbursed_loans1(request):
     try:
@@ -2219,7 +2253,7 @@ def repayment_schedule1(request,pk): # pk = loan id
         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
         if response['status_code'] == 1:
             return render(request,"error.html", {"error": response['data']})
-        next_schedule = response['data']
+        next_schedule = response['data'][0]
         print('next_schedule',next_schedule)
 
         MSID = get_service_plan('getting repayment schedules') # getting_repayment_schedules

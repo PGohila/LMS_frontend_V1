@@ -60,7 +60,7 @@ urlpatterns = [
 
     path('show_loandetails/',show_loandetails,name='show_loandetails'),
     path('create_collateral/<pk>/', create_collateral, name='create_collateral'),
-    # path('collaterals/', collaterals_create, name='collaterals'),
+    path('create_collateraldocument/<pk>/', create_collateraldocument, name='create_collateraldocument'),
     path('collaterals-view/', collaterals_view, name='collaterals_view'),
     path('collateral_details/<pk>/', collateral_details, name='collateral_details'),
     path('collaterals-edit/<pk>/', collaterals_edit, name='collaterals_edit'),
