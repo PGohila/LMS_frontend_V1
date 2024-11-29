@@ -16,7 +16,9 @@
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -29,10 +31,10 @@
   <!-- Include jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Include Select2 CSS -->
+  <!-- Include Select2 CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
-<!-- Include Select2 JS -->
+  <!-- Include Select2 JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 
@@ -41,23 +43,28 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <style>
-  .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* smooth scrolling for mobile */
-  }
-  .table th, .table td {
+    .table-responsive {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      /* smooth scrolling for mobile */
+    }
+
+    .table th,
+    .table td {
       white-space: nowrap;
-  }
-  .table-wrapper {
-    overflow-x: auto;
-  }
-  /* form label {
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    /* form label {
         font-weight: bold;
     } */
   </style>
 
   {% block head_block %}
-  {% endblock  %}
+  {% endblock %}
 </head>
 
 <body>
@@ -66,9 +73,10 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
-        <img src="{% static 'assets/img/logo.jpg' %}" alt="">
-        <span class="d-none d-lg-block"><img src="{% static 'assets/img/pesa_nile_logohd.jpeg'%}" style="height: 100px; width: 150px" ></span>
+      <a href="{% url 'dashboard' %}" class="logo d-flex align-items-center">
+        <!-- <img src="{% static 'assets/logo/bharathbrandslogo.png' %}" alt="" style="width: 30px;"> -->
+        <span class="d-none d-lg-block"><img src="{% static 'assets/logo/bharathbrandslogo.png'%}"
+            style="height: 200px; width: 150px"></span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -93,69 +101,20 @@
 
           <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
             <i class="bi bi-bell"></i>
-            <span class="badge bg-primary badge-number">4</span>
+            <span class="badge bg-primary badge-number">0</span>
           </a><!-- End Notification Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
             <li class="dropdown-header">
-              You have 4 new notifications
+              You have 0 new notifications
               <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
             </li>
             <li>
               <hr class="dropdown-divider">
             </li>
 
-            <li class="notification-item">
-              <i class="bi bi-exclamation-circle text-warning"></i>
-              <div>
-                <h4>Lorem Ipsum</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>30 min. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-x-circle text-danger"></i>
-              <div>
-                <h4>Atque rerum nesciunt</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>1 hr. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-check-circle text-success"></i>
-              <div>
-                <h4>Sit rerum fuga</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>2 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-info-circle text-primary"></i>
-              <div>
-                <h4>Dicta reprehenderit</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>4 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+          
+        
             <li class="dropdown-footer">
               <a href="#">Show all notifications</a>
             </li>
@@ -168,59 +127,15 @@
 
           <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
             <i class="bi bi-chat-left-text"></i>
-            <span class="badge bg-success badge-number">3</span>
+            <span class="badge bg-success badge-number">0</span>
           </a><!-- End Messages Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
             <li class="dropdown-header">
-              You have 3 new messages
+              You have 0 new messages
               <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
             </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="{% static 'assets/img/messages-1.jpg' %}" alt="" class="rounded-circle">
-                <div>
-                  <h4>Maria Hudson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="{% static 'assets/img/messages-2.jpg' %}" alt="" class="rounded-circle">
-                <div>
-                  <h4>Anna Nelson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>6 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="{% static 'assets/img/messages-3.jpg' %}" alt="" class="rounded-circle">
-                <div>
-                  <h4>David Muldon</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>8 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+           
 
             <li class="dropdown-footer">
               <a href="#">Show all messages</a>
@@ -234,13 +149,13 @@
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="{% static 'assets/img/profile-img.jpg' %}" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+            <span class="d-none d-md-block dropdown-toggle ps-2">Admin</span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6>Kevin Anderson</h6>
-              <span>Web Designer</span>
+              <h6> Admin</h6>
+              <!-- <span>Web Designer</span> -->
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -301,11 +216,11 @@
   {% endblock %}
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
-    
+
     <ul class="sidebar-nav" id="sidebar-nav">
       {% comment %} {% if 'user_registration' in permission_user %} {% endcomment %}
       <li class="nav-item">
-        <a class="nav-link " href="index.html">
+        <a class="nav-link " href="{% url 'dashboard' %}">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
@@ -321,12 +236,20 @@
               <i class="bi bi-circle"></i><span>Company</span>
             </a>
           </li>
-          
+
         </ul>
       </li>
       <li class="nav-item">
+
+        <a class="nav-link " href="https://bbsaccotest2024.pythonanywhere.com/" target="_blank" style="background-color: white; color: #012970;">
+          <i class="bi bi-people" style="color: #012970;"></i>
+          <span>Member Registry</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#customer-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-person-lines-fill"></i><span>Customer Management</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-person-lines-fill"></i><span>Customer Management</span><i
+            class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="customer-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -335,218 +258,232 @@
             </a>
           </li>
           <li></li>
-            <a href="{% url 'customer_view' %}">
-              <i class="bi bi-circle"></i><span>Customer Details</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'customer_list' %}">
-              <i class="bi bi-circle"></i><span>Customer Document Upload</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'document_list' %}">
-              <i class="bi bi-circle"></i><span>Customer Document View</span>
-            </a>
-          </li>
-          
-          
-        </ul>
+          <a href="{% url 'customer_view' %}">
+            <i class="bi bi-circle"></i><span>Customer Details</span>
+          </a>
       </li>
-      
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#application-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-file-earmark-text"></i><span>Loan Application</span><i class="bi bi-chevron-down ms-auto"></i>
+      <li>
+        <a href="{% url 'customer_list' %}">
+          <i class="bi bi-circle"></i><span>Customer Document Upload</span>
         </a>
-        <ul id="application-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{% url 'loanapplication' %}">
-              <i class="bi bi-circle"></i><span>Loan Application</span>
-            </a>
-           
-          </li>
-          <li>
-            <a href="{% url 'loanapplication_view' %}">
-              <i class="bi bi-circle"></i><span>Application Details</span>
-            </a>
-          </li>
-          <li>
-              <a href="{% url 'view_loanapplications' %}">
-                <i class="bi bi-circle"></i><span>Application Status Tracking</span>
-              </a>
-          </li>
+      </li>
+      <li>
+        <a href="{% url 'document_list' %}">
+          <i class="bi bi-circle"></i><span>Customer Document View</span>
+        </a>
+      </li>
 
-        </ul>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav1" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-folder"></i><span>DMS</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="forms-nav1" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{% url 'matter_workspace' %}">
-              <i class="bi bi-circle"></i><span>DMS</span>
-            </a>
-          </li>
-          
-        </ul>
-      </li>
-      <!-- collateral Management -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#collateral-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-shield-lock"></i><span>Collateral Management</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="collateral-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{% url 'show_loandetails' %}">
-              <i class="bi bi-circle"></i><span>Collateral</span>
-            </a>
-           
-          </li>
-          <li>
-            <a href="{% url 'collaterals_view' %}">
-              <i class="bi bi-circle"></i><span>Collateral Details</span>
-            </a>
-          </li>
-          <!-- <li>
+
+    </ul>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#application-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-file-earmark-text"></i><span>Loan Application</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="application-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'loanapplication' %}">
+            <i class="bi bi-circle"></i><span>Loan Application</span>
+          </a>
+
+        </li>
+        <li>
+          <a href="{% url 'loanapplication_view' %}">
+            <i class="bi bi-circle"></i><span>Application Details</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'view_loanapplications' %}">
+            <i class="bi bi-circle"></i><span>Application Status Tracking</span>
+          </a>
+        </li>
+
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#forms-nav1" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-folder"></i><span>DMS</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="forms-nav1" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'matter_workspace' %}">
+            <i class="bi bi-circle"></i><span>DMS</span>
+          </a>
+        </li>
+
+      </ul>
+    </li>
+    <!-- collateral Management -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#collateral-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-shield-lock"></i><span>Collateral Management</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="collateral-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'show_loandetails' %}">
+            <i class="bi bi-circle"></i><span>Collateral</span>
+          </a>
+
+        </li>
+        <li>
+          <a href="{% url 'collaterals_view' %}">
+            <i class="bi bi-circle"></i><span>Collateral Details</span>
+          </a>
+        </li>
+        <!-- <li>
             <a href="">
               <i class="bi bi-circle"></i><span>Collateral Valuation</span>
             </a>
           </li> -->
-        </ul>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#approval-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-check-circle"></i><span>Loan Approval</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="approval-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-       
-          <!-- <li>
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#approval-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-check-circle"></i><span>Loan Approval</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="approval-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+        <!-- <li>
             <a href="">
               <i class="bi bi-circle"></i><span>Application Review</span>
             </a>
           </li> -->
-          <li>
+        <li>
 
-            <a href="{% url 'show_active_applications' %}">
-              <i class="bi bi-circle"></i><span>Loan Eligibility Check</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'assessmentlist' %}">
-              <i class="bi bi-circle"></i><span>Loan Risk Assessment</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'document_varification' %}">
-              <i class="bi bi-circle"></i><span>Document Verification</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'loanapprovalview' %}">
-              <i class="bi bi-circle"></i><span>Approve/Reject Loan</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'loan_list' %}">
-              <i class="bi bi-circle"></i><span>Approved Loans</span>
-            </a>
-          </li>
-          
-        </ul>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#agreement-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-file-earmark-check"></i><span>Loan Agreement</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="agreement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{% url 'listapprovedapplications' %}">
-              <i class="bi bi-circle"></i><span>Generate Agreement</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'list_agreement' %}">
-              <i class="bi bi-circle"></i><span>Agreement Review</span>
-            </a>
-          </li>
-       
- 
-          
-        </ul>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#valuechain-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-diagram-3"></i><span>Disbursement Trenches</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="valuechain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{% url 'valuechain_setups' %}">
-              <i class="bi bi-circle"></i><span>Valuechain Set-ups</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'disply_valuechain' %}">
-              <i class="bi bi-circle"></i><span>MileStones</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'loan_list' %}">
-              <i class="bi bi-circle"></i><span>Loan Trenches</span>
-            </a>
-          </li>
-       
- 
-          
-        </ul>
-      </li>
-    
+          <a href="{% url 'show_active_applications' %}">
+            <i class="bi bi-circle"></i><span>Loan Eligibility Check</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'assessmentlist' %}">
+            <i class="bi bi-circle"></i><span>Loan Risk Assessment</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'document_varification' %}">
+            <i class="bi bi-circle"></i><span>Document Verification</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'loanapprovalview' %}">
+            <i class="bi bi-circle"></i><span>Approve/Reject Loan</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'loan_list' %}">
+            <i class="bi bi-circle"></i><span>Approved Loans</span>
+          </a>
+        </li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#disbursement-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-cash"></i><span>Disbursement</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="disbursement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <!-- <li>
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#agreement-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-file-earmark-check"></i><span>Loan Agreement</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="agreement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'aggrement_template_list' %}">
+            <i class="bi bi-circle"></i><span>Agreement template</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'listapprovedapplications' %}">
+            <i class="bi bi-circle"></i><span>Generate Agreement</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'list_agreement' %}">
+            <i class="bi bi-circle"></i><span>Agreement Review</span>
+          </a>
+        </li>
+
+
+
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#valuechain-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-diagram-3"></i><span>Disbursement Trenches</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="valuechain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'valuechain_setups' %}">
+            <i class="bi bi-circle"></i><span>Valuechain Set-ups</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'disply_valuechain' %}">
+            <i class="bi bi-circle"></i><span>MileStones</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'loan_list' %}">
+            <i class="bi bi-circle"></i><span>Loan Trenches</span>
+          </a>
+        </li>
+
+
+
+      </ul>
+    </li>
+
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#disbursement-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-cash"></i><span>Disbursement</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="disbursement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <!-- <li>
             <a href="{% url 'disbursementrequest' %}">
               <i class="bi bi-circle"></i><span>Disbursement Request</span>
             </a>
           </li> -->
-          <li>
-            <a href="{% url 'disply_loans' %}">
-              <i class="bi bi-circle"></i><span>Disbursement</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'disbursement_details' %}">
-              <i class="bi bi-circle"></i><span>Disbursement Summary</span>
-            </a>
-          </li>
-          
-        </ul>
-      </li>
-     
-          <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#Repayment-nav" data-bs-toggle="collapse" href="#">
-              <i class="bi bi-calendar-check"></i><span>Repayment Schedule</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="Repayment-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-              <li>
-                <a href="{% url 'disbursed_loans' %}">
-                  <i class="bi bi-circle"></i><span>Repayment Schedule List</span>
-                </a>
-               
-              </li>
-              <li>
-                <a href="{% url 'disbursedloans_foroverview' %}">
-                  <i class="bi bi-circle"></i><span>Schedule Overview</span>
-                </a>
-              </li>
-             
-          
-        </ul>
-      </li>
-      <li class="nav-item">
+        <li>
+          <a href="{% url 'disply_loans' %}">
+            <i class="bi bi-circle"></i><span>Disbursement</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'disbursement_details' %}">
+            <i class="bi bi-circle"></i><span>Disbursement Summary</span>
+          </a>
+        </li>
+
+      </ul>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#Repayment-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-calendar-check"></i><span>Repayment Schedule</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="Repayment-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'disbursed_loans' %}">
+            <i class="bi bi-circle"></i><span>Repayment Schedule List</span>
+          </a>
+
+        </li>
+        <li>
+          <a href="{% url 'disbursed_loans1' %}">
+            <i class="bi bi-circle"></i><span>Schedule Payment</span>
+          </a>
+
+        </li>
+
+        <!-- <li>
+          <a href="{% url 'disbursedloans_foroverview' %}">
+            <i class="bi bi-circle"></i><span>Schedule Overview</span>
+          </a>
+        </li> -->
+
+      </ul>
+    </li>
+
+
+    </li>
+    <!-- <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#Payment-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-wallet"></i><span>Payment</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -566,52 +503,48 @@
             <a href="">
               <i class="bi bi-circle"></i><span>Payment Summary</span>
             </a>
-          </li>
-      
-    </ul>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link collapsed" data-bs-target="#Penalty-nav" data-bs-toggle="collapse" href="#">
-      <i class="bi bi-exclamation-circle"></i><span>Penalties</span><i class="bi bi-chevron-down ms-auto"></i>
-    </a>
-    <ul id="Penalty-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-      <li>
-        <a href="">
-          <i class="bi bi-circle"></i><span>Penalty</span>
-        </a>
-       
-      </li>
-      <li>
-        <a href="">
-          <i class="bi bi-circle"></i><span>Penalty Overview</span>
-        </a>
-      </li>
-      <li>
-        <a href="">
-          <i class="bi bi-circle"></i><span>Penalty Details</span>
-        </a>
-      </li>
-  
-</ul>
-</li>
-<li class="nav-item">
-  <a class="nav-link collapsed" data-bs-target="#calculator-nav" data-bs-toggle="collapse" href="#">
-    <i class="bi bi-calculator"></i><span>Loan Calculator</span><i class="bi bi-chevron-down ms-auto"></i>
-  </a>
-  <ul id="calculator-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-    <li>
-      <a href="{% url 'loancalculators' %}">
-        <i class="bi bi-circle"></i><span>Instantaneous Loan Calculator </span>
-      </a>
-     
+          </li> -->
+
+    <!-- </ul> -->
     </li>
-    <!-- <li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#Penalty-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-exclamation-circle"></i><span>Penalties</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="Penalty-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'disply_penaltyloans' %}">
+            <i class="bi bi-circle"></i><span>Penalty</span>
+          </a>
+         
+        </li>
+        <li>
+          <a href="{% url 'penalty_details' %}">
+            <i class="bi bi-circle"></i><span>Penalty Details</span>
+          </a>
+        </li>
+       
+
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#calculator-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-calculator"></i><span>Loan Calculator</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="calculator-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'loancalculators' %}">
+            <i class="bi bi-circle"></i><span>Instantaneous Loan Calculator </span>
+          </a>
+
+        </li>
+        <!-- <li>
       <a href="">
         <i class="bi bi-circle"></i><span>Calculate Loan Repayment Schedule</span>
       </a>
     </li> -->
-  </ul>
-</li>
+      </ul>
+    </li>
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#settings-nav" data-bs-toggle="collapse" href="#">
         <i class="bi bi-gear"></i><span>Settings</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -700,9 +633,53 @@
           </a>
         </li> -->
 
-    </ul>
+      </ul>
+    </li>
+   
+    <li class="nav-item">
+      <a class="nav-link " href="https://supportticketfe.pythonanywhere.com/" target="_blank" style="background-color: white; color: #012970;">
+        <i class="bi bi-clipboard" style="color: #012970;"></i>
+        <span>CRM</span>
+      </a>
     </li>
     <li class="nav-item">
+      <a class="nav-link " href="https://bbv1assetmanagement.pythonanywhere.com/" target="_blank" style="background-color: white; color: #012970;">
+        <i class="bi bi-box-seam" style="color: #012970;"></i>
+        <span>Asset Management</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link " href="https://bbbms.pythonanywhere.com/" target="_blank" style="background-color: white; color: #012970;">
+        <i class="bi bi-briefcase" style="color: #012970;"></i>
+        <span>Business Management</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link " href="https://www.sheltersouk.co.in/" target="_blank" style="background-color: white; color: #012970;">
+        <i class="bi bi-shop" style="color: #012970;"></i>
+        <span>Inventory Management</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link " href="https://bbcrudacc24fe.pythonanywhere.com/" target="_blank" style="background-color: white; color: #012970;">
+        <i class="bi bi-cash-coin" style="color: #012970;"></i>
+        <span>Accounts & Finance</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link " href="https://bbcontract.pythonanywhere.com/templates/" target="_blank" style="background-color: white; color: #012970;">
+        <i class="bi bi-cash-coin" style="color: #012970;"></i>
+        <span>Contract Management</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link " href="https://bbcrudaccrep24fe.pythonanywhere.com/" target="_blank" style="background-color: white; color: #012970;">
+        <i class="bi bi-file-earmark-bar-graph" style="color: #012970;"></i>
+        <span>Reports</span>
+      </a>
+    </li>
+    
+    {% comment %} <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#Reports-nav" data-bs-toggle="collapse" href="#">
         <i class="bi bi-bar-chart"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
@@ -728,8 +705,8 @@
           </a>
         </li>
 
-    </ul>
-    </li>
+      </ul>
+    </li> {% endcomment %}
 
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#ui-basic" data-bs-toggle="collapse" href="#">
@@ -751,17 +728,17 @@
             <i class="bi bi-circle"></i><span>User</span>
           </a>
         </li>
-        
-    </ul>
+
+      </ul>
     </li>
- 
+
 
 
 
     </ul>
- 
+
   </aside><!-- End Sidebar-->
-  
+
   {% block script_block %}
   {% endblock %}
   <!-- ======= Footer ======= -->
@@ -769,7 +746,8 @@
 
   </footer><!-- End Footer -->
 
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
   <script src="{% static 'assets/vendor/apexcharts/apexcharts.min.js' %}"></script>
@@ -784,69 +762,109 @@
   <!-- Template Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
   <script>
-    $(document).ready(function() {
-        $('.select').select2(); // Apply Select2 to all fields with the 'form-control' class
+    $(document).ready(function () {
+      $('.select').select2(); // Apply Select2 to all fields with the 'form-control' class
     });
-    </script>
-    <script>
-      // Wait for the page to fully load
-      window.onload = function () {
-          setTimeout(function () {
-              // Select the message container and hide it
-              var messageContainer = document.getElementById('message-container');
-              if (messageContainer) {
-                  messageContainer.style.transition = "opacity 0.5s ease-out";
-                  messageContainer.style.opacity = "0";
-                  setTimeout(() => {
-                      messageContainer.remove();
-                  }, 500); // Remove after fade-out
-              }
-          }, 3000); // 3 seconds timeout
-      };
   </script>
-    
- 
+  <script>
+    // Wait for the page to fully load
+    window.onload = function () {
+      setTimeout(function () {
+        // Select the message container and hide it
+        var messageContainer = document.getElementById('message-container');
+        if (messageContainer) {
+          messageContainer.style.transition = "opacity 0.5s ease-out";
+          messageContainer.style.opacity = "0";
+          setTimeout(() => {
+            messageContainer.remove();
+          }, 500); // Remove after fade-out
+        }
+      }, 3000); // 3 seconds timeout
+    };
+  </script>
+
+  <style>
+    html:after {
+
+
+/* common custom values */
+
+content: "Bharath brands"; /* your site name */
+
+font-size: 520%;         /* font size */
+
+color: rgba(134, 134, 134, 0.1);
+
+/* alpha, could be even rgba(0,0,0,.05) */
+
+
+/* rest of the logic */
+
+z-index: 9999;
+
+cursor: default;
+
+display: block;
+
+position: fixed;
+
+top: 38%;
+
+right: 0;
+
+bottom: 0;
+
+left: 15%;
+
+font-family: sans-serif;
+
+font-weight: bold;
+
+font-style: italic;
+
+text-align: center;
+
+line-height: 100%;
+
+
+/* not sure about who implemented what ..
+
+  ... so bring it all */
+
+-webkit-pointer-events: none;
+
+-moz-pointer-events: none;
+
+-ms-pointer-events: none;
+
+-o-pointer-events: none;
+
+pointer-events: none;
+
+
+-webkit-transform: rotate(-30deg);
+
+-moz-transform: rotate(-30deg);
+
+-ms-transform: rotate(-30deg);
+
+-o-transform: rotate(-30deg);
+
+transform: rotate(-30deg);
+
+
+-webkit-user-select: none;
+
+-moz-user-select: none;
+
+-ms-user-select: none;
+
+-o-user-select: none;
+
+user-select: none;
+
+}
+  </style>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

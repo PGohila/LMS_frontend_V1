@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 
 {% block body_block %}
+<style>
+  .paid-row {
+    background-color: #d4edda !important;  /* Light green */
+  }
+</style>
 <body>
 
   <main id="main" class="main">
@@ -11,7 +16,7 @@
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
           <li class="breadcrumb-item">Forms</li>
-          <li class="breadcrumb-item active">Repayment Schedule</li>
+          <li class="breadcrumb-item active">Repayment Schedule 1</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -23,7 +28,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title"></h5>
-              <h5 class="card-title">Application Details</h5>
+              <h5 class="card-title">Loan Details</h5>
               <table style="font-size: 12px; line-height: 20px;">
                 <tbody>
                   <tr>
@@ -87,7 +92,7 @@
 
               <!-- Payment Schedule Table -->
               <div class="table-responsive">
-                <table class="table datatable">
+                <table class="table datatable"> 
                     <thead>
                     <tr>
                         <th>SI.No</th>
@@ -100,27 +105,36 @@
                         <th>Payment Status</th>
                         <th>Penalty</th>
                         <th>Penalty Reason</th>
+                        <th>Total Amount</th>
+                        <th>Action</th>
+
                     </tr>
                 </thead>
                 <tbody>
-                    {% for data in schedules %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td><a href="#">{{data.schedule_id}}</a></td>
-                        <td>{{data.repayment_date}}</td>
-                        <td>${{data.instalment_amount}}</td>
-                        <td>${{data.interest_amount}}</td>
-                        <td>${{data.paid_amount}}</td>
-                        <td>${{data.remaining_balance}}</td>
-                        <td>{% if data.repayment_status == "Paid" %}
-                          <span class="badge bg-success">Paid</span>
-                      {% else %}
-                          <span class="badge bg-danger">Pending</span>{% endif %}
-                          <td>{% if data.payable_penalty_amt == 0.0 %} - {% else %} {{ data.payable_penalty_amt }} {% endif %}</td>
-                          <td>{% if data.payable_penalty_amt == 0.0 %} - {% else %} {{ data.penalty_reason }} {% endif %}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+                  {% for data in schedules %}
+                  <tr class="{% if data.repayment_status == 'Paid' %}paid-row{% else %}not-paid-row{% endif %}">
+                    <td>{{forloop.counter}}</td>
+                      <td><a href="#">{{data.schedule_id}}</a></td>
+                      <td>{{data.repayment_date}}</td>
+                      <td>${{data.instalment_amount}}</td>
+                      <td>${{data.interest_amount}}</td>
+                      <td>${{data.paid_amount}}</td>
+                      <td>${{data.remaining_balance}}</td>
+                      <td>{% if data.repayment_status == "Paid" %}
+                        <span class="badge bg-success">Paid</span>
+                    {% else %}
+                        <span class="badge bg-danger">Pending</span>{% endif %}
+                    </td>
+                      <td>{% if data.payable_penalty_amt == 0.0 %} - {% else %} {{ data.payable_penalty_amt }} {% endif %}</td>
+                      <td>{% if data.payable_penalty_amt == 0.0 %} - {% else %} {{ data.penalty_reason }} {% endif %}</td>
+                      <td>
+                        <input type="text" value="{{data.payable_amount}}" class="form-control" readonly>
+                      </td>                     
+                       <td><a href="{% url 'payment_process' data.id %}" class="btn btn-success">Pay</a></td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+              
                 </table>
                 </div>
                 <!-- Summary Information -->
@@ -129,10 +143,12 @@
                         <td><strong>Total Due Amount:</strong> ${{total_installment_amount|floatformat:2}}</td>
                         <td><strong>Total Paid Amount:</strong> ${{total_paid_amount|floatformat:2}}</td>
                     </tr>
+                   
                     <tr>
-                        <td><strong>Next Payment Date:</strong>  {{next_schedule.next_due_date}}</td>
-                        <td><strong>Next Payment Amount:</strong> ${{next_schedule.amount_due}}</td>
+                        <td><strong>Next Payment Date:</strong> {{next_schedule.next_due_date}}</td>
+                        <td><strong>Next Amount Payment:</strong> {{next_schedule.amount_due}}</td>
                     </tr>
+                  
                     <!-- <tr>
                         <td><strong>Overdue Amount:</strong> $0</td>
                     
@@ -142,13 +158,7 @@
                 <form method="post">
                     {% csrf_token %}
                 
-                <!-- Action Buttons -->
-                <div class="button-container">
-                    <!-- <button class="button">Make Payment</button> -->
-                    
-                    <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i> Download</button>
-                    <button class="btn btn-success btn-sm" type="submit"><i class="fa fa-eye"></i> Confirm</button>
-                </div>
+                
             </form>
             </div>
           </div>
@@ -156,8 +166,11 @@
         </div>
       </div>
     </section>
+<!-- Summary Information -->
+
 
   </main><!-- End #main -->
+  
   {% endblock %}
 
  

@@ -97,125 +97,79 @@
                         <h5 class="card-title">Collateral Details </h5>
                         <form method="post" enctype="multipart/form-data">
                           {% csrf_token %}
-                   
-                        <div class="table-responsive">
+                       
+                          <div class="table-responsive">
                             <table class="table table-bordered" id="table_Collaterals">
                                 <thead class="thead-light">
                                     <tr>
-                                   
-                                        <th class="text-center p-3">Collateral ID</th> <!-- Field Labels -->
+                                        <th class="text-center p-3">Collateral ID</th>
                                         <th class="text-center p-3">Collateral Type</th>
                                         <th class="text-center p-3">Collateral Value</th>
                                         <th class="text-center p-3">Valuation Date</th>
                                         <th class="text-center p-3">Collateral Status</th>
                                         <th class="text-center p-3">Insurance Status</th>
                                         <th class="text-center p-3">Description</th>
-                                        <th class="text-center p-3">Borrower Signature</th>
-                                        
+                                        <th class="text-center p-3">Details</th> <!-- Column for Toggle Button -->
                                     </tr>
                                 </thead>
-
-                                <tbody id = "collateral_tbody">
-                                    {% for data in collateral_records %}
+                                <tbody id="collateral_tbody">
+                                    {% for data in colateral_data %}
                                     <tr id="row_{{ forloop.counter }}">
+                                        <td class="align-middle p-3">{{ data.collateral_id }}</td>
+                                        <td class="align-middle p-3">{{ data.collateral_type.name }}</td>
+                                        <td class="align-middle p-3">{{ data.collateral_value }}</td>
+                                        <td class="align-middle p-3">{{ data.valuation_date }}</td>
+                                        <td class="align-middle p-3">{{ data.collateral_status }}</td>
+                                        <td class="align-middle p-3">{{ data.insurance_status }}</td>
+                                        <td class="align-middle p-3">{{ data.description }}</td>
+                                        <td class="align-middle text-center p-3">
+                                            <!-- Button to toggle collapse -->
+                                            <button type="button" class="btn btn-link text-decoration-none" data-bs-toggle="collapse" data-bs-target="#collapse_{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse_{{ forloop.counter }}">
+                                                View Documents
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Collapsible section for document details -->
                                     
-                                        <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
-                                            <div class="form-group">
-                                                {{data.collateral_id}}
+                                    <tr>
+                                        <td colspan="8" class="p-0">
+                                          
+                                            <div id="collapse_{{ forloop.counter }}" class="collapse"><br>
+                                              <h5 class="card-title">Collateral Documents</h5>
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr class="table-secondary">
+                                                            <th>Document Name</th>
+                                                            <th>Additional Documents</th>
+                                                            <th>Description</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for document in data.documents %}
+                                                        <tr>
+                                                            <td>{{ document.document_name }}</td>
+                                                            <td>
+                                                              <div class="col-md-12 px-3 py-3">
+                                                                <i class="bi bi-star me-1 text-success"></i>
+                                                                  <a href="{{BASEURL}}{{ document.additional_documents }}" target="_blank">{{ document.additional_documents }}</a></div>
+                                                            </td>
+                                                            <td>{{ document.description }}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </td>
-                                        <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
-                                          <div class="form-group">
-                                            {{data.collateral_type.name}}
-                                          </div>
-                                      </td>
-                                      <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
-                                        <div class="form-group">
-                                            {{data.collateral_value}}
-                                        </div>
-                                    </td>
-                                    <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
-                                      <div class="form-group">
-                                        {{data.valuation_date}}
-                                      </div>
-                                  </td>
-                                    
-                                  <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
-                                    <div class="form-group">
-                                        {{data.collateral_status}}
-                                    </div>
-                                </td>
-                                <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
-                                    <div class="form-group">
-                                        {{data.insurance_status}}
-                                    </div>
-                                </td>
-                                <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
-                                    <div class="form-group">
-                                        {{data.description}}
-                                    </div>
-                                </td>
-                                <td class="align-middle p-3">
-                                    <div class="form-group">
-                                        <img src="{% static '{{data.borrower_signature}}' %}" alt="">
-                                    </div>
-                                </td>
-
                                     </tr>
-                                    {% endfor %}
                                  
+                                    {% endfor %}
                                 </tbody>
                             </table>
-                     
                         </div>
                       </form>
               </div>
                
-              <div class="col-md-12">
-             
-                <h5 class="card-title">Collateral Documents</h5>
-                <form method="post" enctype="multipart/form-data">
-                  {% csrf_token %}
            
-                    <table class="table table-bordered" id="table_attachment">
-                        <thead class="thead-light">
-                            <tr>
-              
-                                <th class="text-center p-3">Document Name</th> <!-- Field Labels -->
-                                <th>Upload</th>
-                                <th>Description</th>
-                             
-                            </tr>
-                        </thead>
-
-                        <tbody id = "attachment_tbody">
-                            {% for data in collateraldoc_records %}
-                            <tr id="row_{{ forloop.counter }}">
-                                <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
-                                  <div class="form-group">
-                                    {{ data.document_name }}
-                                  </div>
-                              </td>
-                              <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
-                                <div class="form-group">
-                                  <a href="{{BASEURL}}/{{ data.additional_documents }}">{{ data.additional_documents }}</a>
-                                </div>
-                            </td>
-                            
-                          <td class="align-middle p-3"> <!-- Align values in the middle and add padding -->
-                            <div class="form-group">
-                              {{data.description}}
-                            </div>
-                        </td>
-
-                            </tr>
-                            {% endfor %}
-                         
-                        </tbody>
-                    </table>
-             
-                </div>
-              </form>
       </div>
                 
               
