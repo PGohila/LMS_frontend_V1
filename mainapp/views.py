@@ -216,6 +216,31 @@ def company_delete(request,pk):
 
 # ======================== Customer Management ============================
 
+def get_token():
+    url = 'https://bbaccountingtest.pythonanywhere.com/token/'
+    headers = {
+        "Content-Type": "application/json",  
+    }
+    data = {
+        "email": "admin@bharathbrands.in",
+        "password": "1234"
+    }
+    response = requests.post(url, headers=headers, json=data)
+    response_data = response.json()
+    access_token = response_data['access']
+    return access_token
+
+def get_method(BASE_URL,END_POINT,access_token):
+    url = BASE_URL+END_POINT
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {access_token}"  
+    }
+    response = requests.get(url, headers=headers)  
+    
+    return response.json()
+    
+    
 def customer_create(request):
     try:
         token = request.session['user_token']
@@ -234,6 +259,19 @@ def customer_create(request):
             return render(request,'error.html',{'error':str(response['data'])})
         master_view = response['data']
 
+        BASE_URL = "https://bbaccountingtest.pythonanywhere.com/"
+        END_POINT = "sacco-setup/category-type/"
+        
+        
+        access_token = get_token()
+        response = get_method(BASE_URL,END_POINT,access_token)
+        category_types = response
+    
+        END_POINT = "sacco-setup/category/"
+        response = get_method(BASE_URL,END_POINT,access_token)
+        category = response
+        
+
         if request.method == "POST":
             form = CustomerForm(request.POST)
             if form.is_valid():
@@ -241,9 +279,14 @@ def customer_create(request):
                 if MSID is None:
                     print('MISID not found')      
                 cleaned_data = form.cleaned_data
+                category_name = request.POST.get('category_name')
+                category_type = request.POST.get('category_type')
+                
                 cleaned_data['company_id'] = company_id
                 cleaned_data['dateofbirth'] = cleaned_data['dateofbirth'].strftime('%Y-%m-%d')
                 cleaned_data['expiry_date'] = cleaned_data['expiry_date'].strftime('%Y-%m-%d')
+                cleaned_data['category_name'] = category_name
+                cleaned_data['category_type'] = category_type
                      
                 data = {'ms_id':MSID,'ms_payload':cleaned_data} 
                 json_data = json.dumps(data)
@@ -257,7 +300,7 @@ def customer_create(request):
                 print("form.errors",form.errors)
                 messages.info(request, str(form.errors))
         
-        context = { 'form':form,'records':master_view,"save":True}
+        context = { 'form':form,'records':master_view,"save":True,"categorytypes":category_types,"category":category}
         return render(request, 'customer_management/customer.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error})    

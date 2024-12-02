@@ -46,10 +46,26 @@
                 </label>
                     {{ data }}
                     
-                  
+
                 </div>
                 {% endfor %}
+
                 
+                <label for="id_category_name" class="form-label">Category Name</label>
+                <select name="category_name" class="form-control" id="id_category_name">
+                  <option value="" selected>Choose a Category Name</option>
+                  {% for data in category %}
+                    <option value="{{data.code}}" selected>{{data.category_name}}</option>
+                  {% endfor %}
+                </select>
+
+                <label for="id_category_type" class="form-label">Category Type</label>
+                <select name="category_type" class="form-control" id="id_category_type">
+                  <option value="" selected>Choose a Category Type</option>
+                  {% for data in categorytypes %}
+                    <option value="{{data.type_code}}" selected>{{data.type_name}}</option>
+                  {% endfor %}
+                </select>
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary">Submit</button>
                   <button type="reset" class="btn btn-secondary">Reset</button>

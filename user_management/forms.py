@@ -84,3 +84,23 @@ class UserProfileForm(forms.Form):
                 (str(record.get('id', '')), record.get('name', ''))
                 for record in role
             ]
+
+# from ckeditor.widgets import CKEditorWidget 
+
+# class TemplateCustomForm(forms.Form):
+#     CHOICES = [
+#         ('SMS', 'SMS'),
+#         ('EMAIL', 'EMAIL'),
+#         ('WHATSAPP', 'WHATSAPP'),
+#         ('PRINTER', 'PRINTER'),
+#     ]
+
+#     template_name = forms.ChoiceField(
+#         choices=CHOICES, 
+#         widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Select a template type'}),
+#         required=True
+#     )
+#     content = forms.CharField(
+#         widget=CKEditorWidget(), 
+#         required=True
+#     )
