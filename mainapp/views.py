@@ -3826,4 +3826,200 @@ def loanwise_penalty_details(request,pk): # pk = loan id
         return render(request, "error.html", {"error": error}) 
         
 
+
+def template_create(request):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+        form = TemplateCustomForm()
+        if request.method=='POST':
+            form = TemplateCustomForm(request.POST)
+            if form.is_valid():
+                                
+                MSID= get_service_plan('create template')
+                if MSID is None:
+                    print('MISID not found') 
+                cleaned_data=form.cleaned_data
+                
+                data={
+                    'ms_id':MSID,
+                    'ms_payload':cleaned_data
+                } 
+                json_data = json.dumps(data)
+                response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            
+                if response['status_code'] ==  0:                  
+                    messages.info(request, "Well Done..! Application Submitted..")
+                    return redirect('templates')
+                else:
+                    messages.info(request, "Oops..! Application Failed to Submitted..")
+            else:
+                print('errorss',form.errors) 
+        help_text = '''
+        {{cutomer_first_name}},{{cutomer_lastname}},{{cutomer_email}},{{cutomer_age}},{{cutomer_phone_number}},{{cutomer_address}},{{dateofbirth}}
+        {{application_id}},{{loan_type}},{{loan_amount}},{{loan_purpose}},{{approved_amount}},{{interest_rate}},{{tenure}},{{tenure_type}},{{repayment_schedule}},{{repayment_mode}},
+        {{interest_basics}},{{loan_calculation_method}},
+
+        '''
+        context={
+            'roles': 'active', 'roles_show': 'show','form':form,'screen_name':"Template Creation",'help_text':help_text
+        }
+        return render(request,'alert_template/template_create.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error})  
+
+def templates(request):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        MSID= get_service_plan('template view')
+        if MSID is None:
+            print('MISID not found') 
+        payload_form={
+            
+        }     
+        data={
+            'ms_id':MSID,
+            'ms_payload':payload_form
+        } 
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        records = response['data']
+        print('response',response)
+        context={
+            'records':records,'userprofile': 'active', 'userprofile_show': 'show'
+        }
+        return render(request,'alert_template/templates_list.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error})   
+    
+def template_delete(request,id):
+    try:
+        token = request.session['user_token']
+
+        MSID= get_service_plan('template delete')
+        if MSID is None:
+            print('MISID not found') 
+        payload_form={
+            'id':id
+        }     
+        data={
+            'ms_id':MSID,
+            'ms_payload':payload_form
+        } 
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] ==  0:                  
+            return redirect('templates')          
+    except Exception as error:
+        return render(request, "error.html", {"error": error})   
+    
+def template_edit(request,id):
+    try:
+        token = request.session['user_token']
+
+        MSID= get_service_plan('get template')
+        if MSID is None:
+            print('MISID not found') 
+        payload_form={
+            'id':id
+        }     
+        data={
+            'ms_id':MSID,
+            'ms_payload':payload_form
+        } 
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        instance = response['data'][0]
+        print('instance',instance)
+        form = TemplateCustomForm()
+        if request.method=='POST':
+            id = request.POST.get('id')
+            template_name = request.POST.get('template_name')
+            content = request.POST.get('content')
+            print('id',id)
+            print('template_name',template_name)
+            print('content',content)
+            MSID= get_service_plan('template edit')
+            if MSID is None:
+                print('MISID not found') 
+            # cleaned_data=form.cleaned_data
+            
+            data={
+                'ms_id':MSID,
+                'ms_payload':{
+                    'id':id,
+                    'template_name':template_name,
+                    'content':content
+                }
+            } 
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        
+            if response['status_code'] ==  0:                  
+                messages.info(request, "Well Done..! Application Submitted..")
+                return redirect('templates')
+            else:
+                messages.info(request, "Oops..! Application Failed to Submitted..")
+        
+        help_text = '''
+        {{cutomer_first_name}},{{cutomer_lastname}},{{cutomer_email}},{{cutomer_age}},{{cutomer_phone_number}},{{cutomer_address}},{{dateofbirth}}
+        {{application_id}},{{loan_type}},{{loan_amount}},{{loan_purpose}},{{approved_amount}},{{interest_rate}},{{tenure}},{{tenure_type}},{{repayment_schedule}},{{repayment_mode}},
+        {{interest_basics}},{{loan_calculation_method}},
+
+        '''
+        context={
+            'roles': 'active','screen_name':"Template Creation",'instance':instance,'help_text':help_text
+        }
+        return render(request,'alert_template/template_edit.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error})   
+    
+
+
+def templatemap_create(request): #pk = customer id
+    # try:
+        token = request.session['user_token']
+        
+
+        # getting all customer data 
+        MSID = get_service_plan('template view') # view_customer
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        
+        template_records = response['data']
+        print('template_records',template_records)
+        form = TemplateMapForm()
+
+        if request.method == "POST":
+            
+            templatename = request.POST.get('template_name')
+            template_type = request.POST.getlist('template_type')
+            template = request.POST.getlist('template')
+
+            for index in range(len(template_type)):
+                MSID = get_service_plan('templatemap create') # create_customerdocuments
+                if MSID is None:
+                    print('MISID not found')     
+                
+                payload = {'template_name':templatename,'template_type': template_type[index],'template':template[index]}
+                
+                data = {'ms_id': MSID, 'ms_payload': payload}
+                json_data = json.dumps(data)
+                response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)   
+            
+                if response['status_code'] ==  1:                  
+                    return render(request,'error.html',{'error':str(response['data'])})
+                
+        context = {'template_records':template_records,'form':form}
+        return render(request,'alert_template/templatemap_create.html',context)
+    # except Exception as error:
+    #     return render(request, "error.html", {"error": error}) 
+
     

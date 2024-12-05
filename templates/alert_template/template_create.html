@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style_block %}
+<style>
+    .ck-editor .ck-editor__editable {
+        height: 250px; /* Set height here */
+        width: 100%;   /* Set width here, or specify a fixed width */
+    }
+</style>
+{% endblock %}
+
+{% block body_block %}
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Template</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item">Templates</li>
+          <li class="breadcrumb-item active">Edit</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Create Template</h5>
+
+              {% if messages %}
+              <div id="message-container">
+                  {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                      {{ message }}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  {% endfor %}
+              </div>
+              {% endif %}
+
+              <form method="post" class="row g-3" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Template Name Field -->
+                <div class="col-12">
+                  {{ form.template_name.label }}
+                  {% if form.template_name.field.required %}<span style="color: red;">*</span>{% endif %}
+                  {{ form.template_name }}
+                </div>
+
+                <!-- Content Field (CKEditor) -->
+                <div class="col-12">
+                  <label for="{{ form.content.id_for_label }}">{{ form.content.label }}</label>
+                  {{ form.content }}
+                </div>
+                <p class="" style="font-size: smaller; color: rgba(48, 46, 46, 0.811);">
+                  {{help_text}}
+                  <br style="color: rgb(69, 68, 68);">
+                  This content contains placeholders that will be replaced with specific values during the generation process. If additional placeholders are needed, create a new name for the tag, and we will ask for the corresponding value to include it in the final output.
+                </p>
+
+                <div class="text-center" style="padding-top: 30px;">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="reset" class="btn btn-secondary">Reset</button>
+                  <a href="#" class="btn btn-primary" role="button" style="text-decoration: none;">Back</a>
+                </div>
+              </form><!-- End Form -->
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+</body>
+{% endblock %}

@@ -160,4 +160,11 @@ urlpatterns = [
     path('milestone_create_v1/<loanapp_id>/',milestone_create_v1, name='milestone_create_v1'),
     path('agreement_signature_update/<agreement_id>/',agreement_signature_update, name='agreement_signature_update'),
     path('milestone_disbursement/<loan_id>/',milestone_disbursement, name='milestone_disbursement'),
+
+    path('template_create/', template_create, name='template_create'),
+    path('templates/', templates, name='templates'),
+    path('template_delete/<id>', template_delete, name='template_delete'),
+    path('template_edit/<id>', template_edit, name='template_edit'),
+
+    path('templatemap_create/', templatemap_create, name='templatemap_create'),
 ]

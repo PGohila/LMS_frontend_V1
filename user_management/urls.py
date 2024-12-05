@@ -29,6 +29,8 @@ urlpatterns = [
     path('forgot_password/', forgot_password, name='forgot_password'),
     path('set_password/<email>', set_password, name='set_password'),
 
+    
+
     # path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
     # path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
 

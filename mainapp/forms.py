@@ -615,3 +615,58 @@ class PenaltyForm(forms.Form):
         }),
         label="Reason for Penalty"
     )
+
+from ckeditor.widgets import CKEditorWidget 
+
+class TemplateCustomForm(forms.Form):
+    CHOICES = [
+        ('SMS', 'SMS'),
+        ('EMAIL', 'EMAIL'),
+        ('WHATSAPP', 'WHATSAPP'),
+        ('PRINTER', 'PRINTER'),
+    ]
+
+    template_name = forms.ChoiceField(
+        choices=CHOICES, 
+        widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Select a template type'}),
+        required=True
+    )
+    content = forms.CharField(
+        widget=CKEditorWidget(), 
+        required=True
+    )
+
+class TemplateMapForm(forms.Form):
+    # Choices for template_name
+    TEMPLATE_NAME_CHOICES = [
+        ('Loan Approval', 'Loan Approval'),
+        ('Application submit', 'Application submit'),
+    ]
+    
+    # Choices for template_type
+    TEMPLATE_TYPE_CHOICES = [
+        ('2', 'SMS'),
+        ('1', 'EMAIL'),
+        ('3', 'WHATSAPP'),
+        ('4', 'PRINTER'),
+    ]
+
+    # Fields for the form
+    template_name = forms.ChoiceField(
+        choices=TEMPLATE_NAME_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Select a template name'}),
+        required=True
+    )
+    
+    template_type = forms.ChoiceField(
+        choices=TEMPLATE_TYPE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Select a template type'}),
+        required=True
+    )
+    
+    template = forms.CharField(
+        max_length=50,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True
+    )
+    
