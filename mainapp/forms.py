@@ -95,18 +95,18 @@ class LoantypeForm(forms.Form):
         ('pay_self', 'Pay Self'),
         ('pay_milestone', 'Pay Milestone'),
     ]
-	is_active = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
-	loantype = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+	loantype = forms.CharField(max_length=100, label='Product Name', required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 	disbursement_beneficiary = forms.ChoiceField(choices=DISBURSEMENT_BENEFICIARY_CHOICES, label="Disbursement Beneficiary", widget=forms.Select(attrs={'class': 'form-control'}))
-	interest_rate = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
+	interest_rate = forms.FloatField(required=True, label='Interest Rate', widget=forms.NumberInput(attrs={"class": "form-control"}))
 	loan_teams = forms.IntegerField(required=True,label="Loan Terms(Months)",widget=forms.NumberInput(attrs={"class": "form-control"}))
-	min_loan_amt = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
-	max_loan_amt = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
+	min_loan_amt = forms.FloatField(required=True, label='Minimum Loan Amount', widget=forms.NumberInput(attrs={"class": "form-control"}))
+	max_loan_amt = forms.FloatField(required=True, label='Maximum Loan Amount', widget=forms.NumberInput(attrs={"class": "form-control"}))
 	eligibility = forms.CharField( required=True, widget=forms.Textarea(attrs={"class": "form-control"}))
-	collateral_required = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
 	charges = forms.CharField( required=True, widget=forms.Textarea(attrs={"class": "form-control"}))
 	description = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
-	
+	is_active = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={"class": "form-check-input",}))
+	collateral_required = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		

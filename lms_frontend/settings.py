@@ -136,6 +136,6 @@ STATICFILES_DIRS = [
 
 PROJECT_ID = 2
 
-# BASEURL = 'http://127.0.0.1:9000/'
-BASEURL = 'https://loanmanagementb1.pythonanywhere.com/'
+BASEURL = 'http://127.0.0.1:9000/'
+# BASEURL = 'https://loanmanagementb1.pythonanywhere.com/'
 # BASEURL = settings.BASEURL
