@@ -502,7 +502,6 @@ def loanapplication_create(request):
             loantype_records = response['data']
         else:
             print('Data not found in response')
-        
 
         form = LoanapplicationForm(customer_id_choice=customer_id_records,loantype_choice=loantype_records)
         if request.method == "POST":
@@ -533,6 +532,71 @@ def loanapplication_create(request):
         return render(request, 'loan_application/loanapplication.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error})    
+
+
+import logging
+
+# def get_loan_type_details(request,loantype_id):
+#     try:
+#         token = request.session['user_token']
+
+#         MSID = get_service_plan('get loan type details') # get_loan_type_details
+#         if MSID is None:
+#             print('MISID not found') 
+#         payload_form = {'loantype_id':loantype_id}
+#         data = {'ms_id':MSID,'ms_payload':payload_form}
+#         json_data = json.dumps(data)
+#         response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+#         if response['status_code'] == 1:
+#             return render(request,"error.html", {"error": response['data']})
+#         master_view = response['data'][0]
+#         return render(request, 'loan_details.html', {'master_view': master_view})
+    
+#     except Exception as error:
+#         logging.error(f"Exception occurred: {error}")
+#         return render(request, "error.html", {"error": str(error)})
+from django.http import JsonResponse
+
+from django.http import JsonResponse
+import json
+import logging
+
+def get_loan_type_details(request, id):
+    try:
+        # Assuming this is how you get the token, and the MSID
+        token = request.session.get('user_token')  # Check token in the session
+        if not token:
+            return JsonResponse({'status': 'error', 'message': 'User not authenticated'})
+
+        MSID = get_service_plan('get loan type details')
+        if MSID is None:
+            return JsonResponse({'status': 'error', 'message': 'MSID not found'})
+
+        payload_form = {'id': id}
+        data = {'ms_id': MSID, 'ms_payload': payload_form}
+        json_data = json.dumps(data)
+        
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        
+        # Check if the response status is not OK
+        if response.get('status_code') == 1:
+            return JsonResponse({'status': 'error', 'message': response['data']})
+        
+        data = response['data'][0]
+        print('data',data)
+        # Return relevant data as a JSON response
+        return JsonResponse({
+            'status': 'success',
+            'interest_rate': data.get('interest_rate'),
+            'min_loan_amt': data.get('min_loan_amt'),
+            'max_loan_amt': data.get('max_loan_amt'),
+            'loan_calculation_method': data.get('loan_calculation_method')
+        })
+    
+    except Exception as error:
+        logging.error(f"Exception occurred: {error}")
+        return JsonResponse({'status': 'error', 'message': str(error)})
+
 
 def loanapplication_view(request):
     try:
@@ -2370,10 +2434,27 @@ def payment_process(request,schedule_id):
 def loancalculators_create(request):
     try:
         token = request.session['user_token']
-        form = LoancalculatorsForm()
+        company_id = request.session.get('company_id') 
+
+        MSID = get_service_plan('view loantype') # view_loantype
+        if MSID is None:
+            print('MSID not found')
+        data = {'ms_id': MSID,'ms_payload': {'company_id':company_id}}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        loantype_records = response['data']
+        # Check if the response contains data
+        if 'data' in response:
+            loantype_records = response['data']
+        else:
+            print('Data not found in response')
+ 
+        form = LoancalculatorsForm(loantype_choice=loantype_records)
         response = {"data":None}
         if request.method == "POST":
-            form = LoancalculatorsForm(request.POST)
+            form = LoancalculatorsForm(request.POST,loantype_choice=loantype_records)
             if form.is_valid():
                 MSID = get_service_plan('calculate repayment schedule')
                 if MSID is None:

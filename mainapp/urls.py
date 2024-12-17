@@ -160,4 +160,7 @@ urlpatterns = [
     path('milestone_create_v1/<loanapp_id>/',milestone_create_v1, name='milestone_create_v1'),
     path('agreement_signature_update/<agreement_id>/',agreement_signature_update, name='agreement_signature_update'),
     path('milestone_disbursement/<loan_id>/',milestone_disbursement, name='milestone_disbursement'),
+
+    path('get_loan_type_details/<str:id>/', get_loan_type_details, name='get-loan-type-details'),
+
 ]

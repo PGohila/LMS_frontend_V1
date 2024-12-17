@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'valuechain_milestone',
-    'ckeditor',
+    # 'ckeditor',
 
 ]
 
@@ -136,6 +136,6 @@ STATICFILES_DIRS = [
 
 PROJECT_ID = 2
 
-BASEURL = 'http://127.0.0.1:9000/'
+BASEURL = 'http://127.0.0.1:8002/'
 # BASEURL = 'https://loanmanagementb1.pythonanywhere.com/'
 # BASEURL = settings.BASEURL
