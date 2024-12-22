@@ -3,7 +3,6 @@
 {% block body_block %}
 <body>
 
-
   <main id="main" class="main">
 
     <div class="pagetitle">
@@ -16,16 +15,15 @@
         </ol>
       </nav>
     </div><!-- End Page Title -->
+    
     <section class="section">
       <div class="row">
     
         <div class="col-lg-12">
-
           <div class="card">
             <div class="card-body">
               <h5 class="card-title"></h5>
               {% if messages %}
-            
               <div id="message-container">
                   {% for message in messages %}
                   <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -37,32 +35,75 @@
               {% endif %}
 
               <!-- Vertical Form -->
-              <form method="post" class="row g-3">
+              <form method="post" class="row g-3" id="loan-application-form">
                 {% csrf_token %}
                 {% for data in form %}
                 <div class="col-12">
                   {{ data.label }}
                   {% if data.field.required %}<span style="color: red;">*</span>{% endif %}
-                    {{ data }}
-                  
+                  {{ data }}
                 </div>
                 {% endfor %}
                 
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary">Submit</button>
                   <button type="reset" class="btn btn-secondary">Reset</button>
-                  <!-- <a href="{% url 'company_view' %}" type="reset" class="btn btn-primary">View</a> -->
                 </div>
               </form><!-- Vertical Form -->
 
             </div>
           </div>
-
         </div>
       </div>
     </section>
 
   </main><!-- End #main -->
-  {% endblock %}
 
- 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const loanTypeSelect = document.getElementById('id_loantype_id');
+        let minLoanAmount = 0;
+        let maxLoanAmount = 0;
+
+        // Adding the event listener to detect change in loan type selection
+        loanTypeSelect.addEventListener('change', function (event) {
+            const loanTypeId = event.target.value;
+            if (loanTypeId) {
+                // Make AJAX request to the Django backend to fetch loan details
+                fetch(`/get_loan_type_details/${loanTypeId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Dynamically update the fields with the response data
+                            document.getElementById('id_interest_rate').value = data.interest_rate;
+                            document.getElementById('id_tenure').value = data.tenure;
+                            document.getElementById('id_loan_calculation_method').value = data.loan_calculation_method;
+
+                            // Set the loan amount validation range
+                            minLoanAmount = data.min_loan_amt || 0;
+                            maxLoanAmount = data.max_loan_amt || 0;
+                        } else {
+                            console.error('Error:', data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        });
+
+        // Validate loan amount when the user submits the form
+        const form = document.getElementById('loan-application-form');
+        form.addEventListener('submit', function (event) {
+            const loanAmountInput = document.getElementById('id_loan_amount');
+            const loanAmount = parseFloat(loanAmountInput.value);
+
+            if (isNaN(loanAmount) || loanAmount < minLoanAmount || loanAmount > maxLoanAmount) {
+                event.preventDefault();  // Prevent form submission
+                alert(`Loan amount must be between ${minLoanAmount} and ${maxLoanAmount}`);
+            }
+        });
+    });
+  </script>
+
+{% endblock %}

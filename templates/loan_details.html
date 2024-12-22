@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Type Details</title>
+</head>
+<body>
+    <header>
+        <h1>Loan Type Details</h1>
+        <nav>
+            <a href="">Home</a> |
+            <a href="">Loan Types</a>
+        </nav>
+    </header>
+
+    <section>
+        <h2>Loan Information</h2>
+        <div class="loan-details">
+            <p><strong>Loan Type ID:</strong> {{ master_view.loantype_id }}</p>
+            <p><strong>Interest Rate:</strong> {{ master_view.interest_rate }}%</p>
+            <p><strong>Loan Calculation Method:</strong> {{ master_view.loan_calculation_method }}</p>
+        </div>
+
+        <div class="actions">
+            <a href="">Apply for this loan</a>
+        </div>
+    </section>
+
+    <footer>
+    </footer>
+</body>
+</html>

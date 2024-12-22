@@ -56,12 +56,12 @@ class CustomerForm(forms.Form):
     age = forms.IntegerField(
         required=True,
         label='Age',
-        widget=forms.NumberInput(attrs={"class": "form-control"})
+        widget=forms.NumberInput(attrs={"class": "form-control","readony":"readonly"})
     )
     dateofbirth = forms.DateField(
         required=True,
         label='Date of Birth',
-        widget=forms.DateInput(attrs={"type": "date", "class": "form-control"})
+        widget=forms.DateInput(attrs={"type": "date", "class": "form-control","readony":"readonly"})
     )
     customer_income = forms.FloatField(
         required=True,
@@ -95,9 +95,22 @@ class LoantypeForm(forms.Form):
         ('pay_self', 'Pay Self'),
         ('pay_milestone', 'Pay Milestone'),
     ]
+
+	LOAN_CALCILATIONS = [
+        ('reducing_balance', 'Reducing Balance Method'),
+        ('flat_rate', 'Flat Rate Method'),
+        ('constant_repayment', 'Constant Repayment (Amortization)'),
+        ('simple_interest', 'Simple Interest'),
+        ('compound_interest', 'Compound Interest'),
+        ('graduated_repayment', 'Graduated Repayment'),
+        ('balloon_payment', 'Balloon Payment'),
+        ('bullet_repayment', 'Bullet Repayment'),
+        ('interest_first', 'Interest-Only Loans'),
+    ]
 	loantype = forms.CharField(max_length=100, label='Product Name', required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 	disbursement_beneficiary = forms.ChoiceField(choices=DISBURSEMENT_BENEFICIARY_CHOICES, label="Disbursement Beneficiary", widget=forms.Select(attrs={'class': 'form-control'}))
 	interest_rate = forms.FloatField(required=True, label='Interest Rate', widget=forms.NumberInput(attrs={"class": "form-control"}))
+	loan_calculation_method = forms.ChoiceField(choices=LOAN_CALCILATIONS, label="loan Methods", widget=forms.Select(attrs={'class': 'form-control','readonly':'readonly'}))
 	loan_teams = forms.IntegerField(required=True,label="Loan Terms(Months)",widget=forms.NumberInput(attrs={"class": "form-control"}))
 	min_loan_amt = forms.FloatField(required=True, label='Minimum Loan Amount', widget=forms.NumberInput(attrs={"class": "form-control"}))
 	max_loan_amt = forms.FloatField(required=True, label='Maximum Loan Amount', widget=forms.NumberInput(attrs={"class": "form-control"}))
@@ -132,17 +145,7 @@ class LoanapplicationForm(forms.Form):
         ('interest_first', 'Interest First, Principal Later'),
         ('principal_end', 'Principal at End, Interest Periodically'),
     ]
-	LOAN_CALCILATIONS = [
-        ('reducing_balance', 'Reducing Balance Method'),
-        ('flat_rate', 'Flat Rate Method'),
-        ('constant_repayment', 'Constant Repayment (Amortization)'),
-        ('simple_interest', 'Simple Interest'),
-        ('compound_interest', 'Compound Interest'),
-        ('graduated_repayment', 'Graduated Repayment'),
-        ('balloon_payment', 'Balloon Payment'),
-        ('bullet_repayment', 'Bullet Repayment'),
-        ('interest_first', 'Interest-Only Loans'),
-    ]
+
 	INTEREST_BASICS = [
         ('365', '365 Days Basis'),
         ('other', 'Other Basis'),
@@ -153,11 +156,11 @@ class LoanapplicationForm(forms.Form):
 	loantype_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	loan_amount = forms.FloatField(required=True, widget=forms.NumberInput(attrs={"class": "form-control"}))
 	disbursement_type = forms.ChoiceField(choices=DISBURSEMENT_TYPE, label="Disbursement Type", widget=forms.Select(attrs={'class': 'form-control'}))
-	interest_rate = forms.FloatField(required=True,label="Interest(Percentage %)", widget=forms.NumberInput(attrs={"class": "form-control"}))
+	interest_rate = forms.FloatField(required=True,label="Interest(Percentage %)", widget=forms.NumberInput(attrs={"class": "form-control","readonly": "readonly"}))
 	tenure = forms.IntegerField(required=True,widget=forms.NumberInput(attrs={"class": "form-control"}))
 	tenure_type = forms.ChoiceField(choices=TENURE_CHOICES, label="Tenure Type", widget=forms.Select(attrs={'class': 'form-control'}))
 	repayment_date = forms.DateField(required=True, widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
-	loan_calculation_method = forms.ChoiceField(choices=LOAN_CALCILATIONS, label="loan Methods", widget=forms.Select(attrs={'class': 'form-control'}))
+	loan_calculation_method = forms.CharField( label="loan Methods", widget=forms.TextInput(attrs={'class': 'form-control',"readonly": "readonly"}))
 	repayment_schedule = forms.ChoiceField(choices=REPAYMENT_SCHEDULE, label="Repayment Schedule", widget=forms.Select(attrs={'class': 'form-control'}))
 	repayment_mode = forms.ChoiceField(choices=REPAYMENT_MODE, label="Repayment mode", widget=forms.Select(attrs={'class': 'form-control'}))
 	interest_basics = forms.ChoiceField(choices=INTEREST_BASICS, label="interest basics", widget=forms.Select(attrs={'class': 'form-control'}))
@@ -523,18 +526,7 @@ class LoancalculatorsForm(forms.Form):
         ('interest_first', 'Interest First, Principal Later'),
         ('principal_end', 'Principal at End, Interest Periodically'),
     ]
-	CALCULATION_METHOD = [
-        ('reducing_balance', 'Reducing Balance Method'),
-        ('flat_rate', 'Flat Rate Method'),
-        ('constant_repayment', 'Constant Repayment (Amortization)'),
-        ('simple_interest', 'Simple Interest'),
-        ('compound_interest', 'Compound Interest'),
-        ('graduated_repayment', 'Graduated Repayment'),
-        ('balloon_payment', 'Balloon Payment'),
-        ('bullet_repayment', 'Bullet Repayment'),
-        ('interest_first', 'Interest-Only Loans'),
-    ]
-
+	loantype_id = forms.ChoiceField(choices=[],required=True, widget=forms.Select(attrs={"class": "form-control select"}))
 	loan_amount = forms.FloatField( required=True,label="Loan Amount", widget=forms.NumberInput(attrs={"class": "form-control"}))
 	interest_rate = forms.FloatField( required=True,label="Interest Rate", widget=forms.NumberInput(attrs={"class": "form-control"}))
 	tenure = forms.IntegerField(required=True,label="Tenure",widget=forms.NumberInput(attrs={"class": "form-control"}))
@@ -542,8 +534,12 @@ class LoancalculatorsForm(forms.Form):
 	repayment_schedule = forms.ChoiceField(choices=REPAYMENT_SCHEDULE, label="Repayment Schedule", widget=forms.Select(attrs={'class': 'form-control'}))
 	repayment_mode = forms.ChoiceField(choices=REPAYMENT_MODE, label="Repayment Mode", widget=forms.Select(attrs={'class': 'form-control'}))
 	# interest_basics = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-	loan_calculation_method = forms.ChoiceField(choices=CALCULATION_METHOD, label="Calculation Method", widget=forms.Select(attrs={'class': 'form-control'}))
+	loan_calculation_method = forms.CharField( label="Calculation Method", widget=forms.TextInput(attrs={'class': 'form-control'}))
 	repayment_start_date = forms.DateField(required=True, label="Repayment StartDate",widget=forms.DateInput(attrs={"type": "date","class": "form-control"}))
+	def __init__(self, *args, **kwargs):
+		loantype_list = kwargs.pop('loantype_choice', [])
+		super().__init__(*args, **kwargs)
+		self.fields['loantype_id'].choices = [(item['id'], item['loantype']) for item in loantype_list]
 
 
 
