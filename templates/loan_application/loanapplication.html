@@ -64,6 +64,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
         const loanTypeSelect = document.getElementById('id_loantype_id');
+        const tenure = document.getElementById('id_tenure');
         let minLoanAmount = 0;
         let maxLoanAmount = 0;
 
@@ -78,7 +79,7 @@
                         if (data.status === 'success') {
                             // Dynamically update the fields with the response data
                             document.getElementById('id_interest_rate').value = data.interest_rate;
-                            document.getElementById('id_tenure').value = data.tenure;
+                            document.getElementById('id_tenure').value = data.loan_teams;
                             document.getElementById('id_loan_calculation_method').value = data.loan_calculation_method;
 
                             // Set the loan amount validation range

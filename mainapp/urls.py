@@ -163,4 +163,10 @@ urlpatterns = [
 
     path('get_loan_type_details/<str:id>/', get_loan_type_details, name='get-loan-type-details'),
 
+
+#-----------------  Restructure -----------
+    path('running-loans/',loan_restructure_list,name='running_loans'),
+    path('restructure-loans/<pk>',loan_restructure,name='restructure_loans'),
+    path('get_tenure_details/<str:loantype>/', get_tenure_details, name='get-tenure-details'),
+    path('restructured_list/',restructured_list,name='restructured_list')
 ]

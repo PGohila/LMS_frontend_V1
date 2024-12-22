@@ -370,11 +370,11 @@
             <i class="bi bi-circle"></i><span>Approve/Reject Loan</span>
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a href="{% url 'loan_list' %}">
             <i class="bi bi-circle"></i><span>Approved Loans</span>
           </a>
-        </li>
+        </li> -->
 
       </ul>
     </li>
@@ -445,11 +445,11 @@
             <i class="bi bi-circle"></i><span>Disbursement</span>
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a href="{% url 'disbursement_details' %}">
             <i class="bi bi-circle"></i><span>Disbursement Summary</span>
           </a>
-        </li>
+        </li> -->
 
       </ul>
     </li>
@@ -483,6 +483,24 @@
 
 
     </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#restructure-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-arrow-clockwise"></i><span>Loan Restructure</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="restructure-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'running_loans' %}">
+            <i class="bi bi-circle"></i><span>Loan Restructure</span>
+          </a>
+          <!-- <a href="{% url 'restructured_list' %}">
+            <i class="bi bi-circle"></i><span>Loan Refinance</span>
+          </a> -->
+        </li>      
+
+      </ul>
+    </li>
+
+
     <!-- <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#Payment-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-wallet"></i><span>Payment</span><i class="bi bi-chevron-down ms-auto"></i>
