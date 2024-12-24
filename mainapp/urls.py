@@ -166,7 +166,16 @@ urlpatterns = [
 
 #-----------------  Restructure -----------
     path('running-loans/',loan_restructure_list,name='running_loans'),
-    path('restructure-loans/<pk>',loan_restructure,name='restructure_loans'),
+    path('restructure-loans/<str:loan_id>/<str:loanapp_id>/<str:loantype_id>/<str:id>/',loan_restructure,name='restructure_loans'),
     path('get_tenure_details/<str:loantype>/', get_tenure_details, name='get-tenure-details'),
-    path('restructured_list/',restructured_list,name='restructured_list')
+    path('restructured_list/',restructured_list,name='restructured_list'),
+    path('restructure_repayment_schedule/<id>',restructure_repayment_schedule,name='restructure-repayment-schedule'),
+    path('restructure_payment_process/<str:schedule_id>/',restructure_payment_process,name='restructure_payment_process'),
+
+    path('refinance_loan/',refinance_loan,name='refinance_loan'),
+    path('refinance_details/<str:loan_id>/<str:loanapp_id>/<str:loantype_id>/<str:id>/',refinance_details,name='refinance_details'),    
+    path('refinanced_list/',refinance_list,name='refinanced_list'),
+    path('refinance_payment_process/<str:schedule_id>/',refinance_payment_process,name='refinance_payment_process'),
+    path('refinance_repayment_schedule/<id>/',refinance_repayment_schedule,name='refinance_repayment_schedule')
+
 ]

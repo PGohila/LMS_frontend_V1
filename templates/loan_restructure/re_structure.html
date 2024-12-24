@@ -49,10 +49,12 @@
                                 <tr>
                                   <th style="text-align: left; color: #1A1C21;">&nbsp;Reschedule Type:</th>
                                   <td>{{loan_data.loanapp_id.repayment_mode}}</td>
-                                <!-- </tr><tr>
-                                  <th style="text-align: left; color: #1A1C21;">&nbsp;Schedule Type:</th>
-                                  <td>{{loan_data.loanapp_id.repayment_schedule}}</td>
-                                </tr> -->
+                                  </tr>
+                                  
+                                <tr>
+                                  <th style="text-align: left; color: #1A1C21;">Pending Installment:</th>
+                                  <td>{{paid_installment|floatformat:2}}</td>
+                                </tr>
                               </table>
                             </td>
                             <td style="vertical-align: top;padding-bottom: 20px;">
@@ -65,36 +67,22 @@
                                   <th style="text-align: left; color: #1A1C21;">Loan Type:</th>
                                   <td>{{loan_data.loanapp_id.loantype.loantype}} <b>({{loan_data.loanapp_id.loantype.loantype_id}})</b></td>
                                 </tr>
+                                
                                 <tr>
                                   <th style="text-align: left; color: #1A1C21;">Interest Rate:</th>
-                                  <td>{{loan_data.loanapp_id.loantype.interest_rate}} %</b></td>
+                                  <td>{{loan_data.loanapp_id.loantype.interest_rate}} %</td>
                                 </tr>
-                                <!-- <tr>
-                                  <th style="text-align: left; color: #1A1C21;">Tenure</th>
-                                  <td>{{loan_data.loanapp_id.tenure}} </td>
-                                </tr>
-                                <tr>
-                                  <th style="text-align: left; color: #1A1C21;">Tenure Type</th>
-                                  <td> {{loan_data.loanapp_id.tenure_type}}</td>
-                                </tr> -->
+                                
                                 <tr>
                                   <th style="text-align: left; color: #1A1C21;">Total Amount Paid:</th>
                                   <td>${{total_paid_amount|floatformat:2}}</td>
                                 </tr>
 
                                 <tr>
-                                  <th style="text-align: left; color: #1A1C21;">pending installment:</th>
-                                  <td>{{paid_installment|floatformat:2}}</td>
-                                </tr>
-                                <tr>
                                   <th style="text-align: left; color: #1A1C21;">Total Due Amount:</th>
                                   <td>{{total_due|floatformat:2}}</td>
                                 </tr>
-                          
-                                <!-- <tr>
-                                  <th style="text-align: left; color: #1A1C21;">&nbsp;Borrower ID:</th>
-                                  <td >{{loan_data.customer.id}}</td>
-                                </tr> -->
+                                                        
                               </table>
                             </td>
                           </tr>
@@ -105,33 +93,27 @@
                 </tbody>
               </table>
 
-              <form method="post" id="myForm">
+              <form method="POST" class="row g-3" enctype="multipart/form-data" id="myForm">
                 {% csrf_token %}
                 
-                <label>Enter Tenure</label>
-                <input type="number" name="tenure" class="form-control" id="id_tenure">
+                {% for form_field in form %}
+                <div class="col-12">
+                  {{ form_field.label_tag }}
+                  {{ form_field }}
+                  <span class="text-danger">{{ form_field.errors }}</span>
+                </div>
+                {% endfor %}
+                {% if error_message %}
+                <div class="alert alert-danger">
+                    {{ error_message }}
+                </div>
+                {% endif %}
 
-                <label>Select Repayment Date</label>
-                <input type="date" name="repayment_id" class="form-control">
+                <button type="submit" class="btn btn-success">Restructure</button>
+               
 
-                <!-- Hidden inputs to pass the values -->
-                <input type="hidden" name="loanapp_id" value="{{loan_data.loanapp_id.application_id}}">
-                <input type="hidden" name="loanapp_id_id" value="{{loan_data.loanapp_id.id}}">
-                <input type="hidden" name="loan_amount" value="{{loan_data.loanapp_id.loan_amount}}">
-                <input type="hidden" name="interest_rate" value="{{loan_data.loanapp_id.loantype.interest_rate}}">
-                <input type="hidden" name="loan_calculation_method" value="{{loan_data.loanapp_id.loan_calculation_method}}">
-                <input type="hidden" name="disbursement_type" value="{{loan_data.loanapp_id.repayment_mode}}">
-                <input type="hidden" name="loan_id" value="{{loan_data.id}}">
-                <input type="hidden" name="loantype" id="id_loantype_id" value="{{loan_data.loanapp_id.loantype.loantype}}">
-                <input type="hidden" name="due_amount" value="{{total_paid_amount}}">
-                <input type="hidden" name="tenure_type" value="{{loan_data.loanapp_id.tenure_type}}">
-                <input type="hidden" name="repayment_schedule" value="{{loan_data.loanapp_id.repayment_schedule}}">
-                <input type="hidden" name="total_tenture" value="{{loan_data.loanapp_id.tenure}} ">
-                <input type="hidden" name="customer_id" value="{{loan_data.customer.id}} ">
-                <!-- Restructure button -->
-                <button class="btn btn-success btn-sm" type="submit" form="myForm">Restructure</button>
-              </form>
-              
+            </form>
+
             </div>
           </div>
 
@@ -140,11 +122,35 @@
     </section>
 
   </main><!-- End #main -->
-  
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
   <script>
+    // JavaScript validation on form submission
+    $('#myForm').on('submit', function(e) {
+      var tenure = $('#id_tenure').val();
+      var maxTenure = $("input[name='max_tenure']").val(); // Retrieve max tenure from hidden input
+      var loanStatus = $("input[name='loan_status']").val(); // Get loan status
+      
+      if (loanStatus === "restructured") {
+        e.preventDefault(); // Prevent form submission
+        alert("This loan has already been restructured.");
+      }
+      // Compare tenure with max_tenure
+      if (parseInt(tenure) > parseInt(maxTenure)) {
+        e.preventDefault(); // Prevent form submission
+        alert('The tenure cannot exceed the maximum allowed tenure of ' + maxTenure + ' months.');
+      }
+    });
+  </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const today = new Date().toISOString().split("T")[0];
+      const dateFields = document.querySelectorAll('input[type="date"]');
+      dateFields.forEach((dateField) => {
+          if (!dateField.value) {
+              dateField.value = today;
+          }
+      });
+  });
 </script>
-
-  
 {% endblock %}

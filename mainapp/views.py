@@ -8,6 +8,8 @@ import requests
 from django.conf import settings
 from .forms import *
 from django.forms import formset_factory
+from .scripts import *
+from datetime import *
 BASEURL = settings.BASEURL
 ENDPOINT = 'micro-service/'
 import re
@@ -517,7 +519,7 @@ def loanapplication_create(request):
                 data = {'ms_id':MSID,'ms_payload':cleaned_data} 
                 json_data = json.dumps(data)
                 response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
-                print("========================",response)
+                print("=============",response)
                 if response['status_code'] ==  0:                  
                     messages.info(request, "Well Done..! Application Submitted..")
                     return redirect('loanapplication')
@@ -2154,7 +2156,7 @@ def disbursed_loans(request):
         company_id = request.session.get('company_id')
 
         # getting loans
-        MSID = get_service_plan('view loan') # view_loan
+        MSID = get_service_plan('view active loan') # view_loan
         if MSID is None:
             print('MISID not found') 
         payload_form = {'company':company_id}
@@ -2213,7 +2215,6 @@ def repayment_schedule(request,pk): # pk = loan id
         
         total_installment_amount = sum(item['instalment_amount'] for item in schedules)
         total_paid_amount = sum(item['paid_amount'] for item in schedules)
-        due_amount=total_installment_amount-total_paid_amount
         if request.method == 'POST':
             MSID = get_service_plan('confirmed schedule') # confirmed_schedule
             if MSID is None:
@@ -2226,7 +2227,7 @@ def repayment_schedule(request,pk): # pk = loan id
                 return render(request,"error.html", {"error": response['data']})
             return redirect('disbursed_loans')
 
-        context = {'next_schedule':next_schedule,'schedules':response['data'],'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount,'due_amount':due_amount}
+        context = {'next_schedule':next_schedule,'schedules':response['data'],'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount}
         return render(request,'repayment_schedule/repayment_schedule.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
@@ -2273,7 +2274,7 @@ def disbursed_loans1(request):
         company_id = request.session.get('company_id')
 
         # getting loans
-        MSID = get_service_plan('view loan') # view_loan
+        MSID = get_service_plan('view active loan') # view_loan
         if MSID is None:
             print('MISID not found') 
         payload_form = {'company':company_id}
@@ -3893,10 +3894,11 @@ def loan_restructure_list(request):
 
 from datetime import datetime
 
-def loan_restructure(request,pk):
+def loan_restructure(request,loan_id,loanapp_id,loantype_id,id):
     try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
+        pk=id
         print(pk,'pk')
          # getting loans
         MSID = get_service_plan('view loan') # view_loan
@@ -3909,7 +3911,65 @@ def loan_restructure(request,pk):
         if response['status_code'] == 1:
             return render(request,"error.html", {"error": response['data']})
         loan_data = response['data'][0]
+        loan_status=loan_data['loan_status']
         print('company_id',company_id,'loanapp_id',pk)
+        MSID = get_service_plan('view loan detail')
+        if MSID is None:
+                print('MISID not found') 
+        payload_form = {'company_id':company_id,'loan_id':loan_id}
+        data = {
+            'ms_id':MSID,
+            'ms_payload':payload_form
+            }
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        print('response',response)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        loan_records=response['data']
+        interest=loan_records[0]['interest_rate']
+        loan_status=loan_records[0]['loan_status']
+        print('loan_status',loan_status)
+        MSID = get_service_plan('view loanapp detail')
+        if MSID is None:
+                print('MISID not found') 
+        payload_form = {'company_id':company_id,'loanapp_id':loanapp_id}
+        data = {
+            'ms_id':MSID,
+            'ms_payload':payload_form
+            }
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        print('response',response)
+
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        loanapp_records=response['data']
+        disbursement_type=loanapp_records[0]['disbursement_type']
+        loan_calculation_method=loanapp_records[0]['loan_calculation_method']
+        repayment_schedule=loanapp_records[0]['repayment_schedule']
+        loanapplication_id=loanapp_records[0]['id']
+        tenure_type=loanapp_records[0]['tenure_type']
+        loantype=loanapp_records[0]['loantype']
+        MSID = get_service_plan('view loantype detail')
+        if MSID is None:
+                print('MISID not found') 
+        payload_form = {'company_id':company_id,'loantype_id':loantype_id}
+        data = {
+            'ms_id':MSID,
+            'ms_payload':payload_form
+            }
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        print('response',response)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        loantype_records=response['data']
+        loan_tenure=loantype_records[0]['loan_teams']
+        max_tenure=int(loan_tenure)
+        is_refinance=loantype_records[0]['is_refinance']
+        max_loan=loantype_records[0]['max_loan_amt']
+        interest_rate=loantype_records[0]['interest_rate']
 
         MSID = get_service_plan('getting repayment schedules') # getting_repayment_schedules
         if MSID is None:
@@ -3937,100 +3997,84 @@ def loan_restructure(request,pk):
         total_installment_amount = sum(item['instalment_amount'] for item in schedules)
         total_paid_amount = sum(item['paid_amount'] for item in schedules)
         total_due=sum(item['instalment_amount'] for item in schedules) -sum(item['paid_amount'] for item in schedules)
-
+        form=RestructureForm()
         if request.method == 'POST':
             print("Form Submitted!")
-            
-            loanapp_id = request.POST.get('loanapp_id')
-            loanapplication_id = request.POST.get('loanapp_id_id')
-            loan_amount = request.POST.get('loan_amount')
-            loan_calculation_method = request.POST.get('loan_calculation_method')
-            disbursement_type = request.POST.get('disbursement_type')
-            loan_id = request.POST.get('loan_id')
-            loantype = request.POST.get('loantype')
-            tenure = request.POST.get('tenure')
-            total_due_amount = request.POST.get('due_amount')
-            repayment_schedule = request.POST.get('repayment_id')
-
+            form=RestructureForm(request.POST)
+            if form.is_valid():
+                cleaned_data=form.cleaned_data   
+                tenure=cleaned_data['tenure']        
+                repayment_id=cleaned_data['repayment_id']
+                resp=validate_restructure_form(tenure,max_tenure,loan_status)
+                print('tenure,max_tenure,loan_status',tenure,max_tenure,loan_status)
+                if resp[0]:
             # Print the values to check if they are correctly retrieved
-            print(f"Loan App ID: {loanapp_id}")
-            print(f"Loan App ID: {loanapplication_id}")
-            print(f"Loan Amount: {loan_amount}")
-            print(f"Loan Calculation Method: {loan_calculation_method}")
-            print(f"Disbursement Type: {disbursement_type}")
-            print(f"Loan ID: {loan_id}")
-            print(f"Loan Type: {loantype}")
-            print(f"Tenure: {tenure}")
-            print(f"Total Due Amount: {total_due_amount}")
-            print(f"Repayment Schedule: {repayment_schedule}")
+                    print(f"Loan App ID: {loanapp_id}")
+                    print(f"Loan App ID: {loanapplication_id}")
+                    print(f"Loan Amount: {total_due}")
+                    print(f"Loan Calculation Method: {loan_calculation_method}")
+                    print(f"Disbursement Type: {disbursement_type}")
+                    print(f"Loan ID: {loan_id}")
+                    print(f"Loan Type: {loantype}")
+                    print(f"Tenure: {tenure}")
+                    print(f"Total Due Amount: {total_due}")
+                    print(f"Repayment Schedule: {repayment_schedule}")
 
     # Further processing or redirect
     # return redirect('restructure_loans')
 
-            MSID = get_service_plan('confirmed schedule') # confirmed_schedule
-            if MSID is None:
-                print('MISID not found') 
-            payload_form = {'loan_id': pk}
-            data = {'ms_id': MSID, 'ms_payload': payload_form}
-            json_data = json.dumps(data)
-            response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
+                    MSID = get_service_plan('confirmed schedule') # confirmed_schedule
+                    if MSID is None:
+                        print('MISID not found') 
+                    payload_form = {'loan_id': pk}
+                    data = {'ms_id': MSID, 'ms_payload': payload_form}
+                    json_data = json.dumps(data)
+                    response = call_post_method_with_token_v2(BASEURL, ENDPOINT, json_data, token)
 
-            loanapp_id = request.POST.get('loanapp_id')
-            loanapplication_id = request.POST.get('loanapp_id_id')
-            customer_id = request.POST.get('customer_id')
-            loan_amount = request.POST.get('loan_amount')
-            loan_calculation_method = request.POST.get('loan_calculation_method')
-            disbursement_type = request.POST.get('disbursement_type')
-            loan_id = request.POST.get('loan_id')
-            loantype = request.POST.get('loantype')
-            tenure = int(request.POST.get('tenure'))
-            tenure_type = request.POST.get('tenure_type')
-            total_due_amount = request.POST.get('due_amount')
-            repayment_schedule = request.POST.get('repayment_schedule')
-            repayment_schedule_date = request.POST.get('repayment_id')
-            interest_rate= request.POST.get('interest_rate')
-            repayment_schedule_date = datetime.strptime(repayment_schedule_date, '%Y-%m-%d') 
+           
+    # Format it into the desired string format
+                    formatted_date = repayment_id.strftime('%Y-%m-%d')
 
-# Format it into the desired string format
-            formatted_date = repayment_schedule_date.strftime('%Y-%m-%d')
+        # def calculate_repayment_schedule(loan_amount, interest_rate, tenure, tenure_type, repayment_schedule, loan_calculation_method, repayment_start_date, repayment_mode,loantype_id=None):
+        #             # Process the data
+                    new_loan_amount = int(total_due)
+                    print('new_loan_amount',new_loan_amount)
+                    MSID = get_service_plan('calculate repayment schedule')
+                    if MSID is None:
+                        print('MISID not found')      
+                    payload_form={
+                        'loan_amount':new_loan_amount,'interest_rate':interest_rate,'tenure':tenure,'tenure_type':tenure_type,
+                        'repayment_schedule':repayment_schedule,'loan_calculation_method':loan_calculation_method,'repayment_start_date':formatted_date,
+                        'repayment_mode':disbursement_type,'loantype_id':loantype
+                    }
+                    print(payload_form)
+                    # cleaned_data['repayment_start_date'] = cleaned_data['repayment_start_date'].strftime('%Y-%m-%d')  
+                    data = {'ms_id':MSID,'ms_payload':payload_form} 
+                    json_data = json.dumps(data)
+                    response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+                    print('response',response)
 
-# def calculate_repayment_schedule(loan_amount, interest_rate, tenure, tenure_type, repayment_schedule, loan_calculation_method, repayment_start_date, repayment_mode,loantype_id=None):
-#             # Process the data
-            new_loan_amount = int(total_paid_amount)
-            print('new_loan_amount',new_loan_amount)
-            MSID = get_service_plan('calculate repayment schedule')
-            if MSID is None:
-                print('MISID not found')      
-            payload_form={
-                'loan_amount':new_loan_amount,'interest_rate':interest_rate,'tenure':tenure,'tenure_type':tenure_type,
-                'repayment_schedule':repayment_schedule,'loan_calculation_method':loan_calculation_method,'repayment_start_date':formatted_date,
-                'repayment_mode':disbursement_type,'loantype_id':loantype
-            }
-            print(payload_form)
-            # cleaned_data['repayment_start_date'] = cleaned_data['repayment_start_date'].strftime('%Y-%m-%d')  
-            data = {'ms_id':MSID,'ms_payload':payload_form} 
-            json_data = json.dumps(data)
-            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
-            print('response',response)
+                    if response['status_code'] == 1:
+                        return render(request,'error.html',{'error':str(response['data'])})
+                    
+                    MSID = get_service_plan('loan restructure') # loan_restructure
+                    print(MSID)
+                    if MSID is None:
+                        print('MISID not found') 
+                    payload_form = {'company_id':company_id,'new_tenure':tenure,'new_amount':total_due,'loan_id':id,'loanapp_id':loanapplication_id,'approval_status' : "restructured" ,'repayment_start_date':formatted_date}
+                    print('loan payload_form',payload_form)
+                    data = {'ms_id':MSID,'ms_payload':payload_form}
+                    json_data = json.dumps(data)
+                    response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+                    print('response',response)
 
-            if response['status_code'] == 1:
-                return render(request,'error.html',{'error':str(response['data'])})
-            
-            MSID = get_service_plan('loan restructure') # loan_restructure
-            print(MSID)
-            if MSID is None:
-                print('MISID not found') 
-            payload_form = {'company_id':company_id,'new_tenure':tenure,'new_amount':total_paid_amount,'loan_id':loan_id,'loanapp_id':loanapplication_id,'approval_status' : "restructured" ,'repayment_start_date':formatted_date}
-            print('loan payload_form',payload_form)
-            data = {'ms_id':MSID,'ms_payload':payload_form}
-            json_data = json.dumps(data)
-            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
-            print('response',response)
+                    # Redirect with pk
+                    return redirect('running_loans')
+                else:
+                    context = {'next_schedule':next_schedule,'schedules':response['data'],'paid_installment':paid_installment,'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount,'total_due':total_due,'loan_status':loan_status,'form':form,'error_message': resp[1],'form':form}
+                    return render(request, 'loan_restructure/re_structure.html', context)
 
-            # Redirect with pk
-            return redirect('running_loans')
-
-        context = {'next_schedule':next_schedule,'schedules':response['data'],'paid_installment':paid_installment,'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount,'total_due':total_due}
+        context = {'next_schedule':next_schedule,'schedules':response['data'],'paid_installment':paid_installment,'loan_data':loan_data,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount,'total_due':total_due,'loan_status':loan_status,'form':form}
         return render(request,'loan_restructure/re_structure.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 
@@ -4072,7 +4116,7 @@ def restructured_list(request):
     try:
         token = request.session['user_token']
         company_id = request.session.get('company_id')
-
+        print('company_id',company_id)
         MSID = get_service_plan('restructure list') # restructure_list
         if MSID is None:
             print('MISID not found') 
@@ -4086,5 +4130,407 @@ def restructured_list(request):
         print('schedules',schedules)
         context={'schedules':schedules}
         return render(request,'loan_restructure/restructured_loans.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+def restructure_repayment_schedule(request,id): # pk = loan id
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        MSID = get_service_plan('getting next restructure schedules') # getting_next_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company_id':company_id,'loanapp_id':id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        next_schedule = response['data'][0]
+        print('next_schedule',next_schedule)
+
+        MSID = get_service_plan('getting repayment restructure schedules') # getting_repayment_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company_id':company_id,'loanapp_id':id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        schedules = response['data']
+        for schedule in schedules:
+            schedule['payable_amount'] = schedule['instalment_amount'] + schedule['interest_amount'] + schedule['payable_penalty_amt']
+        # calculate Total amount Due
+                
+        total_installment_amount = sum(item['instalment_amount'] for item in schedules)
+        total_paid_amount = sum(item['paid_amount'] for item in schedules)
+        total_due=sum(item['instalment_amount'] for item in schedules) -  sum(item['paid_amount'] for item in schedules)
+        if request.method == 'POST':
+            MSID = get_service_plan('confirmed schedule') # confirmed_schedule
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'loan_id':id}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            return redirect('disbursed_loans')
+
+        
+
+        context = {'schedules':response['data'],'next_schedule':next_schedule,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount,'total_due':total_due}
+        return render(request,'loan_restructure/restructure_schedule.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+
+def refinance_loan(request):
+    try:    
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        # getting loans
+        MSID = get_service_plan('view loan') # view_loan
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company':company_id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        
+        active_loan  = [data for data in response['data'] if data['is_active'] == True and data['workflow_stats'] == 'Disbursment']
+        
+        context = {'records':active_loan}
+        return render(request,'loan_refinance/refinance_loans_list.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+
+def refinance_details(request,loan_id,loanapp_id,loantype_id,id):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+        pk=id
+        print('pk',pk)
+        MSID = get_service_plan('view loan detail')
+        if MSID is None:
+                print('MISID not found') 
+        payload_form = {'company_id':company_id,'loan_id':loan_id}
+        data = {
+            'ms_id':MSID,
+            'ms_payload':payload_form
+            }
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        print('response',response)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        loan_records=response['data']
+        interest=loan_records[0]['interest_rate']
+        loan_status=loan_records[0]['loan_status']
+        print('loan_status',loan_status)
+        MSID = get_service_plan('view loanapp detail')
+        if MSID is None:
+                print('MISID not found') 
+        payload_form = {'company_id':company_id,'loanapp_id':loanapp_id}
+        data = {
+            'ms_id':MSID,
+            'ms_payload':payload_form
+            }
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        print('response',response)
+
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        loanapp_records=response['data']
+        disbursement_type=loanapp_records[0]['disbursement_type']
+        loan_calculation_method=loanapp_records[0]['loan_calculation_method']
+        repayment_schedule=loanapp_records[0]['repayment_schedule']
+        loanapplication_id=loanapp_records[0]['id']
+        tenure_type=loanapp_records[0]['tenure_type']
+        MSID = get_service_plan('view loantype detail')
+        if MSID is None:
+                print('MISID not found') 
+        payload_form = {'company_id':company_id,'loantype_id':loantype_id}
+        data = {
+            'ms_id':MSID,
+            'ms_payload':payload_form
+            }
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        print('response',response)
+        if response['status_code'] == 1:
+            return render(request,'error.html',{'error':str(response['data'])})
+        loantype_records=response['data']
+        loan_tenure=loantype_records[0]['loan_teams']
+        max_tenure=int(loan_tenure)
+        is_refinance=loantype_records[0]['is_refinance']
+        max_loan=loantype_records[0]['max_loan_amt']
+        max_loan=int(max_loan)
+        form=RefinanceForm()
+        print('is_refinance',is_refinance)
+        if loan_status == 'restructured':
+            MSID = get_service_plan('getting repayment restructure schedules') # getting_repayment_schedules
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'company_id':company_id,'loanapp_id':pk}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            schedules = response['data']
+            # total_paid_amount = sum(item['paid_amount'] for item in schedules)
+            # total_due=sum(item['instalment_amount'] for item in schedules) -sum(item['paid_amount'] for item in schedules)
+            # print('total_paid_amount',total_paid_amount)
+            # calculate Total amount Due
+
+            MSID = get_service_plan('getting next restructure schedules') # getting_next_schedules
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'company_id':company_id,'loanapp_id':pk}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            next_schedule = response['data']
+        
+        elif loan_status == 'Active_Loan':
+
+            MSID = get_service_plan('getting repayment schedules') # getting_repayment_schedules
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'company_id':company_id,'loanapp_id':pk}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            schedules = response['data']
+            # total_paid_amount = sum(item['paid_amount'] for item in schedules)
+            # total_due=sum(item['instalment_amount'] for item in schedules) -sum(item['paid_amount'] for item in schedules)
+
+            # calculate Total amount Due
+
+            MSID = get_service_plan('getting next schedules') # getting_next_schedules
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'company_id':company_id,'loanapp_id':pk}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            next_schedule = response['data']
+
+        total_installment_amount = sum(item['instalment_amount'] for item in schedules)
+        total_paid_amount = sum(item['paid_amount'] for item in schedules)
+        total_due=sum(item['instalment_amount'] for item in schedules) -sum(item['paid_amount'] for item in schedules)
+        eligibile = loantype_records[0]['max_loan_amt'] - total_due
+        if request.method=='POST':
+            form=RefinanceForm(request.POST)
+            print('form',form.is_valid())
+            if form.is_valid():
+                cleaned_data=form.cleaned_data
+                interest_rate=interest
+                loan_amount=cleaned_data['loan_amount']
+                print('loan amount ',loan_amount)
+
+                tenure=cleaned_data['tenure']
+                print('tenure ',tenure)
+
+                repayment_id=cleaned_data['repayment_id'].strftime('%Y-%m-%d')
+                print('repayment_id ',repayment_id)
+
+                tenure_type=tenure_type
+
+                # Now you can call strftime
+                loan_calculation_method=loan_calculation_method
+                loan_amount=int(loan_amount)
+                total_due=int(total_due)
+                tenure=int(tenure)
+                max_loan=int(eligibile)
+                resp = validate_refinance_form(max_loan,loan_amount,tenure,repayment_id, max_tenure, total_due, loan_status, is_refinance)
+                print('loan_amount',loan_amount)
+                print( 'total_due',total_due )
+                print('tenure',tenure)
+                print('max_tenure',max_tenure)
+                print('max_loan',max_loan)
+                print('loan_status',loan_status)
+                print('is_refinance',is_refinance)
+
+                print('resp',resp)
+                if resp[0]:
+
+                    MSID = get_service_plan('loan refinance') # loan_refinance
+                    print(MSID)
+                    if MSID is None:
+                        print('MISID not found') 
+                    payload_form = {'company_id':company_id,'new_tenure':tenure,'new_amount':loan_amount,'loan_id':pk,'loanapp_id':loanapplication_id,'approval_status' : "refinanced" ,'repayment_start_date':repayment_id}
+                    print('loan payload_form',payload_form)
+
+                    data = {'ms_id':MSID,'ms_payload':payload_form}
+                    json_data = json.dumps(data)
+                    response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+                    print('response',response)
+                    return redirect('refinanced_list')
+                else:
+                    context = {'loantype_records':loantype_records,'loanapp_records':loanapp_records,'loan_records':loan_records,'total_paid_amount':total_paid_amount,'total_due':total_due,'eligibile':eligibile,'loan_tenure':loan_tenure,'is_refinance':is_refinance,'loan_status':loan_status,'error_message': resp[1],'form':form}
+                    return render(request, 'loan_refinance/refinance_details.html', context)
+
+        context = {'loantype_records':loantype_records,'loanapp_records':loanapp_records,'loan_records':loan_records,'total_paid_amount':total_paid_amount,'total_due':total_due,'eligibile':eligibile,'loan_tenure':loan_tenure,'is_refinance':is_refinance,'loan_status':loan_status,'form':form}
+        return render(request,"loan_refinance/refinance_details.html",context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error})
+
+def restructure_payment_process(request,schedule_id):
+    try:
+        token = request.session['user_token'] 
+        company_id = request.session.get('company_id') 
+        MSID = get_service_plan('getting restructure schedule') # getting_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'uniques_id':schedule_id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        schedule_data = response['data'][0]
+       
+        payable_amount = 0.0
+        
+        payable_amount += schedule_data['instalment_amount'] + schedule_data['interest_amount'] + schedule_data['payable_penalty_amt']
+
+        if request.method == 'POST':
+            MSID = get_service_plan('paid restructure schedule') # paid_schedule
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'schedule_id':schedule_id}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            return redirect('restructured_list')
+
+        context= {'schedule':schedule_data,'payable_amount':payable_amount}
+        return render(request,'loan_restructure/payment_process.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+        
+
+def refinance_list(request):
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+        print('company_id',company_id)
+        MSID = get_service_plan('refinance list') # restructure_list
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company_id':company_id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        schedules = response['data']
+        print('schedules',schedules)
+        context={'schedules':schedules}
+        return render(request,'loan_refinance/refinanced_loans.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+       
+def refinance_repayment_schedule(request,id): # pk = loan id
+    try:
+        token = request.session['user_token']
+        company_id = request.session.get('company_id')
+
+        MSID = get_service_plan('getting next refinance schedules') # getting_next_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company_id':company_id,'loanapp_id':id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        next_schedule = response['data'][0]
+        print('next_schedule',next_schedule)
+
+        MSID = get_service_plan('getting repayment refinance schedules') # getting_repayment_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'company_id':company_id,'loanapp_id':id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        schedules = response['data']
+        for schedule in schedules:
+            schedule['payable_amount'] = schedule['instalment_amount'] + schedule['interest_amount'] + schedule['payable_penalty_amt']
+        # calculate Total amount Due
+                
+        total_installment_amount = sum(item['instalment_amount'] for item in schedules)
+        total_paid_amount = sum(item['paid_amount'] for item in schedules)
+        total_due=sum(item['instalment_amount'] for item in schedules) -  sum(item['paid_amount'] for item in schedules)
+        if request.method == 'POST':
+            MSID = get_service_plan('confirmed refinance schedule') # confirmed_schedule
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'loan_id':id}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            return redirect('refinance_list')
+
+        context = {'schedules':response['data'],'next_schedule':next_schedule,'total_installment_amount':total_installment_amount,'total_paid_amount':total_paid_amount,'total_due':total_due}
+        return render(request,'loan_refinance/refinance_schedule.html',context)
+    except Exception as error:
+        return render(request, "error.html", {"error": error}) 
+
+def refinance_payment_process(request,schedule_id):
+    try:
+        token = request.session['user_token'] 
+        company_id = request.session.get('company_id') 
+        MSID = get_service_plan('getting refinance schedule') # getting_schedules
+        if MSID is None:
+            print('MISID not found') 
+        payload_form = {'uniques_id':schedule_id}
+        data = {'ms_id':MSID,'ms_payload':payload_form}
+        json_data = json.dumps(data)
+        response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+        if response['status_code'] == 1:
+            return render(request,"error.html", {"error": response['data']})
+        schedule_data = response['data'][0]
+       
+        payable_amount = 0.0
+        
+        payable_amount += schedule_data['instalment_amount'] + schedule_data['interest_amount'] + schedule_data['payable_penalty_amt']
+
+        if request.method == 'POST':
+            MSID = get_service_plan('paid refinance schedule') # paid_schedule
+            if MSID is None:
+                print('MISID not found') 
+            payload_form = {'schedule_id':schedule_id}
+            data = {'ms_id':MSID,'ms_payload':payload_form}
+            json_data = json.dumps(data)
+            response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
+            if response['status_code'] == 1:
+                return render(request,"error.html", {"error": response['data']})
+            return redirect('refinanced_list')
+
+        context= {'schedule':schedule_data,'payable_amount':payable_amount}
+        return render(request,'loan_refinance/payment_process.html',context)
     except Exception as error:
         return render(request, "error.html", {"error": error}) 

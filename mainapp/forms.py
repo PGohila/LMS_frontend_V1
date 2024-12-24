@@ -119,7 +119,7 @@ class LoantypeForm(forms.Form):
 	description = forms.CharField(required=False, widget=forms.Textarea(attrs={"class": "form-control"}))
 	is_active = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={"class": "form-check-input",}))
 	collateral_required = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
-
+	is_refinance=forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={"class": "form-check-input",}))
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		
@@ -611,3 +611,26 @@ class PenaltyForm(forms.Form):
         }),
         label="Reason for Penalty"
     )
+
+class RefinanceForm(forms.Form):
+	loan_amount=forms.IntegerField(
+        required=True,
+        label='Loan Amount',
+        widget=forms.NumberInput(attrs={"class": "form-control","readony":"readonly"})
+    )
+	tenure=forms.IntegerField(
+        required=True,
+        label='Tenure',
+        widget=forms.NumberInput(attrs={"class": "form-control","readony":"readonly"})
+    )
+	repayment_id= forms.DateField( required=False, widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}))
+
+
+class RestructureForm(forms.Form):
+
+	tenure=forms.IntegerField(
+        required=True,
+        label='Tenure',
+        widget=forms.NumberInput(attrs={"class": "form-control","readony":"readonly"})
+    )
+	repayment_id= forms.DateField( required=False, widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}))

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Restructure Schedule</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Restructure Schedule 1</li>
+        </ol>
+      </nav>
+                          
+      <section class="section">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Payment Schedule Details</h5>
+        
+                <table style="font-size: 12px; line-height: 20px;">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <table style="background-color: #FFF; padding: 30px; border: 1px solid #D7DAE0;width: 100%;font-size: 15px; line-height: 20px; table-layout: fixed;">
+                          <tbody>
+                            <tr>
+                              <td style="vertical-align: top;padding-bottom: 20px;">
+                                <table style="table-layout: fixed;width:-webkit-fill-available;">
+                                  <!-- <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;SI.No:</th>
+                                    <td>{{ forloop.counter }}</td>
+                                  </tr> -->
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Schedule ID:</th>
+                                    <td><a href="#">{{ schedule.schedule_id }}</a></td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Payment Date:</th>
+                                    <td>{{ schedule.repayment_date }}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Penalty Reason:</th>
+                                    <td>{{ schedule.penalty_reason }}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Payment Status:</th>
+                                    <td>{{ schedule.repayment_status }}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                              <td style="vertical-align: top;padding-bottom: 20px;">
+                                <table style="table-layout: fixed;width:-webkit-fill-available;">
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Balance Amount:</th>
+                
+                                    <td>${{ schedule.remaining_balance }}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Instalment Amount:</th>
+                                    <td>${{ schedule.instalment_amount }}</td>
+                                  </tr>
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Interest Amount:</th>
+                                    <td>${{ schedule.interest_amount }}</td>
+                                  </tr>
+                                  
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Penalty Amount:</th>
+                                    <td>{{ schedule.payable_penalty_amt }}</td>
+                                  </tr>
+                                  
+                                 
+                                  <!-- <tr>
+                                    <th style="text-align: left; color: #1A1C21;">&nbsp;Transaction ID:</th>
+                                    <td>{% if data.transaction_id == None %} - {% else %} {{ data.transaction_id }} {% endif %}</td>
+                                  </tr> -->
+                                </table>
+                              </td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                    
+                  </tbody>
+                </table>
+   
+               
+                <form method="post">
+                    {% csrf_token %}
+                    <tr>
+                      <th style="text-align: left; color: #1A1C21;">&nbsp;Payable Amount:</th>
+                      <input type="number" class="form-control" value="{{payable_amount}}">
+                    </tr><br>
+                <!-- Action Buttons -->
+                <div class="button-container">
+                    
+                    <button class="btn btn-success btn-sm" type="submit"> Make Payment</button>
+                </div>
+            </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  {% endblock %}
+
+ 

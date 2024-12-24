@@ -67,7 +67,8 @@
         const tenure = document.getElementById('id_tenure');
         let minLoanAmount = 0;
         let maxLoanAmount = 0;
-
+        let minTenure=1;
+        let maxTenure=0;
         // Adding the event listener to detect change in loan type selection
         loanTypeSelect.addEventListener('change', function (event) {
             const loanTypeId = event.target.value;
@@ -79,10 +80,11 @@
                         if (data.status === 'success') {
                             // Dynamically update the fields with the response data
                             document.getElementById('id_interest_rate').value = data.interest_rate;
-                            document.getElementById('id_tenure').value = data.loan_teams;
+                            // document.getElementById('id_tenure').value = data.loan_teams;
                             document.getElementById('id_loan_calculation_method').value = data.loan_calculation_method;
 
                             // Set the loan amount validation range
+                            maxTenure = data.loan_teams || 0;
                             minLoanAmount = data.min_loan_amt || 0;
                             maxLoanAmount = data.max_loan_amt || 0;
                         } else {
@@ -96,14 +98,23 @@
         // Validate loan amount when the user submits the form
         const form = document.getElementById('loan-application-form');
         form.addEventListener('submit', function (event) {
-            const loanAmountInput = document.getElementById('id_loan_amount');
-            const loanAmount = parseFloat(loanAmountInput.value);
+    const loanAmountInput = document.getElementById('id_loan_amount');
+    const loanAmount = parseFloat(loanAmountInput.value);
 
-            if (isNaN(loanAmount) || loanAmount < minLoanAmount || loanAmount > maxLoanAmount) {
-                event.preventDefault();  // Prevent form submission
-                alert(`Loan amount must be between ${minLoanAmount} and ${maxLoanAmount}`);
-            }
-        });
+    const TenureInput = document.getElementById('id_tenure');
+    const Tenurecount = parseFloat(TenureInput.value);
+
+    // Check loan amount
+    if (isNaN(loanAmount) || loanAmount < minLoanAmount || loanAmount > maxLoanAmount) {
+        event.preventDefault();  // Prevent form submission
+        alert(`Loan amount must be between ${minLoanAmount} and ${maxLoanAmount}`);
+    }
+    // Check tenure
+    else if (isNaN(Tenurecount) || Tenurecount < minTenure || Tenurecount > maxTenure) {
+        event.preventDefault();  // Prevent form submission
+        alert(`Loan tenure must be between ${minTenure} and ${maxTenure}`);
+    }
+});
     });
   </script>
 
