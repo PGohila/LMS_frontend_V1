@@ -3875,7 +3875,7 @@ def loan_restructure_list(request):
         company_id = request.session.get('company_id')
 
         # getting loans
-        MSID = get_service_plan('view loan') # view_loan
+        MSID = get_service_plan('view active loan') # view_loan
         if MSID is None:
             print('MISID not found') 
         payload_form = {'company':company_id}
@@ -3945,7 +3945,7 @@ def loan_restructure(request,loan_id,loanapp_id,loantype_id,id):
         if response['status_code'] == 1:
             return render(request,'error.html',{'error':str(response['data'])})
         loanapp_records=response['data']
-        disbursement_type=loanapp_records[0]['disbursement_type']
+        disbursement_type=loanapp_records[0]['repayment_mode']
         loan_calculation_method=loanapp_records[0]['loan_calculation_method']
         repayment_schedule=loanapp_records[0]['repayment_schedule']
         loanapplication_id=loanapp_records[0]['id']
@@ -4191,9 +4191,9 @@ def refinance_loan(request):
     try:    
         token = request.session['user_token']
         company_id = request.session.get('company_id')
-
+        print(company_id)
         # getting loans
-        MSID = get_service_plan('view loan') # view_loan
+        MSID = get_service_plan('view refinance loan') # view_loan
         if MSID is None:
             print('MISID not found') 
         payload_form = {'company':company_id}
@@ -4357,6 +4357,7 @@ def refinance_details(request,loan_id,loanapp_id,loantype_id,id):
                 total_due=int(total_due)
                 tenure=int(tenure)
                 max_loan=int(eligibile)
+                print('loan status',loan_status)
                 resp = validate_refinance_form(max_loan,loan_amount,tenure,repayment_id, max_tenure, total_due, loan_status, is_refinance)
                 print('loan_amount',loan_amount)
                 print( 'total_due',total_due )
