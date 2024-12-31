@@ -50,10 +50,13 @@
                                   <th style="text-align: left; color: #1A1C21;">&nbsp;Reschedule Type:</th>
                                   <td>{{loan_data.loanapp_id.repayment_mode}}</td>
                                   </tr>
-                                  
+                                  <tr>
+                                    <th style="text-align: left; color: #1A1C21;">Total Tenure</th>
+                                    <td>{{loan_data.loanapp_id.tenure}}</td>
+                                  </tr>
                                 <tr>
                                   <th style="text-align: left; color: #1A1C21;">Pending Installment:</th>
-                                  <td>{{paid_installment|floatformat:2}}</td>
+                                  <td>{{paid_installment}}</td>
                                 </tr>
                               </table>
                             </td>
@@ -77,10 +80,10 @@
                                   <th style="text-align: left; color: #1A1C21;">Total Amount Paid:</th>
                                   <td>${{total_paid_amount|floatformat:2}}</td>
                                 </tr>
-
+                                
                                 <tr>
                                   <th style="text-align: left; color: #1A1C21;">Total Due Amount:</th>
-                                  <td>{{total_due|floatformat:2}}</td>
+                                  <td>${{total_due|floatformat:2}}</td>
                                 </tr>
                                                         
                               </table>

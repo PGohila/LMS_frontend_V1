@@ -64,9 +64,9 @@
                     <td>{{ forloop.counter }}</td>
                     <td><a href="#">{{ data.schedule_id }}</a></td>
                     <td>{{ data.repayment_date }}</td>
-                    <td>${{ data.instalment_amount }}</td>
+                    <td>${{ data.instalment_amount|floatformat:2 }}</td>
                     <td>${{ data.interest_amount }}</td>
-                    <td>${{ data.paid_amount }}</td>
+                    <td>${{ data.paid_amount|floatformat:2 }}</td>
                     <td>${{ data.remaining_balance }}</td>
                     <td>
                       {% if data.repayment_status == "Paid" %}
@@ -96,7 +96,7 @@
                       {% if data.repayment_status == "Paid" %}
                         <button class="btn btn-secondary" disabled>Paid</button>
                       {% else %}
-                        <a href="{% url 'refinance_payment_process' data.id %}" class="btn btn-success">Pay</a>
+                        <a href="{% url 'refinance_payment_process1' data.id %}" class="btn btn-success">Pay</a>
                       {% endif %}
                     </td>
                   </tr>

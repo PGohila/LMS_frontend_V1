@@ -49,8 +49,7 @@ def validate_refinance_form( max_loan,loan_amount,tenure,repayment_id, max_tenur
     print('is_refinance',is_refinance)
 
     # Validate refinance eligibility
-    if is_refinance == "False":
-
+    if not is_refinance:
         return [False, "This loan is not eligible for refinancing."]
 
     # Check loan status (already refinanced)
@@ -58,10 +57,10 @@ def validate_refinance_form( max_loan,loan_amount,tenure,repayment_id, max_tenur
         return [False, "This loan has already been refinanced."]
 
     # Validate loan amount
-    elif loan_amount > max_loan:
+    elif loan_amount >= max_loan:
         return[ False, f"Loan amount cannot be more than {max_loan}."]
     
-    elif loan_amount < total_due:
+    elif loan_amount <= total_due:
         return [False, f"Loan amount cannot be less than {total_due}."]
 
     # Validate tenure

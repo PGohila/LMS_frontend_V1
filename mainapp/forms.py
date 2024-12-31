@@ -613,7 +613,7 @@ class PenaltyForm(forms.Form):
     )
 
 class RefinanceForm(forms.Form):
-	loan_amount=forms.IntegerField(
+	loan_amount=forms.FloatField(
         required=True,
         label='Loan Amount',
         widget=forms.NumberInput(attrs={"class": "form-control","readony":"readonly"})
