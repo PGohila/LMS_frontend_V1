@@ -6,12 +6,12 @@
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Restructured Loans</h1>
+      <h1>Refinanced Loans</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
           <li class="breadcrumb-item">Forms</li>
-          <li class="breadcrumb-item active">Disbursed Loans</li>
+          <li class="breadcrumb-item active">Refinanced Disbursed Loans</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -28,7 +28,7 @@
  
                 <tbody>
                     <div class="container mt-5">
-                        <h2>Restructured Loans</h2>
+                        <h2>Refinanced Loans</h2>
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -45,13 +45,13 @@
                                 {% for schedule in schedules %}
                                 <tr>
                                     <td>{{ schedule.company.name }}</td>
-                                    <td>{{ schedule.loan_amount }}</td>
+                                    <td>{{ schedule.loan_amount | floatformat:2}}</td>
                                     <td>{{ schedule.interest_rate }}%</td>
                                     <td>{{ schedule.tenure }}</td>
                                     <td>{{ schedule.repayment_schedule }}</td>
                                     <td>{{ schedule.loan_status }}</td>
                                     <td>
-                                        <a href="{% url 'restructure-repayment-schedule' schedule.id %}"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
+                                        <a href="{% url 'refinance_repayment_schedule1' schedule.id %}"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
                                         </button></a>
                                     </td>
                                 </tr>

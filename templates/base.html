@@ -492,12 +492,48 @@
           <a href="{% url 'running_loans' %}">
             <i class="bi bi-circle"></i><span>Loan Restructure</span>
           </a>
-          <!-- <a href="{% url 'restructured_list' %}">
-            <i class="bi bi-circle"></i><span>Loan Refinance</span>
-          </a> -->
+          <a href="{% url 'restructured_list' %}">
+            <i class="bi bi-circle"></i><span>Loan Restructure Schedule</span>
+          </a>
         </li>      
 
       </ul>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#refinance-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-arrow-clockwise"></i><span>Loan Refinance</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="refinance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'refinance_loan' %}">
+            <i class="bi bi-circle"></i><span>Loan Refinance</span>
+          </a>
+          <a href="{% url 'refinanced_list' %}">
+            <i class="bi bi-circle"></i><span>Loan Refinance Schedule</span>
+          </a>
+        </li>       
+
+    </ul>
+    </li>
+
+
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#refinance1-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-arrow-clockwise"></i><span>Loan Refinance1</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="refinance1-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'refinance_loan1' %}">
+            <i class="bi bi-circle"></i><span>Loan Refinance1</span>
+          </a>
+          <a href="{% url 'refinanced_list1' %}">
+            <i class="bi bi-circle"></i><span>Loan Refinance Schedule1</span>
+          </a>
+        </li>       
+
+    </ul>
     </li>
 
 

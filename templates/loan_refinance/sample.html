@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Loan Refinance Details</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Loan Refinance Details</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    {% block refinance_details %}
+    <div class="container mt-4">
+        <div class="loan-details-box p-4 shadow-sm" style="background-color: #f9f9f9;">
+
+            {% if loan_records or loanapp_records or loantype_records %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- Left column: 5 fields -->
+                        <table class="table" style="border-collapse: collapse;">
+                       
+                            <tbody>
+                                {% if loan_records %}
+                                    {% for record in loan_records %}
+                                        <tr>
+                                            <td>Loan ID</td>
+                                            <td>{{ record.loan_id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Loan Amount</td>
+                                            <td>{{ record.loan_amount }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Interest Rate</td>
+                                            <td>{{ record.interest_rate }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Term</td>
+                                            <td>{{ record.tenure }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+
+                                {% if loanapp_records %}
+                                    {% for record in loanapp_records %}
+                                        <tr>
+                                            <td>Loan Application ID</td>
+                                            <td>{{ record.application_id }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                <tr>
+                                    <td>Total Due</td>
+                                    <td>{{total_due|floatformat:2}}</td>
+                                </tr>
+                                <td>Top-up Loan Eligibility</td>
+                                <td>{{ eligibile|floatformat:2 }}</td>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-6">
+                        <!-- Right column: 5 fields -->
+                        <table class="table" style="border-collapse: collapse;">
+                       
+                            <tbody>
+                                {% if loantype_records %}
+                                    {% for record in loantype_records %}
+                                        <tr>
+                                            <td>Loan Type</td>
+                                            <td>{{ record.loantype }} ({{ record.loantype_id }}) </td>
+                                        </tr>
+                                      
+                                        <tr>
+                                            <td>Loan Method</td>
+                                            <td>{{ record.loan_calculation_method }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Loan Teams</td>
+                                            <td>{{ record.loan_teams }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Minimum Loan Amount</td>
+                                            <td>{{ record.min_loan_amt }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maximum Loan Amount</td>
+                                            <td>{{ record.max_loan_amt }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                <tr>
+                                    <td>Total Amount Paid</td>
+                                    <td>{{total_paid_amount}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Max Tenure</td>
+                                    <td>{{loan_tenure}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% else %}
+                <p>No records available.</p>
+            {% endif %}
+            <form method="POST" id="myForm">
+                {% csrf_token %}
+                
+                <label>Enter Loan Amount</label>
+                <input type="number" name="loan_amount" class="form-control" id="id_loan_amount">
+            
+                <label>Enter Tenure</label>
+                <input type="number" name="id_tenure" class="form-control" id="id_tenure">
+            
+                <label>Select Repayment Date</label>
+                <input type="date" name="repayment_id" class="form-control">
+            
+                <!-- <input type="hidden" name="max_tenure" id="id_max_tenure" value="{{ loan_tenure }}">
+                <input type="hidden" name="max_loan" id="id_max_loan" value="{{ eligibile }}">
+                <input type="hidden" name="interest_rate" id="interest_rate" value="{{ interest_rate }}">
+                <input type="hidden" name="total_due" id="total_due" value="{{ total_due }}">
+                <input type="hidden" name="loan_status" value="{{loan_status}}">
+                <input type="hidden" name="is_refinance" id="is_refinance" value="{{is_refinance}}">
+                 -->
+                <br>
+                <button type="submit" class="btn btn-success">Refinance</button>
+            </form>
+            
+        </div><!-- End loan-details-box -->
+    </div><!-- End container -->
+
+    {% endblock %}
+
+  </main><!-- End #main -->
+
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date().toISOString().split("T")[0];
+        const dateFields = document.querySelectorAll('input[type="date"]');
+        dateFields.forEach((dateField) => {
+            if (!dateField.value) {
+                dateField.value = today;
+            }
+        });  
+
+//         const form = document.getElementById("myForm");
+//         form.addEventListener("submit", function (event) {
+//             const loanAmount = parseFloat(document.getElementById("id_loan_amount").value);
+//             const refinance = document.getElementById("is_refinance").value;
+//             const tenure = parseInt(document.getElementById("id_tenure").value, 10);
+//             const maxTenure = parseInt(document.getElementById("id_max_tenure").value, 10);
+//             const maxLoan = parseFloat(document.getElementById("id_max_loan").value);
+//             const dueAmount = parseFloat(document.getElementById("total_due").value);
+
+//             if (refinance === "False") {
+//                 alert("This loan is not eligible for refinancing.");
+//                 event.preventDefault(); // Prevent form submission
+//                 return false;
+//             }
+//             // Validate loan amount and tenure
+//             if (tenure > maxTenure) {
+//                 alert(`Tenure cannot be more than ${maxTenure} months.`);
+//                 event.preventDefault(); // Prevent form submission
+//                 return false;
+//             }
+//             if (loanStatus === "refinanced") {
+//                 e.preventDefault(); // Prevent form submission
+//                 alert("This loan has already been refinanced.");
+//             }
+            
+//             if (loanAmount > maxLoan) {
+//                 alert(`Loan amount cannot be more than ${maxLoan}.`);
+//                 event.preventDefault(); // Prevent form submission
+//                 return false;
+//             }
+//             if (loanAmount < dueAmount) {
+//                 alert(`Loan amount cannot be less than ${dueAmount}.`);
+//                 event.preventDefault(); // Prevent form submission
+//                 return false;
+//             }
+//             // Optionally, you can add more validation or processing here
+//         });
+    });
+</script>
+
+{% endblock %}

@@ -6,12 +6,12 @@
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Running Loans</h1>
+      <h1>Active Loans</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
           <li class="breadcrumb-item">Forms</li>
-          <li class="breadcrumb-item active">Running Loans</li>
+          <li class="breadcrumb-item active">Active Loans</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -48,7 +48,7 @@
                     <td>{{data.interest_rate}}</td>
                     <td>{{data.loanapp_id.tenure}} {{data.loanapp_id.tenure_type}}</td>
                     <td>
-                        <a href="{% url 'restructure_loans' data.loan_id data.loanapp_id.application_id data.loanapp_id.loantype.loantype_id data.id %}"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
+                        <a href="{% url 'refinance_details1' data.loan_id data.loanapp_id.application_id data.loanapp_id.loantype.loantype_id data.id %}"> <button class="btn btn-info btn-sm" type="button"><i class="fa fa-eye"></i>
                         </button></a>
                     </td>
                   </tr>

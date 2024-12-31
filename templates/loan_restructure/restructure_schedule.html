@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<style>
+  .paid-row {
+    background-color: #d4edda !important;  /* Light green */
+  }
+</style>
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Restructured Schedule</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Restructured Schedule </li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    
+    <section class="section">
+      <div class="row">
+    
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Restructure Loan Details</h5>
+              
+              <!-- Payment Schedule Table -->
+              <div class="table-responsive">
+                <table class="table datatable"> 
+                    <thead>
+                    <tr>
+                        <th>SI.No</th>
+                        <th>Schedule ID</th>
+                        <th>Payment Date</th>
+                        <th>Amount Due</th>
+                        <th>Interest Amount</th>
+                        <th>Amount Paid</th>
+                        <th>Balance</th>
+                        <th>Payment Status</th>
+                        <th>Penalty</th>
+                        <th>Penalty Reason</th>
+                        <th>Total Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for data in schedules %}
+                    <tr class="{% if data.repayment_status == 'Paid' %}paid-row{% else %}not-paid-row{% endif %}">
+                      <td>{{ forloop.counter }}</td>
+                      <td><a href="#">{{ data.schedule_id }}</a></td>
+                      <td>{{ data.repayment_date }}</td>
+                      <td>${{ data.instalment_amount }}</td>
+                      <td>${{ data.interest_amount }}</td>
+                      <td>${{ data.paid_amount }}</td>
+                      <td>${{ data.remaining_balance }}</td>
+                      <td>
+                        {% if data.repayment_status == "Paid" %}
+                          <span class="badge bg-success">Paid</span>
+                        {% else %}
+                          <span class="badge bg-danger">Pending</span>
+                        {% endif %}
+                      </td>
+                      <td>{% if data.payable_penalty_amt == 0.0 %} - {% else %} {{ data.payable_penalty_amt }} {% endif %}</td>
+                      <td>{% if data.payable_penalty_amt == 0.0 %} - {% else %} {{ data.penalty_reason }} {% endif %}</td>
+                      <td>
+                        <input type="text" value="{{ data.payable_amount }}" class="form-control" readonly>
+                      </td>
+                      <td>
+                        {% if data.repayment_status == "Paid" %}
+                          <!-- Change the button text and disable it if paid -->
+                          <button class="btn btn-secondary" disabled>Paid</button>
+                        {% else %}
+                          <a href="{% url 'restructure_payment_process' data.id %}" class="btn btn-success">Pay</a>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+               </table>
+              </div>
+              
+              <!-- Summary Information -->
+              <table class="table">
+                  <tr>
+                      <td><strong>Total Due Amount:</strong> ${{ total_due|floatformat:2 }}</td>
+                      <td><strong>Total Paid Amount:</strong> ${{ total_paid_amount|floatformat:2 }}</td>
+                  </tr>
+                 
+                  <tr>
+                      <td><strong>Next Payment Date:</strong> {{ next_schedule.next_due_date }}</td>
+                      <td><strong>Next Amount Payment:</strong> {{ next_schedule.amount_due }}</td>
+                  </tr>
+              </table>
+              <form method="post">
+                  {% csrf_token %}
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  
+{% endblock %}

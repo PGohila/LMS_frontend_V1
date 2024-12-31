@@ -54,8 +54,6 @@
                                   <th style="text-align: left; color: #1A1C21;">&nbsp;Disbursement Type:</th>
                                   <td >{{loan_data.loanapp_id.disbursement_type}}</td>
                                 </tr>
-                                
-                            
                               </table>
                             </td>
                             <td style="vertical-align: top;padding-bottom: 20px;">
@@ -76,18 +74,14 @@
                                   <th style="text-align: left; color: #1A1C21;">Tenure:</th>
                                   <td >{{loan_data.loanapp_id.tenure}} {{loan_data.loanapp_id.tenure_type}}</td>
                                 </tr>
-                               
-                              
                               </table>
                             </td>
                           </tr>
-       
                         </tbody>
                       </table>
                     </td>
                   </tr>
                 </tbody>
-                
               </table>
 
               <!-- Payment Schedule Table -->
@@ -118,59 +112,50 @@
                       <td>{{data.repayment_date}}</td>
                       <td>${{data.instalment_amount}}</td>
                       <td>${{data.interest_amount}}</td>
-                      <td>${{data.paid_amount}}</td>
-                      <td>${{data.remaining_balance}}</td>
+                      <td>${{data.paid_amount|floatformat:2}}</td>
+                      <td>${{data.remaining_balance|floatformat:2}}</td>
                       <td>{% if data.repayment_status == "Paid" %}
                         <span class="badge bg-success">Paid</span>
                     {% else %}
-                        <span class="badge bg-danger">Pending</span>{% endif %}
-                    </td>
+                        <span class="badge bg-danger">Pending</span>{% endif %}</td>
                       <td>{% if data.payable_penalty_amt == 0.0 %} - {% else %} {{ data.payable_penalty_amt }} {% endif %}</td>
                       <td>{% if data.payable_penalty_amt == 0.0 %} - {% else %} {{ data.penalty_reason }} {% endif %}</td>
                       <td>
                         <input type="text" value="{{data.payable_amount}}" class="form-control" readonly>
-                      </td>                     
-                       <td><a href="{% url 'payment_process' data.id %}" class="btn btn-success">Pay</a></td>
+                      </td>                      
+                      <td>
+                        {% if data.repayment_status == "Paid" %}
+                          <button class="btn btn-secondary" disabled>Paid</button>
+                        {% else %}
+                          <a href="{% url 'payment_process' data.id %}" class="btn btn-success">Pay</a>
+                        {% endif %}
+                      </td>
                   </tr>
                   {% endfor %}
               </tbody>
               
                 </table>
-                </div>
-                <!-- Summary Information -->
-                <table class="table ">
-                    <tr>
-                        <td><strong>Total Due Amount:</strong> ${{total_installment_amount|floatformat:2}}</td>
-                        <td><strong>Total Paid Amount:</strong> ${{total_paid_amount|floatformat:2}}</td>
-                    </tr>
-                   
-                    <tr>
-                        <td><strong>Next Payment Date:</strong> {{next_schedule.next_due_date}}</td>
-                        <td><strong>Next Amount Payment:</strong> {{next_schedule.amount_due}}</td>
-                    </tr>
-                  
-                    <!-- <tr>
-                        <td><strong>Overdue Amount:</strong> $0</td>
-                    
-                    </tr> -->
-                    
-                </table>
-                <form method="post">
-                    {% csrf_token %}
-                
-                
-            </form>
+              </div>
+              <!-- Summary Information -->
+              <table class="table ">
+                  <tr>
+                      <td><strong>Total Due Amount:</strong> ${{total_due|floatformat:2}}</td>
+                      <td><strong>Total Paid Amount:</strong> ${{total_paid_amount|floatformat:2}}</td>
+                  </tr>
+                  <tr>
+                      <td><strong>Next Payment Date:</strong> {{next_schedule.next_due_date}}</td>
+                      <td><strong>Next Amount Payment:</strong> {{next_schedule.amount_due}}</td>
+                  </tr>
+              </table>
+              <form method="post">
+                  {% csrf_token %}
+              </form>
             </div>
           </div>
 
         </div>
       </div>
     </section>
-<!-- Summary Information -->
-
-
   </main><!-- End #main -->
   
   {% endblock %}
-
- 

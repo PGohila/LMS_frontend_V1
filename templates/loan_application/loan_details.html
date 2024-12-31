@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<body style="background-color: white;">  <!-- Set body background color to white -->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Loan Refinance Details</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Loan Refinance Details</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <title>Loan Application Details</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+            background-color: white;
+            width: 16%; /* Ensures each column takes equal width */
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        /* Additional styles for the back button */
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #012970;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .back-button:hover {
+            background-color: #012970;
+        }
+    </style>
+
+    <div class="container mt-4">
+        <div class="loan-details-box p-4 shadow-sm" style="background-color: #f9f9f9;">
+
+            {% if loan_application %}
+            <table>
+                <tr>
+                    <th>Loan Application ID</th>
+                    <td>{{ loan_application.application_id }}</td>
+
+                    <th>Loan Amount</th>
+                    <td>${{ loan_application.loan_amount }}</td>
+                    <th>Interest Rate</th>
+                    <td>{{ loan_application.interest_rate }}%</td>
+                </tr>
+                <tr>
+                    <th>Tenure (Months)</th>
+                    <td>{{ loan_application.tenure }}</td>
+                    <th>Disbursement Type</th>
+                    <td>{{ loan_application.disbursement_type }}</td>
+                    <th>Repayment Start Date</th>
+                    <td>{{ loan_application.repayment_start_date }}</td>
+                </tr>
+                <tr>
+                    <th>Repayment Schedule</th>
+                    <td>{{ loan_application.repayment_schedule }}</td>
+                    <th>Repayment Mode</th>
+                    <td>{{ loan_application.repayment_mode }}</td>
+                    <th>Loan Calculation Method</th>
+                    <td>{{ loan_application.loan_calculation_method }}</td>
+                </tr>
+                <tr>
+                    <th>Total Amount Paid</th>
+                    <td>{{ total_paid_amount }}</td>
+                    <th>Total Due Amount</th>
+                    <td>{{ total_due }}</td>
+                    <th>Pending Installment</th>
+                    <td>{{ paid_installment }}</td>
+                </tr>
+            </table>
+            {% else %}
+                <p>No loan application details available.</p>
+            {% endif %}
+
+            {% if schedules %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Schedule ID</th>
+                        <th>Repayment Date</th>
+                        <th>Instalment Amount</th>
+                        <th>Paid Amount</th>
+                        <th>Principal Amount</th>
+                        <th>Interest Amount</th>
+                        <th>Remaining Balance</th>
+                        <th>Repayment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                    <tr>
+                        <td>{{ schedule.period }}</td>
+                        <td>{{ schedule.schedule_id }}</td>
+                        <td>{{ schedule.repayment_date }}</td>
+                        <td>{{ schedule.instalment_amount }}</td>
+                        <td>{{ schedule.paid_amount }}</td>
+                        <td>{{ schedule.principal_amount }}</td>
+                        <td>{{ schedule.interest_amount }}</td>
+                        <td>{{ schedule.remaining_balance }}</td>
+                        <td>{{ schedule.repayment_status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>{{ schedules_message }}</p>
+            {% endif %}
+
+            <!-- Back button as a styled link -->
+            <a href="{% url 'loanapplication_view' %}" class="back-button">Back</a>
+        </div>
+    </div>
+
+</body>
+</html>
+
+{% endblock %}
