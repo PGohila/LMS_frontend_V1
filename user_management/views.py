@@ -642,22 +642,6 @@ def login(request):
                 request.session['user_permissions'] = login_tokes['user_permission']['permission']
                 user_data=login_tokes['user_data']
                 print('user_data',request.session['user_permissions'])
-                #===============getting User Permission==============
-                
-                # MSID= get_service_plan('get permissions for session')
-                # if MSID is None:
-                #     print('MISID not found') 
-                # payload_form={
-                #     # 'user_profile_id':user_data['user_profile']
-                # }     
-                # data={
-                #     'ms_id':MSID,
-                #     'ms_payload':payload_form
-                # } 
-                # json_data = json.dumps(data)
-                # response = call_post_method_with_token_v2(BASEURL,ENDPOINT,json_data,token)
-                # print('response_permission',response)
-                # request.session['permission'] = response['data_list']
                 
                 if user_data['multi_factor_auth'] or user_data['is_superuser']:
                     if user_data['is_superuser']:
